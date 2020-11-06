@@ -3,7 +3,22 @@ package fr.utt.lo02.projet;
 public class ScoreCalculatorVisitor implements IBoardVisitor {
 
 	public ScoreCalculatorVisitor() {
-		// TODO Auto-generated constructor stub
+
+	}
+	
+	public int visit(CircleBoard board, Card victoryCard) {
+		int score=1;
+		return score;
+	}
+	
+	public int visit(TriangleBoard board, Card victoryCard) {
+		int score=1;
+		return score;
+	}
+	
+	public int visit(RectangleBoard board, Card victoryCard) {
+		int score=1;
+		return score;
 	}
 
 }
