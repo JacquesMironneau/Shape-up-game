@@ -8,9 +8,9 @@ public class Card {
 	
 	public enum Hollow {HOLLOW, FILLED};
 	
-	Color color;
-	Shape shape;
-	Hollow hollow;
+	private Color color;
+	private Shape shape;
+	private Hollow hollow;
 	
 	public Card (Color c, Shape s, Hollow h) {
 		this.color = c;
