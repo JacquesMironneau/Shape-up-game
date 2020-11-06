@@ -4,7 +4,7 @@ import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 
 public class RectangleBoard extends AbstractBoard {
 
-	public RectangleBoard(Coordinates[] pC) {
+	public RectangleBoard() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -17,11 +17,15 @@ public class RectangleBoard extends AbstractBoard {
 	@Override
 	public boolean isCardAdjacent(int x, int y) {
 		
+		
 		return true;
 	}
 	
 	@Override
-	public boolean isCardInTheLayout(int x, int y) {
+	public boolean isCardInTheLayout(int x, int y)
+	{
+		if (placedCards.containsKey(new Coordinates(x,y))) return false;
+		
 		
 		return true;
 	}

@@ -16,14 +16,14 @@ public abstract class AbstractBoard
 	/**
 	 * Represent the placed card of the board
 	 */
-	private Map<Card, Coordinates> placedCards;
+	protected Map<Coordinates, Card> placedCards;
 	
 	/**
 	 * Initialize the placed card to an empty hashmap.
 	 */
 	public AbstractBoard() 
 	{
-		this.placedCards = new HashMap<Card, Coordinates>();
+		this.placedCards = new HashMap<Coordinates,Card>();
 	}
 	
 	/**
@@ -58,7 +58,7 @@ public abstract class AbstractBoard
 	 */
 	public void addCard(Card newCard, int x, int y) 
 	{
-		this.placedCards.put(newCard, new Coordinates(x,y));
+		this.placedCards.put(new Coordinates(x,y), newCard);
 	}
 	
 }

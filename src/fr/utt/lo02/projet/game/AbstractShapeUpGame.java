@@ -3,6 +3,7 @@ package fr.utt.lo02.projet.game;
 import java.util.List;
 import java.util.Set;
 
+import fr.utt.lo02.projet.board.AbstractBoard;
 import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.strategy.PlayerStrategy;
 
@@ -32,7 +33,15 @@ public abstract class AbstractShapeUpGame
 	 */
 	private List<Set<Card>> playerCards;
 	
+	/**
+	 * Players of the game
+	 */
 	private Set<PlayerStrategy> players;
+	
+	/**
+	 * Game board of the game
+	 */
+	private AbstractBoard board;
 	
 	/**
 	 * Initiate a round

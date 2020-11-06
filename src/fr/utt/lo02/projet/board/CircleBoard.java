@@ -4,7 +4,7 @@ import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 
 public class CircleBoard extends AbstractBoard {
 	
-	public CircleBoard(Coordinates[] pC) {
+	public CircleBoard() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
