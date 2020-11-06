@@ -5,7 +5,7 @@ import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 public class RectangleBoard extends AbstractBoard {
 
 	public RectangleBoard(Coordinates[] pC) {
-		super(pC);
+		super();
 		// TODO Auto-generated constructor stub
 	}
 

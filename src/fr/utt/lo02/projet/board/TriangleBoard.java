@@ -5,12 +5,13 @@ import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 public class TriangleBoard extends AbstractBoard {
 
 	public TriangleBoard(Coordinates[] pC) {
-		super(pC);
+		super();
 		// TODO Auto-generated constructor stub
 	}
 
+	
 	@Override
-	public void accept(IBoardVisitor board, Card victoryCard) {
+		public void accept(IBoardVisitor board, Card victoryCard) {
 		
 	}
 	
