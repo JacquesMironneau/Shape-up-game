@@ -1,8 +1,10 @@
-package fr.utt.lo02.projet;
+package fr.utt.lo02.projet.board;
 
-public class CircleBoard extends AbstractBoard {
-	
-	public CircleBoard(Coordinates[] pC) {
+import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
+
+public class RectangleBoard extends AbstractBoard {
+
+	public RectangleBoard(Coordinates[] pC) {
 		super(pC);
 		// TODO Auto-generated constructor stub
 	}
@@ -23,4 +25,5 @@ public class CircleBoard extends AbstractBoard {
 		
 		return true;
 	}
+
 }

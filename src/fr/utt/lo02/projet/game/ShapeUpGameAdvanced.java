@@ -1,4 +1,4 @@
-package fr.utt.lo02.projet;
+package fr.utt.lo02.projet.game;
 
 public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 {

@@ -1,7 +1,10 @@
-package fr.utt.lo02.projet;
+package fr.utt.lo02.projet.game;
 
 import java.util.List;
 import java.util.Set;
+
+import fr.utt.lo02.projet.board.Card;
+import fr.utt.lo02.projet.strategy.PlayerStrategy;
 
 public abstract class AbstractShapeUpGame
 {

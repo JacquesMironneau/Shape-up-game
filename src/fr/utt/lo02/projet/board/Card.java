@@ -1,4 +1,4 @@
-package fr.utt.lo02.projet;
+package fr.utt.lo02.projet.board;
 
 public class Card {
 	

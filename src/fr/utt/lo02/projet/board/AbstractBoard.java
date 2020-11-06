@@ -1,4 +1,6 @@
-package fr.utt.lo02.projet;
+package fr.utt.lo02.projet.board;
+
+import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 
 public abstract class AbstractBoard {
 	

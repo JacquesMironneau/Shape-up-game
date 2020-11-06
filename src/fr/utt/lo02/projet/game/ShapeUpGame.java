@@ -1,6 +1,6 @@
-package fr.utt.lo02.projet;
+package fr.utt.lo02.projet.game;
 
-public class ShapeUpGameWithoutAdajencyRule extends AbstractShapeUpGame
+public class ShapeUpGame extends AbstractShapeUpGame
 {
 
 	@Override
