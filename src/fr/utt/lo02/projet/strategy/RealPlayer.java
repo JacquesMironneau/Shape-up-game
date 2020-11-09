@@ -1,5 +1,13 @@
 package fr.utt.lo02.projet.strategy;
 
+/**
+ * Represent the strategy for a real player.
+ * It implements Player Strategy to follow the player's construction.
+ * @author Baptiste, Jacques
+ *
+ */
+
+
 public class RealPlayer implements PlayerStrategy
 {
 

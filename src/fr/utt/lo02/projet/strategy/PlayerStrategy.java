@@ -1,5 +1,12 @@
 package fr.utt.lo02.projet.strategy;
 
+/**
+ * Represent the player strategy in which we can define
+ * It is an interface because we have 2 player strategies, a real player and a virtual player.
+ * @author Baptiste, Jacques
+ *
+ */
+
 public interface PlayerStrategy
 {
 	/**
