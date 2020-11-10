@@ -24,6 +24,9 @@ public class Card
 	 */
 	public enum Hollow {HOLLOW, FILLED};
 	
+	public boolean isNotCountedVertically=true;
+	public boolean isNotCountedHorizontally=true;
+	
 	private Color color;
 	private Shape shape;
 	private Hollow hollow;
