@@ -77,7 +77,9 @@ public class Coordinates
 		return true;
 	}
 	
-	
+	public static boolean isOneMoreTopLeftThanTwo(Coordinates one, Coordinates two) {
+		return (one.x<=two.x) && (one.y>=two.y);
+		}
 	
 	
 }
