@@ -61,9 +61,9 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 		}
 		Set<Coordinates> listKeys = board.getPlacedCards().keySet();
 		Iterator<Coordinates> iterator = listKeys.iterator();
-		Coordinates topLeftCard = (Coordinates)iterator.next();
+		Coordinates topLeftCard = iterator.next();
 		while (iterator.hasNext()) {
-			Coordinates key = (Coordinates)iterator.next();
+			Coordinates key = iterator.next();
 			if (Coordinates.isOneMoreTopLeftThanTwo(key,topLeftCard)) {
 				topLeftCard = key;
 			}
@@ -88,7 +88,6 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 			final_score += calculShapeScoreList(shapeList, height, victoryShape);
 			ArrayList<Card.Hollow> hollowList = constructorHollowList(board.getPlacedCards(), height, nextCard, isARow);
 			final_score += calculHollowScoreList(hollowList, height, victoryHollow);
-
 		}
 		return final_score;
 	}
@@ -144,14 +143,16 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 		int nb_victory_color=0;
 		for (int i=0; i<MAX; i++) {
 			if (list.get(i)==null) {
-				continue;
+
 			} else if (list.get(i)==c){
 				nb_victory_color++;
 			} else {
 				list_score += calculColorScoreAlignment(nb_victory_color);
 				nb_victory_color=0;
 			}
-		}	
+		}
+		if (nb_victory_color != 0) list_score += calculColorScoreAlignment(nb_victory_color);
+
 		return list_score;
 	}
 	
@@ -173,14 +174,16 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 		int nb_victory_shape=0;
 		for (int i=0; i<MAX; i++) {
 			if (list.get(i)==null) {
-				continue;
+
 			} else if (list.get(i)==s){
 				nb_victory_shape++;
 			} else {
+
 				list_score += calculShapeScoreAlignment(nb_victory_shape);
 				nb_victory_shape=0;
 			}
-		}	
+		}
+		if (nb_victory_shape != 0) list_score += calculShapeScoreAlignment(nb_victory_shape);
 		return list_score;
 	}
 	
@@ -204,14 +207,15 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 		int nb_victory_hollow=0;
 		for (int i=0; i<MAX; i++) {
 			if (list.get(i)==null) {
-				continue;
+
 			} else if (list.get(i)==h){
 				nb_victory_hollow++;
 			} else {
 				list_score += calculHollowScoreAlignment(nb_victory_hollow);
 				nb_victory_hollow=0;
 			}
-		}	
+		}
+		if (nb_victory_hollow != 0) list_score += calculHollowScoreAlignment(nb_victory_hollow);
 		return list_score;
 	}
 	
@@ -247,8 +251,8 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 		board.getPlacedCards().put(new Coordinates(4,-2), new Card(Card.Color.GREEN,Card.Shape.SQUARE,Card.Hollow.FILLED));
 		Card victoryCard = new Card(Card.Color.RED,Card.Shape.TRIANGLE,Card.Hollow.FILLED);
 		ScoreCalculatorVisitor test = new ScoreCalculatorVisitor();
-		int delivrance = test.visit(board, victoryCard);
-		System.out.println("Le score final est de "+ delivrance);
+		int lol = test.visit(board, victoryCard);
+		System.out.println("Le score final est de "+ lol);
 		
 	}
 }
