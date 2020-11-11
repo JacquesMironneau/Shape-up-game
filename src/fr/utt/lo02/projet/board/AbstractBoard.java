@@ -16,13 +16,8 @@ public abstract class AbstractBoard
 	/**
 	 * Represent the placed card of the board
 	 */
-<<<<<<< HEAD
-	public  Map<Coordinates, Card> placedCards;
-	
-=======
 	protected Map<Coordinates, Card> placedCards;
 
->>>>>>> branch 'master' of https://github.com/PashmiDev/Shape-up-game.git
 	/**
 	 * Initialize the placed card to an empty hashmap.
 	 */
