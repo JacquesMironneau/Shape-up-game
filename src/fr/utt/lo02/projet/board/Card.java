@@ -1,5 +1,6 @@
 package fr.utt.lo02.projet.board;
 
+import java.util.HashMap;
 /**
  * Represents a card from the Game
  * A card is made of a color a shape and if its filled or not.
@@ -24,8 +25,6 @@ public class Card
 	 */
 	public enum Hollow {HOLLOW, FILLED};
 	
-	public boolean isNotCountedVertically=true;
-	public boolean isNotCountedHorizontally=true;
 	
 	private Color color;
 	private Shape shape;

@@ -23,7 +23,7 @@ class RectangleBoardTest
 	private static RectangleBoard board;
 
 	@Test
-	@BeforeAll
+	@BeforeAll 
 	static void init()
 	{
 		board = new RectangleBoard();
