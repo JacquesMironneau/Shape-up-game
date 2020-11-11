@@ -18,6 +18,43 @@ public abstract class AbstractBoard
 	 */
 	public  Map<Coordinates, Card> placedCards;
 
+
+	 */
+	protected Map<Coordinates, Card> placedCards;
+
+	 */
+	protected Map<Coordinates, Card> placedCards;
+
+	 */
+	protected Map<Coordinates, Card> placedCards;
+
+	 */
+	protected Map<Coordinates, Card> placedCards;
+
+	 */
+	protected Map<Coordinates, Card> placedCards;
+
+	 */
+	protected Map<Coordinates, Card> placedCards;
+
+	 */
+	protected Map<Coordinates, Card> placedCards;
+
+	 */
+	protected Map<Coordinates, Card> placedCards;
+
+	 */
+	protected Map<Coordinates, Card> placedCards;
+
+	 */
+	protected Map<Coordinates, Card> placedCards;
+
+	 */
+	protected Map<Coordinates, Card> placedCards;
+
+	 */
+	protected Map<Coordinates, Card> placedCards;
+
 	/**
 	 * Initialize the placed card to an empty hashmap.
 	 */

@@ -23,7 +23,6 @@ public class RectangleBoard extends AbstractBoard
 	 */
 	public static final int DISTANCE_MAX_HEIGHT = 3;
 
-
 	public RectangleBoard()
 	{
 		super();
@@ -60,10 +59,10 @@ public class RectangleBoard extends AbstractBoard
 	{
 		// If one card is already at the given position the card can't me moved or placed here
 		if (placedCards.containsKey(new Coordinates(x, y))) return false;
-
+ 
 		//TODO: might not be needed
 		// Prevent errors on future get(), thus this function shouldn't be called when the map is empty.
-		if (placedCards.isEmpty()) return true;
+		if (placedCards.isEmpty()) return true; // maybe exception
 
 		// Store every abscissas and ordinates in different lists.
 		List<Integer> abscissaCoordinates = new ArrayList<>();
@@ -75,13 +74,13 @@ public class RectangleBoard extends AbstractBoard
 			ordinateCoordinates.add(coordinates.getY());
 		}
 
-		if (isBoardHorizontal(ordinateCoordinates))
+		if (isHorizontal())
 		{
 			// if the board is horizontal, check if the new coordinate respects the maximum distance with every others.
 			return isCloseEnoughToFarthestCoordinate(x, DISTANCE_MAX_WIDTH, abscissaCoordinates) &&
 					isCloseEnoughToFarthestCoordinate(y, DISTANCE_MAX_HEIGHT, ordinateCoordinates);
 
-		} else if (isBoardVertical(abscissaCoordinates))
+		} else if (isVertical())
 		{
 			// if the board is vertical, check if the new coordinate respects the maximum distance with every others.
 			return isCloseEnoughToFarthestCoordinate(x, DISTANCE_MAX_HEIGHT, abscissaCoordinates) &&
@@ -101,12 +100,16 @@ public class RectangleBoard extends AbstractBoard
 
 	/**
 	 * Return if the board is horizontal or not
-	 *
-	 * @param ordinateCoordinates : List of Y coordinates (ordinates)
 	 * @return true if the board contains 4 or 5 elements on one of its ordinates
 	 */
-	private boolean isBoardHorizontal(List<Integer> ordinateCoordinates)
+	public boolean isHorizontal()
 	{
+		List<Integer> ordinateCoordinates = new ArrayList<>();
+
+		for (Coordinates coordinates : placedCards.keySet())
+		{
+			ordinateCoordinates.add(coordinates.getY());
+		}
 		List<Integer> sortedOrdinatesOccurrencesList = getSortedOccurrences(ordinateCoordinates);
 
 		return sortedOrdinatesOccurrencesList.get(sortedOrdinatesOccurrencesList.size() - 1) >= 4;
@@ -114,16 +117,22 @@ public class RectangleBoard extends AbstractBoard
 
 	/**
 	 * Return if the board is vertical or not
-	 *
-	 * @param abscissasCoordinates : List of X coordinates (abscissas)
 	 * @return true if the board contains 4 or 5 element on one of its abscissas
 	 */
-	private boolean isBoardVertical(List<Integer> abscissasCoordinates)
+	public boolean isVertical()
 	{
-		List<Integer> sortedAbscissasOccurrencesList = getSortedOccurrences(abscissasCoordinates);
+		List<Integer> abscissasCordinates = new ArrayList<>();
+
+		for (Coordinates coordinates : placedCards.keySet())
+		{
+			abscissasCordinates.add(coordinates.getX());
+		}
+		List<Integer> sortedAbscissasOccurrencesList = getSortedOccurrences(abscissasCordinates);
 
 		return sortedAbscissasOccurrencesList.get(sortedAbscissasOccurrencesList.size() - 1) >= 4;
 	}
+
+
 
 
 	/**
@@ -152,6 +161,7 @@ public class RectangleBoard extends AbstractBoard
 		return sortedCoordinateFieldOccurrencesList;
 	}
 
+	
 	/**
 	 * @param coordinateField  A field of a coordinate (eg: x or y)
 	 * @param distanceMax      the max distance, see DISTANCE_MAX_HEIGHT a,d DISTANCE_MAX_WIDTH
