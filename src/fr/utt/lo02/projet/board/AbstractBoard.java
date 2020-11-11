@@ -16,44 +16,8 @@ public abstract class AbstractBoard
 	/**
 	 * Represent the placed card of the board
 	 */
-	public  Map<Coordinates, Card> placedCards;
-
-
-	 */
 	protected Map<Coordinates, Card> placedCards;
 
-	 */
-	protected Map<Coordinates, Card> placedCards;
-
-	 */
-	protected Map<Coordinates, Card> placedCards;
-
-	 */
-	protected Map<Coordinates, Card> placedCards;
-
-	 */
-	protected Map<Coordinates, Card> placedCards;
-
-	 */
-	protected Map<Coordinates, Card> placedCards;
-
-	 */
-	protected Map<Coordinates, Card> placedCards;
-
-	 */
-	protected Map<Coordinates, Card> placedCards;
-
-	 */
-	protected Map<Coordinates, Card> placedCards;
-
-	 */
-	protected Map<Coordinates, Card> placedCards;
-
-	 */
-	protected Map<Coordinates, Card> placedCards;
-
-	 */
-	protected Map<Coordinates, Card> placedCards;
 
 	/**
 	 * Initialize the placed card to an empty hashmap.
