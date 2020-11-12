@@ -18,10 +18,12 @@ public class TriangleBoard extends AbstractBoard {
 
 	
 	@Override
-	public void accept(IBoardVisitor board, Card victoryCard) {
-		
+	public int accept(IBoardVisitor board, Card victoryCard)
+	{
+		return board.visit(this, victoryCard);
 	}
-	
+
+
 	@Override
 	public boolean isCardAdjacent(int x, int y) {
 		

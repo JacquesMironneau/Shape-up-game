@@ -1,5 +1,7 @@
 package fr.utt.lo02.projet.strategy;
 
+import fr.utt.lo02.projet.game.AbstractShapeUpGame;
+
 /**
  * Represent the strategy for a virtual player.
  * It implements Player Strategy to follow the player's construction.
@@ -10,11 +12,16 @@ package fr.utt.lo02.projet.strategy;
 public class VirtualPlayer implements PlayerStrategy
 {
 
+
+	private AbstractShapeUpGame game;
+
+
 	@Override
-	public void askChoice()
+	public Choice askChoice()
 	{
 		// TODO Auto-generated method stub
 
+		return null;
 	}
 
 	@Override
@@ -44,5 +51,11 @@ public class VirtualPlayer implements PlayerStrategy
 		// TODO Auto-generated method stub
 
 	}
+
+	public void setGame(AbstractShapeUpGame game)
+	{
+		this.game = game;
+	}
+
 
 }

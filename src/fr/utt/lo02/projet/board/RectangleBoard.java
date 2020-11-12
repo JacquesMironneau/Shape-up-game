@@ -33,9 +33,9 @@ public class RectangleBoard extends AbstractBoard
 	 * @param victoryCard The victory card associated with the score
 	 */
 	@Override
-	public void accept(IBoardVisitor board, Card victoryCard)
+	public int accept(IBoardVisitor board, Card victoryCard)
 	{
-		board.visit(this, victoryCard);
+		return board.visit(this, victoryCard);
 	}
 
 	@Override
@@ -60,8 +60,7 @@ public class RectangleBoard extends AbstractBoard
 		// If one card is already at the given position the card can't me moved or placed here
 		if (placedCards.containsKey(new Coordinates(x, y))) return false;
  
-		//TODO: might not be needed
-		// Prevent errors on future get(), thus this function shouldn't be called when the map is empty.
+		// If no cards has been placed, the card is obligatory in the layout
 		if (placedCards.isEmpty()) return true; // maybe exception
 
 		// Store every abscissas and ordinates in different lists.

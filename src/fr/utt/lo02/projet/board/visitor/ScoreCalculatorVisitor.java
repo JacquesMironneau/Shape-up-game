@@ -21,25 +21,25 @@ import fr.utt.lo02.projet.board.TriangleBoard;
  * Represent one of the different variants to calculate the score for the game.
  * This one is the normal version.
  * It implements IBoard Visitor to follow the visitor's construction.
- * @author} Baptiste, Jacques
+ * @author Baptiste, Jacques
  *
  */
 public class ScoreCalculatorVisitor implements IBoardVisitor {
 
-	
-	public ScoreCalculatorVisitor() { 
+
+	public ScoreCalculatorVisitor() {
 	}
-	
+
 	/**
 	 * This method calculate and return score for a circle board, one of the board variants.
 	 * @param board, the circle board
 	 * @param victoryCard, the victory card associated with the score
-	 */	
+	 */
 	public int visit(CircleBoard board, Card victoryCard) {
 		int score=1;
 		return score;
 	}
-	
+
 	/**
 	 * This method calculate and return score for a triangle board, one of the board variants.
 	 * @param board, the triangle board
@@ -49,7 +49,7 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 		int score=1;
 		return score;
 	}
-	
+
 	/**
 	 * This method calculate and return score for a rectangle board, basic board in the game.
 	 * @param board, the rectangle board
@@ -88,27 +88,27 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 		for (int i=0; i<height; i++) {
 			isARow=true;
 			Coordinates nextCard = new Coordinates(topLeftCard.getX(), topLeftCard.getY()-i);
-			ArrayList<Card.Color> colorList = constructorColorList(board.getPlacedCards(), width, nextCard, isARow);
-			final_score += calculColorScoreList(colorList, width, victoryColor);
-			ArrayList<Card.Shape> shapeList = constructorShapeList(board.getPlacedCards(), width, nextCard, isARow);
-			final_score += calculShapeScoreList(shapeList, width, victoryShape);
-			ArrayList<Card.Filling> fillingList = constructorFillingList(board.getPlacedCards(), width, nextCard, isARow);
-			final_score += calculFillingScoreList(fillingList, width, victoryFilling);
+			ArrayList<Card.Color> colorList = colorListOfOneRow(board.getPlacedCards(), width, nextCard, isARow);
+			final_score += calculateScoreOfColorRow(colorList, width, victoryColor);
+			ArrayList<Card.Shape> shapeList = shapeListOfOneRow(board.getPlacedCards(), width, nextCard, isARow);
+			final_score += calculateScoreOfShapeRow(shapeList, width, victoryShape);
+			ArrayList<Card.Filling> fillingList = fillingListOfOneRow(board.getPlacedCards(), width, nextCard, isARow);
+			final_score += calculateScoreOflFillingRow(fillingList, width, victoryFilling);
 		}
 		//We browse each column and add the row score in the final score each time, for each card's attribute.
 		for (int j=0; j<width; j++) {
 			isARow=false;
 			Coordinates nextCard = new Coordinates(topLeftCard.getX()+j, topLeftCard.getY());
-			ArrayList<Card.Color> colorList = constructorColorList(board.getPlacedCards(), height, nextCard, isARow);
-			final_score += calculColorScoreList(colorList, height, victoryColor);
-			ArrayList<Card.Shape> shapeList = constructorShapeList(board.getPlacedCards(), height, nextCard, isARow);
-			final_score += calculShapeScoreList(shapeList, height, victoryShape);
-			ArrayList<Card.Filling> fillingList = constructorFillingList(board.getPlacedCards(), height, nextCard, isARow);
-			final_score += calculFillingScoreList(fillingList, height, victoryFilling);
+			ArrayList<Card.Color> colorList = colorListOfOneRow(board.getPlacedCards(), height, nextCard, isARow);
+			final_score += calculateScoreOfColorRow(colorList, height, victoryColor);
+			ArrayList<Card.Shape> shapeList = shapeListOfOneRow(board.getPlacedCards(), height, nextCard, isARow);
+			final_score += calculateScoreOfShapeRow(shapeList, height, victoryShape);
+			ArrayList<Card.Filling> fillingList = fillingListOfOneRow(board.getPlacedCards(), height, nextCard, isARow);
+			final_score += calculateScoreOflFillingRow(fillingList, height, victoryFilling);
 		}
 		return final_score;
 	}
-	
+
 	/**
 	 * This method build a color List from Cards of a row or a column of the board.
 	 * @param map, the placed Cards' map with their coordinates
@@ -117,7 +117,7 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 	 * @param isARow, which tell if the list is a Row or a Column
 	 * @return a color List which match with the cards of the row/column.
 	 */
-	private ArrayList<Card.Color> constructorColorList(Map<Coordinates, Card> map, int nb_Box, Coordinates nextCard, boolean isARow) {
+	private ArrayList<Card.Color> colorListOfOneRow(Map<Coordinates, Card> map, int nb_Box, Coordinates nextCard, boolean isARow) {
 		ArrayList<Card.Color> colorList = new ArrayList<Card.Color>();
 		for (int i=0; i<nb_Box; i++ ) {
 			Coordinates coord;
@@ -135,7 +135,7 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 		}
 		return colorList;
 	}
-	
+
 	/**
 	 * This method build a shape List from Cards of a row or a column of the board.
 	 * @param map, the placed Cards' map with their coordinates
@@ -144,7 +144,7 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 	 * @param isARow, which tell if the list is a Row or a Column
 	 * @return a shape List which match with the cards of the row/column.
 	 */
-	private ArrayList<Card.Shape> constructorShapeList(Map<Coordinates, Card> map, int nb_Box, Coordinates nextCard, boolean isARow) {
+	private ArrayList<Card.Shape> shapeListOfOneRow(Map<Coordinates, Card> map, int nb_Box, Coordinates nextCard, boolean isARow) {
 		ArrayList<Card.Shape> shapeList = new ArrayList<Card.Shape>();
 		for (int i=0; i<nb_Box; i++ ) {
 			Coordinates coord;
@@ -162,7 +162,7 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 		}
 		return shapeList;
 	}
-	
+
 	/**
 	 * This method build a filling List from Cards of a row or a column of the board.
 	 * @param map, the placed Cards' map with their coordinates
@@ -171,7 +171,7 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 	 * @param isARow, which tell if the list is a Row or a Column
 	 * @return a filling List which match with the cards of the row/column.
 	 */
-	private ArrayList<Card.Filling> constructorFillingList(Map<Coordinates, Card> map, int nb_Box, Coordinates nextCard, boolean isARow) {
+	private ArrayList<Card.Filling> fillingListOfOneRow(Map<Coordinates, Card> map, int nb_Box, Coordinates nextCard, boolean isARow) {
 		ArrayList<Card.Filling> fillingList = new ArrayList<Card.Filling>();
 		for (int i=0; i<nb_Box; i++ ) {
 			Coordinates coord;
@@ -189,7 +189,7 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 		}
 		return fillingList;
 	}
-	
+
 	/**
 	 * This method calculate the score from a color list by comparing each color with the victory card's color
 	 * @param list, the color list to browse
@@ -197,29 +197,29 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 	 * @param c, the color of the victory card
 	 * @return the score of the color list
 	 */
-	private int calculColorScoreList(ArrayList<Card.Color> list,int MAX, Card.Color c) {
-		
-		int list_score=0;	
+	private int calculateScoreOfColorRow(ArrayList<Card.Color> list, int MAX, Card.Color c) {
+
+		int list_score=0;
 		int nb_victory_color=0;
 		for (int i=0; i<MAX; i++) {
-			 if (list.get(i)==c){
+			if (list.get(i)==c){
 				nb_victory_color++;
 			} else {
-				list_score += calculColorScoreAlignment(nb_victory_color);
+				list_score += calculateColorScoreAlignment(nb_victory_color);
 				nb_victory_color=0;
 			}
 		}
-		if (nb_victory_color != 0) list_score += calculColorScoreAlignment(nb_victory_color);
+		if (nb_victory_color != 0) list_score += calculateColorScoreAlignment(nb_victory_color);
 
 		return list_score;
 	}
-	
+
 	/**
 	 * This method calculate the score according to the number of the alignment's length (cf. statement's table score)
 	 * @param nb_victory_color, the number of colors which following each other.
 	 * @return the score of the current alignment
 	 */
-	private int calculColorScoreAlignment(int nb_victory_color) {
+	private int calculateColorScoreAlignment(int nb_victory_color) {
 		int alignment_score=0;
 		if (nb_victory_color==3) {
 			alignment_score=4;
@@ -230,7 +230,7 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 		}
 		return alignment_score;
 	}
-	
+
 	/**
 	 * This method calculate the score from a shape list by comparing each shape with the victory card's shape
 	 * @param list, the shape list to browse
@@ -238,30 +238,30 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 	 * @param s, the shape of the victory card
 	 * @return the score of the shape list
 	 */
-	private int calculShapeScoreList(ArrayList<Card.Shape> list,int MAX, Card.Shape s) {
-		
-		int list_score=0;	
+	private int calculateScoreOfShapeRow(ArrayList<Card.Shape> list, int MAX, Card.Shape s) {
+
+		int list_score=0;
 		int nb_victory_shape=0;
 		for (int i=0; i<MAX; i++) {
-			
+
 			if (list.get(i)==s){
 				nb_victory_shape++;
 			} else {
 
-				list_score += calculShapeScoreAlignment(nb_victory_shape);
+				list_score += calculateShapeScoreAlignment(nb_victory_shape);
 				nb_victory_shape=0;
 			}
 		}
-		if (nb_victory_shape != 0) list_score += calculShapeScoreAlignment(nb_victory_shape);
+		if (nb_victory_shape != 0) list_score += calculateShapeScoreAlignment(nb_victory_shape);
 		return list_score;
 	}
-	
+
 	/**
 	 * This method calculate the score according to the number of the alignment's length (cf. statement's table score)
 	 * @param nb_victory_shape, the number of shapes which following each other.
 	 * @return the score of the current alignment
 	 */
-	private int calculShapeScoreAlignment(int nb_victory_shape) {
+	private int calculateShapeScoreAlignment(int nb_victory_shape) {
 		int alignment_score=0;
 		if (nb_victory_shape==2) {
 			alignment_score=1;
@@ -274,7 +274,7 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 		}
 		return alignment_score;
 	}
-	
+
 	/**
 	 * This method calculate the score from a filling list by comparing each filling with the victory card's filling
 	 * @param list, the filling list to browse
@@ -282,29 +282,29 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 	 * @param h, the filling of the victory card
 	 * @return the score of the filling list
 	 */
-	private int calculFillingScoreList(ArrayList<Card.Filling> list,int MAX, Card.Filling h) {
-		
-		int list_score=0;	
+	private int calculateScoreOflFillingRow(ArrayList<Card.Filling> list, int MAX, Card.Filling h) {
+
+		int list_score=0;
 		int nb_victory_filling=0;
 		for (int i=0; i<MAX; i++) {
-			
+
 			if (list.get(i)==h){
 				nb_victory_filling++;
 			} else {
-				list_score += calculFillingScoreAlignment(nb_victory_filling);
+				list_score += calculateFillingScoreAlignment(nb_victory_filling);
 				nb_victory_filling=0;
 			}
 		}
-		if (nb_victory_filling != 0) list_score += calculFillingScoreAlignment(nb_victory_filling);
+		if (nb_victory_filling != 0) list_score += calculateFillingScoreAlignment(nb_victory_filling);
 		return list_score;
 	}
-	
+
 	/**
 	 * This method calculate the score according to the number of the alignment's length (cf. statement's table score)
 	 * @param nb_victory_filling, the number of filling which following each other.
 	 * @return the score of the current alignment
 	 */
-	private int calculFillingScoreAlignment(int nb_victory_filling) {
+	private int calculateFillingScoreAlignment(int nb_victory_filling) {
 		int alignment_score=0;
 		if (nb_victory_filling==3) {
 			alignment_score=3;
