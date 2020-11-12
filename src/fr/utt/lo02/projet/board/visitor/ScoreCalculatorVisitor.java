@@ -64,14 +64,17 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 		int height=0;
 		boolean isARow;
 		// if the board is Horizontal, we fix the width and the height of the board to 5 and 3.
+		// if the board is Vertical, we fix the width and the height of the board to 3 and 5.
+		// if the board is not vertical and not horizontal, we fix width and height to 3.
 		if (board.isHorizontal()) {
 			width=5;
 			height=3;
-		}
-		// if the board is Horizontal, we fix the width and the height of the board to 3 and 5.
-		if (board.isVertical()) {
+		} else if (board.isVertical()) {
 			width=3;
 			height=5;
+		} else {
+			width=3;
+			height=3;
 		}
 		// We recover coordinates of the placed Cards.
 		Set<Coordinates> listKeys = board.getPlacedCards().keySet();
@@ -93,7 +96,7 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 			ArrayList<Card.Shape> shapeList = shapeListOfOneRow(board.getPlacedCards(), width, nextCard, isARow);
 			final_score += calculateScoreOfShapeRow(shapeList, width, victoryShape);
 			ArrayList<Card.Filling> fillingList = fillingListOfOneRow(board.getPlacedCards(), width, nextCard, isARow);
-			final_score += calculateScoreOflFillingRow(fillingList, width, victoryFilling);
+			final_score += calculateScoreOfFillingRow(fillingList, width, victoryFilling);
 		}
 		//We browse each column and add the row score in the final score each time, for each card's attribute.
 		for (int j=0; j<width; j++) {
@@ -104,7 +107,7 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 			ArrayList<Card.Shape> shapeList = shapeListOfOneRow(board.getPlacedCards(), height, nextCard, isARow);
 			final_score += calculateScoreOfShapeRow(shapeList, height, victoryShape);
 			ArrayList<Card.Filling> fillingList = fillingListOfOneRow(board.getPlacedCards(), height, nextCard, isARow);
-			final_score += calculateScoreOflFillingRow(fillingList, height, victoryFilling);
+			final_score += calculateScoreOfFillingRow(fillingList, height, victoryFilling);
 		}
 		return final_score;
 	}
@@ -127,6 +130,8 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 				coord = new Coordinates(nextCard.getX(),nextCard.getY()-i);
 			}
 			Card Card = map.get(coord);
+			//If there is a hole in the map (with 3 players version), there is no Card in the map for one coordinates.
+			//So we have to add a null element in the list to take into account the hole.
 			if (Card==null) {
 				colorList.add(null);
 			} else {
@@ -154,6 +159,8 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 				coord = new Coordinates(nextCard.getX(),nextCard.getY()-i);
 			}
 			Card Card = map.get(coord);
+			//If there is a hole in the map (with 3 players version), there is no Card in the map for one coordinates.
+			//So we have to add a null element in the list to take into account the hole.
 			if (Card==null) {
 				shapeList.add(null);
 			} else {
@@ -181,6 +188,8 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 				coord = new Coordinates(nextCard.getX(),nextCard.getY()-i);
 			}
 			Card Card = map.get(coord);
+			//If there is a hole in the map (with 3 players version), there is no Card in the map for one coordinates.
+			//So we have to add a null element in the list to take into account the hole.
 			if (Card==null) {
 				fillingList.add(null);
 			} else {
@@ -209,6 +218,7 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 				nb_victory_color=0;
 			}
 		}
+		//If it's the last row's element, we have to count the score if we were in a alignment of the victory shape.
 		if (nb_victory_color != 0) list_score += calculateColorScoreAlignment(nb_victory_color);
 
 		return list_score;
@@ -252,6 +262,7 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 				nb_victory_shape=0;
 			}
 		}
+		//If it's the last row's element, we have to count the score if we were in a alignment of the victory shape.
 		if (nb_victory_shape != 0) list_score += calculateShapeScoreAlignment(nb_victory_shape);
 		return list_score;
 	}
@@ -282,7 +293,7 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 	 * @param h, the filling of the victory card
 	 * @return the score of the filling list
 	 */
-	private int calculateScoreOflFillingRow(ArrayList<Card.Filling> list, int MAX, Card.Filling h) {
+	private int calculateScoreOfFillingRow(ArrayList<Card.Filling> list, int MAX, Card.Filling h) {
 
 		int list_score=0;
 		int nb_victory_filling=0;
@@ -295,6 +306,7 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 				nb_victory_filling=0;
 			}
 		}
+		//If it's the last row's element, we have to count the score if we were in a alignment of the victory filling.
 		if (nb_victory_filling != 0) list_score += calculateFillingScoreAlignment(nb_victory_filling);
 		return list_score;
 	}

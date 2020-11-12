@@ -2,14 +2,6 @@ package fr.utt.lo02.projet.junit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
-/**
- * Case 1: the board is horizontal and has 15 cards
- * Case 2: the board is vertical and has 15 cards
- * Case 3: the board is vertical and has 14 cards with a hole in the right down corner
- * Case 4: the board is horizontal and has 14 cards with a hole in the board's middle
- */
-
 import org.junit.jupiter.api.Test;
 
 import fr.utt.lo02.projet.board.Card;
@@ -17,6 +9,17 @@ import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.board.RectangleBoard;
 import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
 
+
+
+/**
+ * Case 1: the board is horizontal and has 15 cards
+ * Case 2: the board is vertical and has 15 cards
+ * Case 3: the board is vertical and has 14 cards with a hole in the right down corner
+ * Case 4: the board is horizontal and has 14 cards with a hole in the board's middle
+ * Case 5: the board is not vertical and not horizontal (3*3)
+ * Case 6: the board is not vertical and not horizontal (2*2)
+ * Case 7: the board has only one Card
+ */
 class ScoreCalculatorVisitorTest {
 	
 	private static RectangleBoard board;
@@ -122,6 +125,47 @@ class ScoreCalculatorVisitorTest {
 		assertTrue(test.visit(board, victoryCardB)==10);
 		assertTrue(test.visit(board, victoryCardC)==9);
 		assertTrue(test.visit(board, victoryCardD)==6);
+	}
+	
+	@Test
+	void case5() {
+		board = new RectangleBoard();
+		board.getPlacedCards().put(new Coordinates(0,0), new Card(Card.Color.RED,Card.Shape.TRIANGLE,Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(1,0), new Card(Card.Color.RED,Card.Shape.CIRCLE,Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(2,0), new Card(Card.Color.RED,Card.Shape.SQUARE,Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(0,-1), new Card(Card.Color.GREEN,Card.Shape.TRIANGLE,Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(1,-1), new Card(Card.Color.GREEN,Card.Shape.CIRCLE,Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(2,-1), new Card(Card.Color.GREEN,Card.Shape.SQUARE,Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(0,-2), new Card(Card.Color.GREEN,Card.Shape.TRIANGLE,Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(1,-2), new Card(Card.Color.BLUE,Card.Shape.CIRCLE,Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(2,-2), new Card(Card.Color.BLUE,Card.Shape.CIRCLE,Card.Filling.HOLLOW));
+		ScoreCalculatorVisitor test = new ScoreCalculatorVisitor();
+		assertTrue(test.visit(board, victoryCardA)==13);
+		assertTrue(test.visit(board, victoryCardB)==6);
+		assertTrue(test.visit(board, victoryCardC)==8);
+	}
+	
+	@Test
+	void case6( ) {
+			board = new RectangleBoard();
+			board.getPlacedCards().put(new Coordinates(0,0), new Card(Card.Color.RED,Card.Shape.TRIANGLE,Card.Filling.HOLLOW));
+			board.getPlacedCards().put(new Coordinates(1,0), new Card(Card.Color.RED,Card.Shape.CIRCLE,Card.Filling.HOLLOW));
+			board.getPlacedCards().put(new Coordinates(0,-1), new Card(Card.Color.GREEN,Card.Shape.TRIANGLE,Card.Filling.FILLED));
+			board.getPlacedCards().put(new Coordinates(1,-1), new Card(Card.Color.GREEN,Card.Shape.CIRCLE,Card.Filling.FILLED));
+			ScoreCalculatorVisitor test = new ScoreCalculatorVisitor();
+			assertTrue(test.visit(board, victoryCardA)==1);
+			assertTrue(test.visit(board, victoryCardB)==1);
+			assertTrue(test.visit(board, victoryCardC)==1);
+	}
+	
+	@Test
+	void case7() {
+		board = new RectangleBoard();
+		board.getPlacedCards().put(new Coordinates(0,0), new Card(Card.Color.RED,Card.Shape.TRIANGLE,Card.Filling.HOLLOW));
+		ScoreCalculatorVisitor test = new ScoreCalculatorVisitor();
+		assertTrue(test.visit(board, victoryCardA)==0);
+		assertTrue(test.visit(board, victoryCardB)==0);
+		assertTrue(test.visit(board, victoryCardC)==0);
 	}
 
 }
