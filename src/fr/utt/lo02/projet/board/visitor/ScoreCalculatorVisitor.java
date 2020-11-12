@@ -2,19 +2,16 @@ package fr.utt.lo02.projet.board.visitor;
 
 import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.Card.Shape;
-import fr.utt.lo02.projet.game.ShapeUpGame;
 import fr.utt.lo02.projet.board.Card.Color;
-import fr.utt.lo02.projet.board.Card.Hollow;
+import fr.utt.lo02.projet.board.Card.Filling;
 
-import java.util.HashMap;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
-import java.util.Collection;
 
-import fr.utt.lo02.projet.board.AbstractBoard;
+
 import fr.utt.lo02.projet.board.CircleBoard;
 import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.board.RectangleBoard;
@@ -33,42 +30,61 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 	public ScoreCalculatorVisitor() { 
 	}
 	
+	/**
+	 * This method calculate and return score for a circle board, one of the board variants.
+	 * @param board, the circle board
+	 * @param victoryCard, the victory card associated with the score
+	 */	
 	public int visit(CircleBoard board, Card victoryCard) {
 		int score=1;
 		return score;
 	}
 	
+	/**
+	 * This method calculate and return score for a triangle board, one of the board variants.
+	 * @param board, the triangle board
+	 * @param victoryCard, the victory card associated with the score
+	 */
 	public int visit(TriangleBoard board, Card victoryCard) {
 		int score=1;
 		return score;
 	}
 	
+	/**
+	 * This method calculate and return score for a rectangle board, basic board in the game.
+	 * @param board, the rectangle board
+	 * @param victoryCard, the victory card associated with the score
+	 */
 	public int visit(RectangleBoard board, Card victoryCard) {
 		Shape victoryShape = victoryCard.getShape();
 		Color victoryColor = victoryCard.getColor();
-		Hollow victoryHollow = victoryCard.getHollow();
+		Filling victoryFilling = victoryCard.getFilling();
 		int final_score=0;
 		int width=0;
 		int height=0;
 		boolean isARow;
+		// if the board is Horizontal, we fix the width and the height of the board to 5 and 3.
 		if (board.isHorizontal()) {
 			width=5;
 			height=3;
 		}
+		// if the board is Horizontal, we fix the width and the height of the board to 3 and 5.
 		if (board.isVertical()) {
 			width=3;
 			height=5;
 		}
+		// We recover coordinates of the placed Cards.
 		Set<Coordinates> listKeys = board.getPlacedCards().keySet();
 		Iterator<Coordinates> iterator = listKeys.iterator();
 		Coordinates topLeftCard = iterator.next();
+		//We recover the card which is in the top left corner of the rectangle.
 		while (iterator.hasNext()) {
 			Coordinates key = iterator.next();
 			if (Coordinates.isOneMoreTopLeftThanTwo(key,topLeftCard)) {
 				topLeftCard = key;
 			}
 		}
-
+		//We browse each row and add the row score in the final score each time, for each card's attribute.
 		for (int i=0; i<height; i++) {
 			isARow=true;
 			Coordinates nextCard = new Coordinates(topLeftCard.getX(), topLeftCard.getY()-i);
@@ -76,9 +92,10 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 			final_score += calculColorScoreList(colorList, width, victoryColor);
 			ArrayList<Card.Shape> shapeList = constructorShapeList(board.getPlacedCards(), width, nextCard, isARow);
 			final_score += calculShapeScoreList(shapeList, width, victoryShape);
-			ArrayList<Card.Hollow> hollowList = constructorHollowList(board.getPlacedCards(), width, nextCard, isARow);
-			final_score += calculHollowScoreList(hollowList, width, victoryHollow);
+			ArrayList<Card.Filling> fillingList = constructorFillingList(board.getPlacedCards(), width, nextCard, isARow);
+			final_score += calculFillingScoreList(fillingList, width, victoryFilling);
 		}
+		//We browse each column and add the row score in the final score each time, for each card's attribute.
 		for (int j=0; j<width; j++) {
 			isARow=false;
 			Coordinates nextCard = new Coordinates(topLeftCard.getX()+j, topLeftCard.getY());
@@ -86,12 +103,20 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 			final_score += calculColorScoreList(colorList, height, victoryColor);
 			ArrayList<Card.Shape> shapeList = constructorShapeList(board.getPlacedCards(), height, nextCard, isARow);
 			final_score += calculShapeScoreList(shapeList, height, victoryShape);
-			ArrayList<Card.Hollow> hollowList = constructorHollowList(board.getPlacedCards(), height, nextCard, isARow);
-			final_score += calculHollowScoreList(hollowList, height, victoryHollow);
+			ArrayList<Card.Filling> fillingList = constructorFillingList(board.getPlacedCards(), height, nextCard, isARow);
+			final_score += calculFillingScoreList(fillingList, height, victoryFilling);
 		}
 		return final_score;
 	}
 	
+	/**
+	 * This method build a color List from Cards of a row or a column of the board.
+	 * @param map, the placed Cards' map with their coordinates
+	 * @param nb_Box, the number of boxes to browse
+	 * @param nextCard, coordinates of the first Card to put in the list
+	 * @param isARow, which tell if the list is a Row or a Column
+	 * @return a color List which match with the cards of the row/column.
+	 */
 	private ArrayList<Card.Color> constructorColorList(Map<Coordinates, Card> map, int nb_Box, Coordinates nextCard, boolean isARow) {
 		ArrayList<Card.Color> colorList = new ArrayList<Card.Color>();
 		for (int i=0; i<nb_Box; i++ ) {
@@ -101,12 +126,24 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 			} else {
 				coord = new Coordinates(nextCard.getX(),nextCard.getY()-i);
 			}
-			Card.Color colorCard = map.get(coord).getColor();
-			colorList.add(i, colorCard);
+			Card Card = map.get(coord);
+			if (Card==null) {
+				colorList.add(null);
+			} else {
+				colorList.add(i, Card.getColor());
+			}
 		}
 		return colorList;
 	}
 	
+	/**
+	 * This method build a shape List from Cards of a row or a column of the board.
+	 * @param map, the placed Cards' map with their coordinates
+	 * @param nb_Box, the number of boxes to browse
+	 * @param nextCard, coordinates of the first Card to put in the list
+	 * @param isARow, which tell if the list is a Row or a Column
+	 * @return a shape List which match with the cards of the row/column.
+	 */
 	private ArrayList<Card.Shape> constructorShapeList(Map<Coordinates, Card> map, int nb_Box, Coordinates nextCard, boolean isARow) {
 		ArrayList<Card.Shape> shapeList = new ArrayList<Card.Shape>();
 		for (int i=0; i<nb_Box; i++ ) {
@@ -116,14 +153,26 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 			} else {
 				coord = new Coordinates(nextCard.getX(),nextCard.getY()-i);
 			}
-			Card.Shape shapeCard = map.get(coord).getShape();
-			shapeList.add(i, shapeCard);
+			Card Card = map.get(coord);
+			if (Card==null) {
+				shapeList.add(null);
+			} else {
+				shapeList.add(i, Card.getShape());
+			}
 		}
 		return shapeList;
 	}
 	
-	private ArrayList<Card.Hollow> constructorHollowList(Map<Coordinates, Card> map, int nb_Box, Coordinates nextCard, boolean isARow) {
-		ArrayList<Card.Hollow> hollowList = new ArrayList<Card.Hollow>();
+	/**
+	 * This method build a filling List from Cards of a row or a column of the board.
+	 * @param map, the placed Cards' map with their coordinates
+	 * @param nb_Box, the number of boxes to browse
+	 * @param nextCard, coordinates of the first Card to put in the list
+	 * @param isARow, which tell if the list is a Row or a Column
+	 * @return a filling List which match with the cards of the row/column.
+	 */
+	private ArrayList<Card.Filling> constructorFillingList(Map<Coordinates, Card> map, int nb_Box, Coordinates nextCard, boolean isARow) {
+		ArrayList<Card.Filling> fillingList = new ArrayList<Card.Filling>();
 		for (int i=0; i<nb_Box; i++ ) {
 			Coordinates coord;
 			if (isARow) {
@@ -131,20 +180,29 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 			} else {
 				coord = new Coordinates(nextCard.getX(),nextCard.getY()-i);
 			}
-			Card.Hollow hollowCard = map.get(coord).getHollow();
-			hollowList.add(i, hollowCard);
+			Card Card = map.get(coord);
+			if (Card==null) {
+				fillingList.add(null);
+			} else {
+				fillingList.add(i, Card.getFilling());
+			}
 		}
-		return hollowList;
+		return fillingList;
 	}
 	
+	/**
+	 * This method calculate the score from a color list by comparing each color with the victory card's color
+	 * @param list, the color list to browse
+	 * @param MAX, the number of values to compare
+	 * @param c, the color of the victory card
+	 * @return the score of the color list
+	 */
 	private int calculColorScoreList(ArrayList<Card.Color> list,int MAX, Card.Color c) {
 		
 		int list_score=0;	
 		int nb_victory_color=0;
 		for (int i=0; i<MAX; i++) {
-			if (list.get(i)==null) {
-
-			} else if (list.get(i)==c){
+			 if (list.get(i)==c){
 				nb_victory_color++;
 			} else {
 				list_score += calculColorScoreAlignment(nb_victory_color);
@@ -156,6 +214,11 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 		return list_score;
 	}
 	
+	/**
+	 * This method calculate the score according to the number of the alignment's length (cf. statement's table score)
+	 * @param nb_victory_color, the number of colors which following each other.
+	 * @return the score of the current alignment
+	 */
 	private int calculColorScoreAlignment(int nb_victory_color) {
 		int alignment_score=0;
 		if (nb_victory_color==3) {
@@ -168,14 +231,20 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 		return alignment_score;
 	}
 	
+	/**
+	 * This method calculate the score from a shape list by comparing each shape with the victory card's shape
+	 * @param list, the shape list to browse
+	 * @param MAX, the number of values to compare
+	 * @param s, the shape of the victory card
+	 * @return the score of the shape list
+	 */
 	private int calculShapeScoreList(ArrayList<Card.Shape> list,int MAX, Card.Shape s) {
 		
 		int list_score=0;	
 		int nb_victory_shape=0;
 		for (int i=0; i<MAX; i++) {
-			if (list.get(i)==null) {
-
-			} else if (list.get(i)==s){
+			
+			if (list.get(i)==s){
 				nb_victory_shape++;
 			} else {
 
@@ -187,6 +256,11 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 		return list_score;
 	}
 	
+	/**
+	 * This method calculate the score according to the number of the alignment's length (cf. statement's table score)
+	 * @param nb_victory_shape, the number of shapes which following each other.
+	 * @return the score of the current alignment
+	 */
 	private int calculShapeScoreAlignment(int nb_victory_shape) {
 		int alignment_score=0;
 		if (nb_victory_shape==2) {
@@ -201,58 +275,44 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 		return alignment_score;
 	}
 	
-	private int calculHollowScoreList(ArrayList<Card.Hollow> list,int MAX, Card.Hollow h) {
+	/**
+	 * This method calculate the score from a filling list by comparing each filling with the victory card's filling
+	 * @param list, the filling list to browse
+	 * @param MAX, the number of values to compare
+	 * @param h, the filling of the victory card
+	 * @return the score of the filling list
+	 */
+	private int calculFillingScoreList(ArrayList<Card.Filling> list,int MAX, Card.Filling h) {
 		
 		int list_score=0;	
-		int nb_victory_hollow=0;
+		int nb_victory_filling=0;
 		for (int i=0; i<MAX; i++) {
-			if (list.get(i)==null) {
-
-			} else if (list.get(i)==h){
-				nb_victory_hollow++;
+			
+			if (list.get(i)==h){
+				nb_victory_filling++;
 			} else {
-				list_score += calculHollowScoreAlignment(nb_victory_hollow);
-				nb_victory_hollow=0;
+				list_score += calculFillingScoreAlignment(nb_victory_filling);
+				nb_victory_filling=0;
 			}
 		}
-		if (nb_victory_hollow != 0) list_score += calculHollowScoreAlignment(nb_victory_hollow);
+		if (nb_victory_filling != 0) list_score += calculFillingScoreAlignment(nb_victory_filling);
 		return list_score;
 	}
 	
-	private int calculHollowScoreAlignment(int nb_victory_hollow) {
+	/**
+	 * This method calculate the score according to the number of the alignment's length (cf. statement's table score)
+	 * @param nb_victory_filling, the number of filling which following each other.
+	 * @return the score of the current alignment
+	 */
+	private int calculFillingScoreAlignment(int nb_victory_filling) {
 		int alignment_score=0;
-		if (nb_victory_hollow==3) {
+		if (nb_victory_filling==3) {
 			alignment_score=3;
-		} else if (nb_victory_hollow==4) {
+		} else if (nb_victory_filling==4) {
 			alignment_score=4;
-		} else if (nb_victory_hollow==5) {
+		} else if (nb_victory_filling==5) {
 			alignment_score=5;
 		}
 		return alignment_score;
-	}
-	
-	public static void main(String[] args)
-	{
-		RectangleBoard board = new RectangleBoard();
-		board.getPlacedCards().put(new Coordinates(0,0), new Card(Card.Color.RED,Card.Shape.TRIANGLE,Card.Hollow.HOLLOW));
-		board.getPlacedCards().put(new Coordinates(1,0), new Card(Card.Color.RED,Card.Shape.CIRCLE,Card.Hollow.HOLLOW));
-		board.getPlacedCards().put(new Coordinates(2,0), new Card(Card.Color.RED,Card.Shape.SQUARE,Card.Hollow.HOLLOW));
-		board.getPlacedCards().put(new Coordinates(3,0), new Card(Card.Color.RED,Card.Shape.SQUARE,Card.Hollow.FILLED));
-		board.getPlacedCards().put(new Coordinates(4,0), new Card(Card.Color.BLUE,Card.Shape.TRIANGLE,Card.Hollow.FILLED));
-		board.getPlacedCards().put(new Coordinates(0,-1), new Card(Card.Color.GREEN,Card.Shape.TRIANGLE,Card.Hollow.FILLED));
-		board.getPlacedCards().put(new Coordinates(1,-1), new Card(Card.Color.GREEN,Card.Shape.CIRCLE,Card.Hollow.FILLED));
-		board.getPlacedCards().put(new Coordinates(2,-1), new Card(Card.Color.GREEN,Card.Shape.SQUARE,Card.Hollow.HOLLOW));
-		board.getPlacedCards().put(new Coordinates(3,-1), new Card(Card.Color.RED,Card.Shape.CIRCLE,Card.Hollow.FILLED));
-		board.getPlacedCards().put(new Coordinates(4,-1), new Card(Card.Color.BLUE,Card.Shape.SQUARE,Card.Hollow.FILLED));
-		board.getPlacedCards().put(new Coordinates(0,-2), new Card(Card.Color.GREEN,Card.Shape.TRIANGLE,Card.Hollow.HOLLOW));
-		board.getPlacedCards().put(new Coordinates(1,-2), new Card(Card.Color.BLUE,Card.Shape.CIRCLE,Card.Hollow.FILLED));
-		board.getPlacedCards().put(new Coordinates(2,-2), new Card(Card.Color.BLUE,Card.Shape.CIRCLE,Card.Hollow.HOLLOW));
-		board.getPlacedCards().put(new Coordinates(3,-2), new Card(Card.Color.BLUE,Card.Shape.SQUARE,Card.Hollow.HOLLOW));
-		board.getPlacedCards().put(new Coordinates(4,-2), new Card(Card.Color.GREEN,Card.Shape.SQUARE,Card.Hollow.FILLED));
-		Card victoryCard = new Card(Card.Color.RED,Card.Shape.TRIANGLE,Card.Hollow.FILLED);
-		ScoreCalculatorVisitor test = new ScoreCalculatorVisitor();
-		int lol = test.visit(board, victoryCard);
-		System.out.println("Le score final est de "+ lol);
-		
 	}
 }

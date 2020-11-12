@@ -1,6 +1,6 @@
 package fr.utt.lo02.projet.board;
 
-import java.util.HashMap;
+
 /**
  * Represents a card from the Game
  * A card is made of a color a shape and if its filled or not.
@@ -23,18 +23,18 @@ public class Card
 	/**
 	 * A card can be filled or not (hollow).
 	 */
-	public enum Hollow {HOLLOW, FILLED};
+	public enum Filling {HOLLOW, FILLED};
 	
 	
 	private Color color;
 	private Shape shape;
-	private Hollow hollow;
+	private Filling filling;
 	
-	public Card (Color c, Shape s, Hollow h)
+	public Card (Color c, Shape s, Filling f)
 	{
 		this.color = c;
 		this.shape = s;
-		this.hollow = h;
+		this.filling = f;
 		
 	}
 
@@ -48,9 +48,9 @@ public class Card
 		return shape;
 	}
 
-	public Hollow getHollow()
+	public Filling getFilling()
 	{
-		return hollow;
+		return filling;
 	}
 	
 	
