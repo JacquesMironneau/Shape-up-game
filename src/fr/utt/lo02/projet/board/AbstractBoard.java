@@ -33,7 +33,7 @@ public abstract class AbstractBoard
 	 * @param board       the visitor
 	 * @param victoryCard The victory card associated with the score
 	 */
-	public abstract void accept(IBoardVisitor board, Card victoryCard);
+	public abstract int accept(IBoardVisitor board, Card victoryCard);
 
 	/**
 	 * Check if the card is adjacent to an existing card on the board.
