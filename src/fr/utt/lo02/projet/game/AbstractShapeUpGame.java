@@ -18,11 +18,14 @@ public abstract class AbstractShapeUpGame
 	protected int roundNumber;
 
 	/**
-	 *
+	 * is the current turn the first one ever played (by one of the player)
 	 */
 	protected boolean isFirstTurn;
 
 	// TODO: think about Collection type
+	/**
+	 * Scores of players in different rounds
+	 */
 	protected List<List<Integer>> scores;
 
 	/**
@@ -53,7 +56,7 @@ public abstract class AbstractShapeUpGame
 	/**
 	 * Visitor used for score calculation at the end of each round
 	 */
-	private IBoardVisitor visitor;
+	private final IBoardVisitor visitor;
 
 
 	public AbstractShapeUpGame(IBoardVisitor visitor, List<PlayerStrategy> players, AbstractBoard board)
@@ -66,13 +69,7 @@ public abstract class AbstractShapeUpGame
 		this.roundNumber = 0;
 		this.scores = new ArrayList<>(4);
 
-		// Create score list for 4 rounds
-		for (int i = 0; i < 4; i++)
-		{
-			this.scores.add(new ArrayList<>(this.players.size()));
-		}
-
-		for(var player: this.players)
+		for(PlayerStrategy player: this.players)
 		{
 			player.setGame(this);
 		}
@@ -174,7 +171,17 @@ public abstract class AbstractShapeUpGame
 	{
 		ArrayList<Integer> gameScore = new ArrayList<>(this.players.size());
 
-		//TODO game score calculation
+		for (int i = 0; i < this.players.size(); i++)
+		{
+			int playerScore = 0;
+			for (int j = 0; j < MAX_ROUND_NUMBER; j++)
+			{
+				playerScore += this.scores.get(i).get(j);
+			}
+			gameScore.add(playerScore);
+		}
+		//TODO: display
+
 	}
 
 	protected void calculateRoundScore()

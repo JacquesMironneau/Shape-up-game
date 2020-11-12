@@ -14,31 +14,35 @@ public interface PlayerStrategy
 	/**
 	 * Ask the player if he wants to place or move a card
 	 */
-	public Choice askChoice();
+	Choice askChoice();
 
 	/**
 	 * Ask a player to place a card
 	 * So pick one card and select where he wants to put it
 	 */
-	public void askPlaceCard();
+	void askPlaceCard();
 
 	/**
 	 * Ask a player to move a card
 	 * So pick one card and select where he wants to move it
 	 */
-	public void askMoveCard();
+	void askMoveCard();
 	
 	/**
 	 * Display the current state of the board to the player
 	 */
-	public void displayBoard();
+	void displayBoard();
 	
 	/**
 	 * Display the scores to player
 	 */
-	public void displayScores();
+	void displayScores();
 
-	public void setGame(AbstractShapeUpGame game);
+	/**
+	 *  Set a game for a player, allowing him to request movement or display elements.
+	 * @param game the given game
+	 */
+	void setGame(AbstractShapeUpGame game);
 
 
 }

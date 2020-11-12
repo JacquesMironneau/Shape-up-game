@@ -33,7 +33,7 @@ public class ShapeUpGame extends AbstractShapeUpGame
 		this.deck = new LinkedList<>();
 		initDeck();
 
-		Collections.shuffle((LinkedList) this.deck);
+		Collections.shuffle((LinkedList<Card>) this.deck);
 
 		// Remove hidden card
 		this.deck.poll();
@@ -69,8 +69,6 @@ public class ShapeUpGame extends AbstractShapeUpGame
 				player.askPlaceCard();
 				// The first turn is finished
 				this.isFirstTurn = false;
-
-
 			} 
 			else
 			{
@@ -79,7 +77,6 @@ public class ShapeUpGame extends AbstractShapeUpGame
 					choice = player.askChoice();
 				}
 				while (choice == Choice.END_THE_TURN);
-
 
 				switch (choice)
 				{
@@ -107,14 +104,15 @@ public class ShapeUpGame extends AbstractShapeUpGame
 			}
 			for (PlayerStrategy p: players)
 				p.displayBoard();
-
-
-
 		}
 	}
 
 	private boolean isRoundFinished()
 	{
-		return deck.isEmpty() && playerCards.isEmpty();
+		for (Set<Card> s :playerCards)
+		{
+			if (!s.isEmpty()) return false;
+		}
+		return deck.isEmpty();
 	}
 }
