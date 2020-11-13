@@ -39,8 +39,10 @@ public class RectangleBoard extends AbstractBoard
 	}
 
 	@Override
-	public boolean isCardAdjacent(int x, int y)
+	public boolean isCardAdjacent(Coordinates coordinates)
 	{
+		int x = coordinates.getX();
+		int y = coordinates.getY();
 		int[] possibleAbscissas = new int[]{x + 1, x - 1, x, x};
 		int[] possibleOrdinates = new int[]{y, y, y - 1, y + 1};
 
@@ -55,22 +57,24 @@ public class RectangleBoard extends AbstractBoard
 	}
 
 	@Override
-	public boolean isCardInTheLayout(int x, int y)
+	public boolean isCardInTheLayout(Coordinates coordinates)
 	{
 		// If one card is already at the given position the card can't me moved or placed here
-		if (placedCards.containsKey(new Coordinates(x, y))) return false;
+		if (placedCards.containsKey(coordinates)) return false;
  
 		// If no cards has been placed, the card is obligatory in the layout
 		if (placedCards.isEmpty()) return true; // maybe exception
 
+		int x = coordinates.getX();
+		int y = coordinates.getY();
 		// Store every abscissas and ordinates in different lists.
 		List<Integer> abscissaCoordinates = new ArrayList<>();
 		List<Integer> ordinateCoordinates = new ArrayList<>();
 
-		for (Coordinates coordinates : placedCards.keySet())
+		for (Coordinates coord : placedCards.keySet())
 		{
-			abscissaCoordinates.add(coordinates.getX());
-			ordinateCoordinates.add(coordinates.getY());
+			abscissaCoordinates.add(coord.getX());
+			ordinateCoordinates.add(coord.getY());
 		}
 
 		if (isHorizontal())

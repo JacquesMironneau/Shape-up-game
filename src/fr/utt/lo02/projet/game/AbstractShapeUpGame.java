@@ -2,6 +2,7 @@ package fr.utt.lo02.projet.game;
 
 import fr.utt.lo02.projet.board.AbstractBoard;
 import fr.utt.lo02.projet.board.Card;
+import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 import fr.utt.lo02.projet.strategy.PlayerStrategy;
 
@@ -69,7 +70,7 @@ public abstract class AbstractShapeUpGame
 		this.roundNumber = 0;
 		this.scores = new ArrayList<>(4);
 
-		for(PlayerStrategy player: this.players)
+		for (PlayerStrategy player : this.players)
 		{
 			player.setGame(this);
 		}
@@ -108,48 +109,51 @@ public abstract class AbstractShapeUpGame
 	/**
 	 * Request to place a card from the player hand to a position on the board
 	 *
-	 * @param player the player whom ask to place a card
-	 * @param aCard  the existing card
-	 * @param x      coordinate on the abscissa
-	 * @param y      coordinates in ordinate
+	 * @param request
+	 * @return
 	 */
-	public void placeCardRequest(PlayerStrategy player, Card aCard, int x, int y)
+	public boolean placeCardRequest(Map.Entry<Coordinates, Card> request, PlayerStrategy player)
 	{
-		boolean cardInTheLayout = board.isCardInTheLayout(x, y);
+		Card aCard = request.getValue();
+		Coordinates coord = request.getKey();
+
+		boolean cardInTheLayout = board.isCardInTheLayout(coord);
 		boolean cardAdjacentToAnExistingCard = true;
 
 		if (!isFirstTurn)
 		{
-			cardAdjacentToAnExistingCard = board.isCardAdjacent(x, y);
+			cardAdjacentToAnExistingCard = board.isCardAdjacent(coord);
 		}
 		if (cardAdjacentToAnExistingCard && cardInTheLayout)
 		{
-			board.addCard(aCard, x, y);
+			board.addCard(aCard, coord);
 			this.playerCards.get(players.indexOf(player)).remove(aCard);
-			player.displayBoard();
-		} else
-			player.askPlaceCard();
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
-	 * Request to move a existing card from the board to another position
+	 * * Request to move a existing card from the board to another position
 	 *
-	 * @param player the player whom ask to move a card
-	 * @param aCard  the existing card
-	 * @param x      coordinate on the abscissa
-	 * @param y      coordinates in ordinate
+	 * @param entry player request
+	 * @return if the card has been moved or not
 	 */
-	public void moveCardRequest(PlayerStrategy player, Card aCard, int x, int y)
+	public boolean moveCardRequest(Map.Entry<Coordinates, Card> entry)
 	{
-		boolean cardAdjacentToAnExistingCard = board.isCardAdjacent(x, y);
-		boolean cardInTheLayout = board.isCardInTheLayout(x, y);
+		Card aCard = entry.getValue();
+		Coordinates coordinates = entry.getKey();
+
+		boolean cardAdjacentToAnExistingCard = board.isCardAdjacent(coordinates);
+		boolean cardInTheLayout = board.isCardInTheLayout(coordinates);
 
 		if (cardAdjacentToAnExistingCard && cardInTheLayout)
 		{
-			board.addCard(aCard, x, y);
-			player.displayBoard();
-		} else
-			player.askMoveCard();
+			board.addCard(aCard, coordinates);
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -187,9 +191,9 @@ public abstract class AbstractShapeUpGame
 	protected void calculateRoundScore()
 	{
 		ArrayList<Integer> roundScore = new ArrayList<>();
-		for (Card card: victoryCards)
+		for (Card card : victoryCards)
 		{
-			roundScore.add(this.board.accept(visitor,card));
+			roundScore.add(this.board.accept(visitor, card));
 		}
 		this.scores.add(roundNumber, roundScore);
 	}

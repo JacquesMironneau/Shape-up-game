@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.stream.IntStream;
 
+import static fr.utt.lo02.projet.junit.ShapeUpGameTest.ANSI_BLUE;
+import static fr.utt.lo02.projet.junit.ShapeUpGameTest.ANSI_RESET;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -42,11 +44,12 @@ class RectangleBoardTest
 		board.getPlacedCards().put(new Coordinates(2, 1), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
 		board.getPlacedCards().put(new Coordinates(3, 1), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
 
-		assertTrue(board.isCardAdjacent(3, 2));
-		assertTrue(board.isCardAdjacent(3, 1));
-		assertTrue(board.isCardAdjacent(2, 2));
-		assertTrue(board.isCardAdjacent(1, 2));
-		assertTrue(board.isCardAdjacent(1, 1)); // Une carte existante est effectivement adjacente
+		assertTrue(board.isCardAdjacent(new Coordinates(3, 2)));
+		assertTrue(board.isCardAdjacent(new Coordinates(3, 1)));
+
+		assertTrue(board.isCardAdjacent(new Coordinates(2, 2)));
+		assertTrue(board.isCardAdjacent(new Coordinates(1, 2)));
+		assertTrue(board.isCardAdjacent(new Coordinates(1, 1))); // Une carte existante est effectivement adjacente
 
 
 	}
@@ -54,7 +57,7 @@ class RectangleBoardTest
 	@Test
 	void testAlreadyExistingCard()
 	{
-		board.getPlacedCards().forEach((key, value) -> assertFalse(board.isCardInTheLayout(key.getX(), key.getY())));
+		board.getPlacedCards().forEach((key, value) -> assertFalse(board.isCardInTheLayout(key)));
 	}
 
 	@Test
@@ -62,9 +65,9 @@ class RectangleBoardTest
 	{
 		board.getPlacedCards().put(new Coordinates(1, 1), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
 
-		assertFalse(board.isCardInTheLayout(50, 60));
-		assertFalse(board.isCardInTheLayout(6, 1));
-		assertFalse(board.isCardInTheLayout(1, 6));
+		assertFalse(board.isCardInTheLayout(new Coordinates(50, 60)));
+		assertFalse(board.isCardInTheLayout(new Coordinates(6, 1)));
+		assertFalse(board.isCardInTheLayout(new Coordinates(1, 6)));
 	}
 
 	@Test
@@ -77,20 +80,19 @@ class RectangleBoardTest
 		{
 			for (int i = 0; i <= 5; ++i)
 			{
-				assertTrue(board.isCardInTheLayout(i, index));
+				assertTrue(board.isCardInTheLayout(new Coordinates(i, index)));
 			}
 		}
 
 		for (int i = 0; i < 3; ++i)
 		{
-			assertFalse(board.isCardInTheLayout(6, i));
+			assertFalse(board.isCardInTheLayout(new Coordinates(6, i)));
 		}
 
 		for (int i = 0; i < 6; ++i)
 		{
-			System.out.println(i + " " + 4);
-			assertFalse(board.isCardInTheLayout(i, 4));
-			assertFalse(board.isCardInTheLayout(i, -1));
+			assertFalse(board.isCardInTheLayout(new Coordinates(i, 4)));
+			assertFalse(board.isCardInTheLayout(new Coordinates(i, -1)));
 
 		}
 	}
@@ -122,20 +124,19 @@ class RectangleBoardTest
 		{
 			for (int i = 1; i <= 5; ++i)
 			{
-				assertTrue(board.isCardInTheLayout(index, i));
+				assertTrue(board.isCardInTheLayout(new Coordinates(index, i)));
 			}
 		}
 
 		for (int i = 0; i < 6; ++i)
 		{
-			assertFalse(board.isCardInTheLayout(-1, i));
+			assertFalse(board.isCardInTheLayout(new Coordinates(-1, i)));
 		}
 
 		for (int i = 0; i < 6; ++i)
 		{
-			System.out.println(i + " " + 4);
-			assertFalse(board.isCardInTheLayout(i, 6));
-			assertFalse(board.isCardInTheLayout(4, i));
+			assertFalse(board.isCardInTheLayout(new Coordinates(i, 6)));
+			assertFalse(board.isCardInTheLayout(new Coordinates(4, i)));
 
 		}
 
@@ -158,7 +159,8 @@ class RectangleBoardTest
 		{
 			for (int j = -1; j < 2; j++)
 			{
-				assertTrue(board.isCardInTheLayout(i, j));
+				assertTrue(board.isCardInTheLayout(new Coordinates(i,j)));
+
 			}
 		}
 
@@ -166,7 +168,8 @@ class RectangleBoardTest
 		{
 			for (int j = -1; j < 2; j++)
 			{
-				assertTrue(board.isCardInTheLayout(i, j));
+				assertTrue(board.isCardInTheLayout(new Coordinates(i,j)));
+
 			}
 		}
 
@@ -174,8 +177,8 @@ class RectangleBoardTest
 		{
 			for (int j = -1; j < 2; j++)
 			{
-				System.out.println(i + " " + j);
-				assertTrue(board.isCardInTheLayout(i, j));
+				assertTrue(board.isCardInTheLayout(new Coordinates(i,j)));
+
 			}
 		}
 
@@ -183,13 +186,12 @@ class RectangleBoardTest
 		{
 			for (int j = -1; j < 2; j++)
 			{
-				System.out.println("aa" + j + " " + i);
-				assertTrue(board.isCardInTheLayout(j, i));
+				assertTrue(board.isCardInTheLayout(new Coordinates(j,i)));
 			}
 		}
 
-		assertFalse(board.isCardInTheLayout(2, 2));
-		assertFalse(board.isCardInTheLayout(2, 3));
+		assertFalse(board.isCardInTheLayout(new Coordinates(2, 2)));
+		assertFalse(board.isCardInTheLayout(new Coordinates(2, 3)));
 
 
 	}
@@ -207,7 +209,7 @@ class RectangleBoardTest
 		{
 			for (int j = -1; j < 3; j++)
 			{
-				assertTrue(board.isCardInTheLayout(i, j));
+				assertTrue(board.isCardInTheLayout(new Coordinates(i,j)));
 			}
 		}
 
@@ -215,7 +217,7 @@ class RectangleBoardTest
 		{
 			for (int j = -1; j < 3; j++)
 			{
-				assertTrue(board.isCardInTheLayout(i, j));
+				assertTrue(board.isCardInTheLayout(new Coordinates(i,j)));
 			}
 		}
 
@@ -223,7 +225,7 @@ class RectangleBoardTest
 		{
 			for (int j = -1; j < 3; j++)
 			{
-				assertTrue(board.isCardInTheLayout(j, i));
+				assertTrue(board.isCardInTheLayout(new Coordinates(j, i)));
 			}
 		}
 
@@ -231,24 +233,50 @@ class RectangleBoardTest
 		{
 			for (int j = -1; j < 3; j++)
 			{
-				assertTrue(board.isCardInTheLayout(j, i));
+				assertTrue(board.isCardInTheLayout(new Coordinates(j, i)));
 			}
 		}
 
-		assertFalse(board.isCardInTheLayout(3, 3));
-		assertFalse(board.isCardInTheLayout(3, 4));
-		assertFalse(board.isCardInTheLayout(4, 3));
-		assertFalse(board.isCardInTheLayout(-2, -2));
-		assertFalse(board.isCardInTheLayout(2, 5));
-		assertFalse(board.isCardInTheLayout(5, 2));
+		assertFalse(board.isCardInTheLayout(new Coordinates(3, 3)));
+		assertFalse(board.isCardInTheLayout(new Coordinates(3, 4)));
+		assertFalse(board.isCardInTheLayout(new Coordinates(4, 3)));
+		assertFalse(board.isCardInTheLayout(new Coordinates(-2, -2)));
+		assertFalse(board.isCardInTheLayout(new Coordinates(2, 5)));
+		assertFalse(board.isCardInTheLayout(new Coordinates(5, 2)));
 
 	}
 
 	@Test
 	void emptyMap()
 	{
+		String ANSI_RED = "\u001B[31m";
+		String ANSI_GREEN = "\u001B[32m";
+		String ANSI_WHITE_BACKGROUND = "\u001B[47m";
+		System.out.print(ANSI_BLUE + "⭕" + ANSI_RESET);
+		System.out.print(ANSI_BLUE + "⬤" + ANSI_RESET);
+		System.out.print(ANSI_RED + "⭕" + ANSI_RESET);
+		System.out.print(ANSI_RED + "⬤" + ANSI_RESET);
+		System.out.print(ANSI_GREEN + "⭕" + ANSI_RESET);
+		System.out.print(ANSI_GREEN + "⬤" + ANSI_RESET);
+		System.out.print(ANSI_BLUE + "⬜" + ANSI_RESET);
+		System.out.print(ANSI_BLUE + "⬛" + ANSI_RESET);
+		System.out.print(ANSI_RED + "⬜" + ANSI_RESET);
+		System.out.print(ANSI_RED + "⬛" + ANSI_RESET);
+		System.out.print(ANSI_GREEN + "⬜" + ANSI_RESET);
+		System.out.print(ANSI_GREEN + "⬛" + ANSI_RESET);
+
+		System.out.print(ANSI_BLUE + "△" + ANSI_RESET);
+		System.out.print(ANSI_BLUE + "◄" + ANSI_RESET);
+		System.out.print(ANSI_RED + "△" + ANSI_RESET);
+		System.out.print(ANSI_RED + "▲" + ANSI_RESET);
+		System.out.print(ANSI_GREEN + "△" + ANSI_RESET);
+		System.out.print(ANSI_GREEN + "▲" + ANSI_RESET);
+
+
+
+
 		board.getPlacedCards().clear();
-		assertTrue(board.isCardInTheLayout(0, 0));
+		assertTrue(board.isCardInTheLayout(new Coordinates(0, 0)));
 	}
 
 }

@@ -38,32 +38,28 @@ public abstract class AbstractBoard
 	/**
 	 * Check if the card is adjacent to an existing card on the board.
 	 *
-	 * @param x abscissa
-	 * @param y ordinate
+	 * @param coordinates
 	 * @return if a card is adjacent to an existing card.
 	 */
-	public abstract boolean isCardAdjacent(int x, int y);
+	public abstract boolean isCardAdjacent(Coordinates coordinates);
 
 	/**
 	 * Check if the given coordinates are in the board layout
 	 * Return false if a card exists at the given position
 	 *
-	 * @param x abscissa
-	 * @param y ordinate
+	 * @param coordinates
 	 * @return if coordinates are in the board layout and the given position is not occupied by a card.
 	 */
-	public abstract boolean isCardInTheLayout(int x, int y);
+	public abstract boolean isCardInTheLayout(Coordinates coordinates);
 
 	/**
-	 * This method have to be called after the "isCardAdjacent" and/or "isCardInTheLayout" methods.
-	 *
-	 * @param newCard An existing card
-	 * @param x       abscissa
-	 * @param y       ordinate
+	* This method have to be called after the "isCardAdjacent" and/or "isCardInTheLayout" methods.
+	 * @param newCard
+	 * @param coordinates
 	 */
-	public void addCard(Card newCard, int x, int y)
+	public void addCard(Card newCard, Coordinates coordinates)
 	{
-		this.placedCards.put(new Coordinates(x, y), newCard);
+		this.placedCards.put(coordinates, newCard);
 	}
 
 	/**

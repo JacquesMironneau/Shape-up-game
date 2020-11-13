@@ -8,7 +8,6 @@ import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
  * @author Baptiste, Jacques
  *
  */
-
 public class CircleBoard extends AbstractBoard {
 	
 	public CircleBoard() {
@@ -22,16 +21,16 @@ public class CircleBoard extends AbstractBoard {
 		return board.visit(this, victoryCard);
 	}
 
-	
 	@Override
-	public boolean isCardAdjacent(int x, int y) {
-		
-		return true;
+	public boolean isCardAdjacent(Coordinates coordinates)
+	{
+		return false;
 	}
-	
+
 	@Override
-	public boolean isCardInTheLayout(int x, int y) {
-		
-		return true;
+	public boolean isCardInTheLayout(Coordinates coordinates)
+	{
+		return false;
 	}
+
 }

@@ -1,13 +1,20 @@
 package fr.utt.lo02.projet.game;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import fr.utt.lo02.projet.board.AbstractBoard;
 import fr.utt.lo02.projet.board.Card;
+import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 import fr.utt.lo02.projet.strategy.Choice;
 import fr.utt.lo02.projet.strategy.PlayerStrategy;
-
-import java.util.*;
 
 public class ShapeUpGame extends AbstractShapeUpGame
 {
@@ -81,22 +88,35 @@ public class ShapeUpGame extends AbstractShapeUpGame
 				switch (choice)
 				{
 					case PLACE_A_CARD -> {
-						player.askPlaceCard();
+						Entry<Coordinates,Card> entry;
+						do
+						{
+							entry= player.askPlaceCard();
+						}while (!placeCardRequest(entry, player));
 
 						for (PlayerStrategy p : players)
 							p.displayBoard();
 						
 						Choice secondChoice = player.askChoice();
+
 						if (secondChoice == Choice.MOVE_A_CARD)
 						{
-							player.askMoveCard();
+							do
+							{
+								entry = player.askMoveCard();
+							}while (!moveCardRequest(entry));
 						}
 					}
 					case MOVE_A_CARD -> {
-						player.askMoveCard();
+						Entry<Coordinates,Card> entry = player.askMoveCard();
+						moveCardRequest(entry);
+
 						for (PlayerStrategy p : players)
 							p.displayBoard();
-						player.askPlaceCard();
+
+						entry = player.askPlaceCard();
+						
+						placeCardRequest(entry, player);
 					}
 					default -> System.out.println("Error: end choice have been selected !!!");
 				}

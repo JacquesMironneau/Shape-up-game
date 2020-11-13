@@ -23,17 +23,15 @@ public class TriangleBoard extends AbstractBoard {
 		return board.visit(this, victoryCard);
 	}
 
-
 	@Override
-	public boolean isCardAdjacent(int x, int y) {
-		
-		return true;
-	}
-	
-	@Override
-	public boolean isCardInTheLayout(int x, int y) {
-		
-		return true;
+	public boolean isCardAdjacent(Coordinates coordinates)
+	{
+		return false;
 	}
 
+	@Override
+	public boolean isCardInTheLayout(Coordinates coordinates)
+	{
+		return false;
+	}
 }
