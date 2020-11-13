@@ -1,9 +1,12 @@
 package fr.utt.lo02.projet.strategy;
 
 import java.util.Map.Entry;
+import java.util.List;
+import java.util.Set;
 
 import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.Coordinates;
+import fr.utt.lo02.projet.board.RectangleBoard;
 import fr.utt.lo02.projet.game.AbstractShapeUpGame;
 
 /**
@@ -24,13 +27,13 @@ public interface PlayerStrategy
 	 * Ask a player to place a card
 	 * So pick one card and select where he wants to put it
 	 */
-	Entry<Coordinates, Card> askPlaceCard();
+	Entry<Coordinates, Card> askPlaceCard(Set<Card> playerHand, RectangleBoard board);
 
 	/**
 	 * Ask a player to move a card
 	 * So pick one card and select where he wants to move it
 	 */
-	Entry<Coordinates, Card> askMoveCard();
+	Entry<Coordinates, Card> askMoveCard(RectangleBoard board);
 	
 	/**
 	 * Display the current state of the board to the player
@@ -40,8 +43,11 @@ public interface PlayerStrategy
 	/**
 	 * Display the scores to player
 	 */
-	void displayScores();
+	void displayRoundScore(int score);
+	
+	void displayFinalScoreForThisRound (int score, int playerNumber);
 
+	void displayFinalScore(List<Integer> scoresRound, int playerNumber);
 	/**
 	 *  Set a game for a player, allowing him to request movement or display elements.
 	 * @param game the given game

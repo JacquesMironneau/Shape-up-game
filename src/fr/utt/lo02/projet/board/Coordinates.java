@@ -1,5 +1,8 @@
 package fr.utt.lo02.projet.board;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * The class represents mere 2D coordinates with an abscissa (x) and an ordinate (y).
  * @author Jacques, Baptiste
@@ -81,5 +84,43 @@ public class Coordinates
 		return (one.x<=two.x) && (one.y>=two.y);
 		}
 	
+	public static int smallestAbscissa(List<Coordinates> coords) {
+		int smallestAbscissa = coords.get(0).getX();
+		for (Coordinates x: coords) {
+			if (x.getX()<smallestAbscissa) {
+				smallestAbscissa = x.getX();
+			}
+		}
+		return smallestAbscissa;
+	}
 	
+	public static int biggestAbscissa(List<Coordinates> coords) {
+		int smallestAbscissa = coords.get(0).getX();
+		for (Coordinates x: coords) {
+			if (x.getX()>smallestAbscissa) {
+				smallestAbscissa = x.getX();
+			}
+		}
+		return smallestAbscissa;
+	}
+	
+	public static int smallestOrdinate(List<Coordinates> coords) {
+		int smallestOrdinate = coords.get(0).getY();
+		for (Coordinates y: coords) {
+			if (y.getY() < smallestOrdinate) {
+				smallestOrdinate = y.getY();
+			}
+		}
+		return smallestOrdinate;
+	}
+	
+	public static int biggestOrdinate(List<Coordinates> coords) {
+		int smallestOrdinate = coords.get(0).getY();
+		for (Coordinates y: coords) {
+			if (y.getY() < smallestOrdinate) {
+				smallestOrdinate = y.getY();
+			}
+		}
+		return smallestOrdinate;
+	}
 }
