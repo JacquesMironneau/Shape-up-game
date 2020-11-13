@@ -1,6 +1,9 @@
 package fr.utt.lo02.projet.strategy;
 
-import fr.utt.lo02.projet.board.AbstractBoard;
+import java.util.Map.Entry;
+
+import fr.utt.lo02.projet.board.Card;
+import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.game.AbstractShapeUpGame;
 
 /**
@@ -25,17 +28,18 @@ public class RealPlayer implements PlayerStrategy
 	}
 
 	@Override
-	public void askPlaceCard()
+	public Entry<Coordinates, Card> askPlaceCard()
 	{
 		// TODO pick card and x,y
-		this.game.moveCardRequest(this,null, 1,2);
+		return null;
 	}
 
 	@Override
-	public void askMoveCard()
+	public Entry<Coordinates, Card> askMoveCard()
 	{
 		// TODO Auto-generated method stub
 
+		return null;
 	}
 
 	@Override

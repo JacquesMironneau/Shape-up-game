@@ -1,5 +1,9 @@
 package fr.utt.lo02.projet.strategy;
 
+import java.util.Map.Entry;
+
+import fr.utt.lo02.projet.board.Card;
+import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.game.AbstractShapeUpGame;
 
 /**
@@ -20,13 +24,13 @@ public interface PlayerStrategy
 	 * Ask a player to place a card
 	 * So pick one card and select where he wants to put it
 	 */
-	void askPlaceCard();
+	Entry<Coordinates, Card> askPlaceCard();
 
 	/**
 	 * Ask a player to move a card
 	 * So pick one card and select where he wants to move it
 	 */
-	void askMoveCard();
+	Entry<Coordinates, Card> askMoveCard();
 	
 	/**
 	 * Display the current state of the board to the player

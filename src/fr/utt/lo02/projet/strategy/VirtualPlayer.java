@@ -1,5 +1,9 @@
 package fr.utt.lo02.projet.strategy;
 
+import java.util.Map.Entry;
+
+import fr.utt.lo02.projet.board.Card;
+import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.game.AbstractShapeUpGame;
 
 /**
@@ -25,17 +29,24 @@ public class VirtualPlayer implements PlayerStrategy
 	}
 
 	@Override
-	public void askPlaceCard()
+	public Entry<Coordinates, Card> askPlaceCard()
 	{
+		// rentrer 1
+		
+		// Ici on fait la correspondance 1 == CARD_RED_CIRCLE_FILLED
+		
+		//return new Request(null, 1,2);
 		// TODO Auto-generated method stub
+		return null;
 
 	}
 
 	@Override
-	public void askMoveCard()
+	public Entry<Coordinates, Card> askMoveCard()
 	{
 		// TODO Auto-generated method stub
 
+		return null;
 	}
 
 	@Override
