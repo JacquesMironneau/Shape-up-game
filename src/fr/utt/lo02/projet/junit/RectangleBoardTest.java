@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.stream.IntStream;
 
-import static fr.utt.lo02.projet.junit.ShapeUpGameTest.ANSI_BLUE;
-import static fr.utt.lo02.projet.junit.ShapeUpGameTest.ANSI_RESET;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -159,7 +157,7 @@ class RectangleBoardTest
 		{
 			for (int j = -1; j < 2; j++)
 			{
-				assertTrue(board.isCardInTheLayout(new Coordinates(i,j)));
+				assertTrue(board.isCardInTheLayout(new Coordinates(i, j)));
 
 			}
 		}
@@ -168,7 +166,7 @@ class RectangleBoardTest
 		{
 			for (int j = -1; j < 2; j++)
 			{
-				assertTrue(board.isCardInTheLayout(new Coordinates(i,j)));
+				assertTrue(board.isCardInTheLayout(new Coordinates(i, j)));
 
 			}
 		}
@@ -177,7 +175,7 @@ class RectangleBoardTest
 		{
 			for (int j = -1; j < 2; j++)
 			{
-				assertTrue(board.isCardInTheLayout(new Coordinates(i,j)));
+				assertTrue(board.isCardInTheLayout(new Coordinates(i, j)));
 
 			}
 		}
@@ -186,7 +184,7 @@ class RectangleBoardTest
 		{
 			for (int j = -1; j < 2; j++)
 			{
-				assertTrue(board.isCardInTheLayout(new Coordinates(j,i)));
+				assertTrue(board.isCardInTheLayout(new Coordinates(j, i)));
 			}
 		}
 
@@ -209,7 +207,7 @@ class RectangleBoardTest
 		{
 			for (int j = -1; j < 3; j++)
 			{
-				assertTrue(board.isCardInTheLayout(new Coordinates(i,j)));
+				assertTrue(board.isCardInTheLayout(new Coordinates(i, j)));
 			}
 		}
 
@@ -217,7 +215,7 @@ class RectangleBoardTest
 		{
 			for (int j = -1; j < 3; j++)
 			{
-				assertTrue(board.isCardInTheLayout(new Coordinates(i,j)));
+				assertTrue(board.isCardInTheLayout(new Coordinates(i, j)));
 			}
 		}
 
@@ -249,32 +247,6 @@ class RectangleBoardTest
 	@Test
 	void emptyMap()
 	{
-		String ANSI_RED = "\u001B[31m";
-		String ANSI_GREEN = "\u001B[32m";
-		String ANSI_WHITE_BACKGROUND = "\u001B[47m";
-		System.out.print(ANSI_BLUE + "⭕" + ANSI_RESET);
-		System.out.print(ANSI_BLUE + "⬤" + ANSI_RESET);
-		System.out.print(ANSI_RED + "⭕" + ANSI_RESET);
-		System.out.print(ANSI_RED + "⬤" + ANSI_RESET);
-		System.out.print(ANSI_GREEN + "⭕" + ANSI_RESET);
-		System.out.print(ANSI_GREEN + "⬤" + ANSI_RESET);
-		System.out.print(ANSI_BLUE + "⬜" + ANSI_RESET);
-		System.out.print(ANSI_BLUE + "⬛" + ANSI_RESET);
-		System.out.print(ANSI_RED + "⬜" + ANSI_RESET);
-		System.out.print(ANSI_RED + "⬛" + ANSI_RESET);
-		System.out.print(ANSI_GREEN + "⬜" + ANSI_RESET);
-		System.out.print(ANSI_GREEN + "⬛" + ANSI_RESET);
-
-		System.out.print(ANSI_BLUE + "△" + ANSI_RESET);
-		System.out.print(ANSI_BLUE + "◄" + ANSI_RESET);
-		System.out.print(ANSI_RED + "△" + ANSI_RESET);
-		System.out.print(ANSI_RED + "▲" + ANSI_RESET);
-		System.out.print(ANSI_GREEN + "△" + ANSI_RESET);
-		System.out.print(ANSI_GREEN + "▲" + ANSI_RESET);
-
-
-
-
 		board.getPlacedCards().clear();
 		assertTrue(board.isCardInTheLayout(new Coordinates(0, 0)));
 	}
