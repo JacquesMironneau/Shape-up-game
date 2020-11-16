@@ -75,7 +75,7 @@ public class ShapeUpGame extends AbstractShapeUpGame
 
 			if (this.isFirstTurn)
 			{
-				player.askPlaceCard(playerHand, this.board);
+				player.askPlaceCard(playerHand, this.board.getPlacedCards());
 				// The first turn is finished
 				this.isFirstTurn = false;
 			} 
@@ -93,7 +93,7 @@ public class ShapeUpGame extends AbstractShapeUpGame
 						Request request;
 						do
 						{
-							request= player.askPlaceCard(playerHand, this.board);
+							request= player.askPlaceCard(playerHand, this.board.getPlacedCards());
 						}while (!placeCardRequest(request, player));
 
 						for (PlayerStrategy p : players)
@@ -105,18 +105,18 @@ public class ShapeUpGame extends AbstractShapeUpGame
 						{
 							do
 							{
-								request = player.askMoveCard(this.board);
+								request = player.askMoveCard(this.board.getPlacedCards());
 							}while (!moveCardRequest(request));
 						}
 					}
 					case MOVE_A_CARD -> {
-						Request request = player.askMoveCard(this.board);
+						Request request = player.askMoveCard(this.board.getPlacedCards());
 						moveCardRequest(request);
 
 						for (PlayerStrategy p : players)
 							p.displayBoard();
 
-						request = player.askPlaceCard(playerHand, this.board);
+						request = player.askPlaceCard(playerHand, this.board.getPlacedCards());
 						
 						placeCardRequest(request, player);
 					}
