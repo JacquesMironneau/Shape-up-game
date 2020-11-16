@@ -70,11 +70,6 @@ public abstract class AbstractShapeUpGame
 
 		this.roundNumber = 0;
 		this.scores = new ArrayList<>(4);
-
-		for (PlayerStrategy player : this.players)
-		{
-			player.setGame(this);
-		}
 	}
 
 	/**
