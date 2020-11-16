@@ -4,6 +4,7 @@ import java.util.Map.Entry;
 import java.util.List;
 import java.util.Set;
 
+import fr.utt.lo02.projet.board.AbstractBoard;
 import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.board.RectangleBoard;
@@ -20,8 +21,6 @@ import fr.utt.lo02.projet.game.AbstractShapeUpGame;
 public class RealPlayer implements PlayerStrategy
 {
 
-	private AbstractShapeUpGame game;
-
 	@Override
 	public Choice askChoice()
 	{
@@ -31,14 +30,14 @@ public class RealPlayer implements PlayerStrategy
 	}
 
 	@Override
-	public Entry<Coordinates, Card> askPlaceCard(Set<Card> playerHand, RectangleBoard board)
+	public Request askPlaceCard(Set<Card> playerHand, AbstractBoard board)
 	{
 		// TODO pick card and x,y
 		return null;
 	}
 
 	@Override
-	public Entry<Coordinates, Card> askMoveCard(RectangleBoard board)
+	public Request askMoveCard(AbstractBoard board)
 	{
 		// TODO Auto-generated method stub
 
@@ -75,11 +74,6 @@ public class RealPlayer implements PlayerStrategy
 			}
 			System.out.println("Player " + playerNumber + " : FINAL SCORE = " + finalScore);
 			playerNumber++;
-	}
-	
-	public void setGame(AbstractShapeUpGame game)
-	{
-		this.game = game;
 	}
 
 

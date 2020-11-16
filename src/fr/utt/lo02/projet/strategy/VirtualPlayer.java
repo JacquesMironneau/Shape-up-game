@@ -1,5 +1,6 @@
 package fr.utt.lo02.projet.strategy;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.math.*;
 
+import fr.utt.lo02.projet.board.AbstractBoard;
 import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.board.RectangleBoard;
@@ -23,9 +25,6 @@ public class VirtualPlayer implements PlayerStrategy
 {
 
 
-	private AbstractShapeUpGame game;
-
-
 	@Override
 	public Choice askChoice()
 	{
@@ -40,7 +39,7 @@ public class VirtualPlayer implements PlayerStrategy
 	}
 
 	@Override
-	public Entry<Coordinates, Card> askPlaceCard(Set<Card> playerHand, RectangleBoard board)
+	public Request askPlaceCard(Set<Card> playerHand, AbstractBoard board)
 	{
 		Card card = null;
 		do {
@@ -54,7 +53,7 @@ public class VirtualPlayer implements PlayerStrategy
 		} while (card != null);
 		
 		Coordinates randomCoord;
-		List <Coordinates> coordsMap = null;
+		List <Coordinates> coordsMap = new ArrayList<Coordinates>();
 		int i=0;
 		for (Map.Entry<Coordinates, Card> entry : board.getPlacedCards().entrySet()) {
 			coordsMap.set(i, entry.getKey());;
@@ -65,15 +64,16 @@ public class VirtualPlayer implements PlayerStrategy
 		randomCoord = new Coordinates(randomX, randomY);
 		
 			
-		return null;
+		Request request = new Request(randomCoord, card);
+		return request;
 
 	}
 
 	@Override
-	public Entry<Coordinates, Card> askMoveCard(RectangleBoard board)
+	public Request askMoveCard(AbstractBoard board)
 	{
 		Coordinates randomCoord;
-		List <Coordinates> coordsMap = null;
+		List <Coordinates> coordsMap = new ArrayList<Coordinates>();
 		int i=0;
 		for (Map.Entry<Coordinates, Card> entry : board.getPlacedCards().entrySet()) {
 			coordsMap.set(i, entry.getKey());;
@@ -90,8 +90,8 @@ public class VirtualPlayer implements PlayerStrategy
 		int randomY2 = (Coordinates.smallestOrdinate(coordsMap)-1) + (int)(Math.random() * (((Coordinates.biggestOrdinate(coordsMap)+1) - (Coordinates.smallestOrdinate(coordsMap)-1)) + 1));
 		Coordinates randomCoord2 = new Coordinates(randomX2, randomY2);
 
-		
-		return null;
+		Request request = new Request(randomCoord2, cardToMove);
+		return request;
 	}
 
 	@Override
@@ -122,12 +122,6 @@ public class VirtualPlayer implements PlayerStrategy
 				finalScore += scores;
 			}
 			System.out.println("Player " + playerNumber + " : FINAL SCORE = " + finalScore);
-			playerNumber++;
-	}
-	
-	public void setGame(AbstractShapeUpGame game)
-	{
-		this.game = game;
 	}
 
 
