@@ -5,6 +5,7 @@ import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 import fr.utt.lo02.projet.strategy.PlayerStrategy;
+import fr.utt.lo02.projet.strategy.Request;
 
 import java.util.*;
 
@@ -112,10 +113,10 @@ public abstract class AbstractShapeUpGame
 	 * @param request
 	 * @return
 	 */
-	public boolean placeCardRequest(Map.Entry<Coordinates, Card> request, PlayerStrategy player)
+	public boolean placeCardRequest(Request request, PlayerStrategy player)
 	{
-		Card aCard = request.getValue();
-		Coordinates coord = request.getKey();
+		Card aCard = request.getCard();
+		Coordinates coord = request.getCoordinates();
 
 		boolean cardInTheLayout = board.isCardInTheLayout(coord);
 		boolean cardAdjacentToAnExistingCard = true;
@@ -137,20 +138,20 @@ public abstract class AbstractShapeUpGame
 	/**
 	 * * Request to move a existing card from the board to another position
 	 *
-	 * @param entry player request
+	 * @param request player request
 	 * @return if the card has been moved or not
 	 */
-	public boolean moveCardRequest(Map.Entry<Coordinates, Card> entry)
+	public boolean moveCardRequest(Request request)
 	{
-		Card aCard = entry.getValue();
-		Coordinates coordinates = entry.getKey();
+		Card aCard = request.getCard();
+		Coordinates coord = request.getCoordinates();
 
-		boolean cardAdjacentToAnExistingCard = board.isCardAdjacent(coordinates);
-		boolean cardInTheLayout = board.isCardInTheLayout(coordinates);
+		boolean cardAdjacentToAnExistingCard = board.isCardAdjacent(coord);
+		boolean cardInTheLayout = board.isCardInTheLayout(coord);
 
 		if (cardAdjacentToAnExistingCard && cardInTheLayout)
 		{
-			board.addCard(aCard, coordinates);
+			board.addCard(aCard, coord);
 			return true;
 		}
 		return false;
