@@ -15,6 +15,7 @@ import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 import fr.utt.lo02.projet.strategy.Choice;
 import fr.utt.lo02.projet.strategy.PlayerStrategy;
+import fr.utt.lo02.projet.strategy.Request;
 
 public class ShapeUpGame extends AbstractShapeUpGame
 {
@@ -67,13 +68,14 @@ public class ShapeUpGame extends AbstractShapeUpGame
 	{
 		for (PlayerStrategy player : this.players)
 		{
+			Set<Card> playerHand = playerCards.get(this.players.indexOf(player));
 			player.displayBoard();
 			
 			drawCard(this.players.indexOf(player));
 
 			if (this.isFirstTurn)
 			{
-				player.askPlaceCard();
+				player.askPlaceCard(playerHand, this.board);
 				// The first turn is finished
 				this.isFirstTurn = false;
 			} 
@@ -88,11 +90,11 @@ public class ShapeUpGame extends AbstractShapeUpGame
 				switch (choice)
 				{
 					case PLACE_A_CARD -> {
-						Entry<Coordinates,Card> entry;
+						Request request;
 						do
 						{
-							entry= player.askPlaceCard();
-						}while (!placeCardRequest(entry, player));
+							request= player.askPlaceCard(playerHand, this.board);
+						}while (!placeCardRequest(request, player));
 
 						for (PlayerStrategy p : players)
 							p.displayBoard();
@@ -103,20 +105,20 @@ public class ShapeUpGame extends AbstractShapeUpGame
 						{
 							do
 							{
-								entry = player.askMoveCard();
-							}while (!moveCardRequest(entry));
+								request = player.askMoveCard(this.board);
+							}while (!moveCardRequest(request));
 						}
 					}
 					case MOVE_A_CARD -> {
-						Entry<Coordinates,Card> entry = player.askMoveCard();
-						moveCardRequest(entry);
+						Request request = player.askMoveCard(this.board);
+						moveCardRequest(request);
 
 						for (PlayerStrategy p : players)
 							p.displayBoard();
 
-						entry = player.askPlaceCard();
+						request = player.askPlaceCard(playerHand, this.board);
 						
-						placeCardRequest(entry, player);
+						placeCardRequest(request, player);
 					}
 					default -> System.out.println("Error: end choice have been selected !!!");
 				}
