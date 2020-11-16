@@ -4,6 +4,7 @@ import java.util.Map.Entry;
 import java.util.List;
 import java.util.Set;
 
+import fr.utt.lo02.projet.board.AbstractBoard;
 import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.board.RectangleBoard;
@@ -27,13 +28,13 @@ public interface PlayerStrategy
 	 * Ask a player to place a card
 	 * So pick one card and select where he wants to put it
 	 */
-	Entry<Coordinates, Card> askPlaceCard(Set<Card> playerHand, RectangleBoard board);
+	Request askPlaceCard(Set<Card> playerHand, AbstractBoard board);
 
 	/**
 	 * Ask a player to move a card
 	 * So pick one card and select where he wants to move it
 	 */
-	Entry<Coordinates, Card> askMoveCard(RectangleBoard board);
+	Request askMoveCard(AbstractBoard board);
 	
 	/**
 	 * Display the current state of the board to the player
@@ -48,11 +49,4 @@ public interface PlayerStrategy
 	void displayFinalScoreForThisRound (int score, int playerNumber);
 
 	void displayFinalScore(List<Integer> scoresRound, int playerNumber);
-	/**
-	 *  Set a game for a player, allowing him to request movement or display elements.
-	 * @param game the given game
-	 */
-	void setGame(AbstractShapeUpGame game);
-
-
 }
