@@ -2,6 +2,7 @@ package fr.utt.lo02.projet.strategy;
 
 import java.util.Map.Entry;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import fr.utt.lo02.projet.board.AbstractBoard;
@@ -28,13 +29,13 @@ public interface PlayerStrategy
 	 * Ask a player to place a card
 	 * So pick one card and select where he wants to put it
 	 */
-	Request askPlaceCard(Set<Card> playerHand, AbstractBoard board);
+	Request askPlaceCard(Set<Card> playerHand, Map<Coordinates, Card> cards);
 
 	/**
 	 * Ask a player to move a card
 	 * So pick one card and select where he wants to move it
 	 */
-	Request askMoveCard(AbstractBoard board);
+	Request askMoveCard(Map<Coordinates, Card> cards);
 	
 	/**
 	 * Display the current state of the board to the player

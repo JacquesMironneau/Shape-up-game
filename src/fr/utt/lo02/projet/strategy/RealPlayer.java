@@ -2,6 +2,7 @@ package fr.utt.lo02.projet.strategy;
 
 import java.util.Map.Entry;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import fr.utt.lo02.projet.board.AbstractBoard;
@@ -30,14 +31,14 @@ public class RealPlayer implements PlayerStrategy
 	}
 
 	@Override
-	public Request askPlaceCard(Set<Card> playerHand, AbstractBoard board)
+	public Request askPlaceCard(Set<Card> playerHand, Map<Coordinates, Card> cards)
 	{
 		// TODO pick card and x,y
 		return null;
 	}
 
 	@Override
-	public Request askMoveCard(AbstractBoard board)
+	public Request askMoveCard(Map<Coordinates, Card> cards)
 	{
 		// TODO Auto-generated method stub
 
