@@ -15,7 +15,7 @@ public class ShapeUpGameWithoutAdajencyRule extends AbstractShapeUpGame
 	}
 
 	@Override
-	protected void initRound()
+	public void initRound()
 	{
 		// TODO Auto-generated method stub
 
@@ -29,9 +29,8 @@ public class ShapeUpGameWithoutAdajencyRule extends AbstractShapeUpGame
 	}
 
 	@Override
-	protected void playTurn()
+	public void playTurn(PlayerStrategy player)
 	{
-		// TODO Auto-generated method stub
 
 	}
 

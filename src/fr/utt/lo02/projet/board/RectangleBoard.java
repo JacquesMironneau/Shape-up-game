@@ -59,11 +59,12 @@ public class RectangleBoard extends AbstractBoard
 	@Override
 	public boolean isCardInTheLayout(Coordinates coordinates)
 	{
+		// If no cards has been placed, the card is obligatory in the layout
+		if (placedCards.isEmpty()) return true; // maybe exception
+
 		// If one card is already at the given position the card can't me moved or placed here
 		if (placedCards.containsKey(coordinates)) return false;
  
-		// If no cards has been placed, the card is obligatory in the layout
-		if (placedCards.isEmpty()) return true; // maybe exception
 
 		int x = coordinates.getX();
 		int y = coordinates.getY();

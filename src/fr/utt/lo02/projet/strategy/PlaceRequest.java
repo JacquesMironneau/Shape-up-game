@@ -3,14 +3,14 @@ package fr.utt.lo02.projet.strategy;
 import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.Coordinates;
 
-public class Request
+public class PlaceRequest
 {
 
 	private Coordinates coordinates;
 
 	private Card card;
 
-	public Request(Coordinates coordinates, Card card)
+	public PlaceRequest(Coordinates coordinates, Card card)
 	{
 		this.coordinates = coordinates;
 		this.card = card;
