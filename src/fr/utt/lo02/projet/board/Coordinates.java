@@ -123,4 +123,13 @@ public class Coordinates
 		}
 		return smallestOrdinate;
 	}
+
+	@Override
+	public String toString()
+	{
+		return "Coordinates{" +
+				"x=" + x +
+				", y=" + y +
+				'}';
+	}
 }
