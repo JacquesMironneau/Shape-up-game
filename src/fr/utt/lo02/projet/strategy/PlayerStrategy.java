@@ -1,16 +1,4 @@
 package fr.utt.lo02.projet.strategy;
-
-import java.util.Map.Entry;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import fr.utt.lo02.projet.board.AbstractBoard;
-import fr.utt.lo02.projet.board.Card;
-import fr.utt.lo02.projet.board.Coordinates;
-import fr.utt.lo02.projet.board.RectangleBoard;
-import fr.utt.lo02.projet.game.AbstractShapeUpGame;
-
 /**
  * Represent the player strategy in which we can define
  * It is an interface because we have 2 player strategies, a real player and a virtual player.
@@ -29,25 +17,20 @@ public interface PlayerStrategy
 	 * Ask a player to place a card
 	 * So pick one card and select where he wants to put it
 	 */
-	Request askPlaceCard(Set<Card> playerHand, Map<Coordinates, Card> cards);
+	PlaceRequest askPlaceCard();
 
 	/**
 	 * Ask a player to move a card
 	 * So pick one card and select where he wants to move it
 	 */
-	Request askMoveCard(Map<Coordinates, Card> cards);
-	
-	/**
-	 * Display the current state of the board to the player
-	 */
-	void displayBoard();
+	MoveRequest askMoveCard();
 	
 	/**
 	 * Display the scores to player
 	 */
-	void displayRoundScore(int score);
+	void displayRoundScore(int roundNumber);
 	
-	void displayFinalScoreForThisRound (int score, int playerNumber);
+	void displayFinalScoreForThisRound (int roundNumber, int playerNumber);
 
-	void displayFinalScore(List<Integer> scoresRound, int playerNumber);
+	void displayFinalScore(int playerNumber);
 }

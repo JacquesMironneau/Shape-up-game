@@ -1,15 +1,13 @@
 package fr.utt.lo02.projet.strategy;
 
-import java.util.Map.Entry;
+import java.util.Scanner;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import fr.utt.lo02.projet.board.AbstractBoard;
 import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.Coordinates;
-import fr.utt.lo02.projet.board.RectangleBoard;
-import fr.utt.lo02.projet.game.AbstractShapeUpGame;
 
 /**
  * Represent the strategy for a real player.
@@ -22,50 +20,119 @@ import fr.utt.lo02.projet.game.AbstractShapeUpGame;
 public class RealPlayer implements PlayerStrategy
 {
 
+	public List<Card> playerHand;
+	public List<Integer> scoresRound;
+	public Card victoryCard;
+	protected AbstractBoard board;
+	
+	public RealPlayer(AbstractBoard b, Card vC, List<Integer> sR, List<Card> pH) {
+		this.board = b;
+		this.victoryCard = vC;
+		this.scoresRound = sR;
+		this.playerHand = pH;
+	}
+	
 	@Override
 	public Choice askChoice()
 	{
-		// TODO Auto-generated method stub
-
-		return null;
+		try ( Scanner scanner = new Scanner( System.in ) ) {
+			System.out.println( "Please choose one action : " );
+			System.out.println( "1. Move a Card" );
+			System.out.println( "2. Place a Card" );
+			System.out.println( "3. End the turn" );
+            int choice = scanner.nextInt();
+            if (choice == 1) {
+    			return Choice.MOVE_A_CARD;
+    		} else if (choice == 2) {
+    			return Choice.PLACE_A_CARD;
+    		} else {
+    			return Choice.END_THE_TURN;
+    		}
+		}
 	}
 
 	@Override
-	public Request askPlaceCard(Set<Card> playerHand, Map<Coordinates, Card> cards)
+	public PlaceRequest askPlaceCard()
 	{
-		// TODO pick card and x,y
-		return null;
+		int choiceCard;
+		try ( Scanner scanner = new Scanner( System.in ) ) {
+			if (playerHand.size()==1) {
+				choiceCard=1;
+			} else {
+				System.out.println( "Please choose one card from your Hand : " );
+				for (int i=0; i<playerHand.size(); i++) {
+					System.out.println((i+1)+ ". " + playerHand.get(i));
+				}
+				choiceCard = scanner.nextInt();
+			}
+		}
+		Card card = playerHand.get(choiceCard);
+		
+		int scanX, scanY;
+		try ( Scanner scanner = new Scanner( System.in ) ) {
+			System.out.println( "You have to enter coordinates for where you want to place this card. " );
+			System.out.println( "Please enter X pos : " );
+			scanX = scanner.nextInt();
+			System.out.println( "Please enter Y pos : " );
+			scanY = scanner.nextInt();
+		}
+		Coordinates scanCoord = new Coordinates(scanX, scanY);
+		PlaceRequest request = new PlaceRequest(scanCoord, card);
+		return request;
 	}
 
 	@Override
-	public Request askMoveCard(Map<Coordinates, Card> cards)
+	public MoveRequest askMoveCard()
 	{
-		// TODO Auto-generated method stub
+		List <Coordinates> coordsMap = new ArrayList<Coordinates>();
+		int i=0;
+		for (Map.Entry<Coordinates, Card> entry : board.getPlacedCards().entrySet()) {
+			coordsMap.add(i, entry.getKey());;
+			i++;
+		}
+		int scanX1, scanY1;
+		Coordinates scanCoord1;
+		do {
+			try ( Scanner scanner = new Scanner( System.in ) ) {
+				System.out.println( "You have to enter coordinates of the card you want to move. " );
+				System.out.println( "Please enter X pos : " );
+				scanX1 = scanner.nextInt();
+				System.out.println( "Please enter Y pos : " );
+				scanY1 = scanner.nextInt();
+			}
+		scanCoord1 = new Coordinates(scanX1, scanY1);
+		} while (board.getPlacedCards().get(scanCoord1)==null);
+		
+		int scanX2, scanY2;
+		try ( Scanner scanner = new Scanner( System.in ) ) {
+			System.out.println( "You have to enter coordinates for where you want to move this card. " );
+			System.out.println( "Please enter X pos : " );
+			scanX2 = scanner.nextInt();
+			System.out.println( "Please enter Y pos : " );
+			scanY2 = scanner.nextInt();
+		}
+		Coordinates scanCoord2 = new Coordinates(scanX2, scanY2);
 
-		return null;
+		MoveRequest request = new MoveRequest(scanCoord1, scanCoord2);
+		return request;
 	}
 
 	@Override
-	public void displayBoard()
+	public void displayRoundScore(int roundNumber)
 	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void displayRoundScore(int score)
-	{
+		int score = scoresRound.get(roundNumber-1);
 		System.out.println("Score : "+ score);
 
 	}
 	
 	@Override
-	public void displayFinalScoreForThisRound (int score, int playerNumber) {
+	public void displayFinalScoreForThisRound (int roundNumber, int playerNumber) {
+		int score = scoresRound.get(roundNumber-1);
 		System.out.println("Player " + playerNumber + " : Final Score for this round -> " + score);
 	}
 
 	@Override
-	public void displayFinalScore(List<Integer> scoresRound, int playerNumber) {
+	public void displayFinalScore(int playerNumber) {
 			int roundNumber=1;
 			int finalScore=0;
 			for (int scores: scoresRound) {
