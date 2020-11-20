@@ -20,16 +20,15 @@ import fr.utt.lo02.projet.board.Coordinates;
 public class RealPlayer implements PlayerStrategy
 {
 
-	public List<Card> playerHand;
-	public List<Integer> scoresRound;
-	public Card victoryCard;
-	protected AbstractBoard board;
+	private List<Card> playerHand;
+	private List<Integer> scoresRound;
+	private Card victoryCard;
+	private AbstractBoard board;
 	
-	public RealPlayer(AbstractBoard b, Card vC, List<Integer> sR, List<Card> pH) {
+	public RealPlayer(AbstractBoard b) {
 		this.board = b;
-		this.victoryCard = vC;
-		this.scoresRound = sR;
-		this.playerHand = pH;
+		this.scoresRound = new ArrayList<>();
+		this.playerHand = new ArrayList<>();
 	}
 	
 	@Override
@@ -87,7 +86,7 @@ public class RealPlayer implements PlayerStrategy
 		List <Coordinates> coordsMap = new ArrayList<Coordinates>();
 		int i=0;
 		for (Map.Entry<Coordinates, Card> entry : board.getPlacedCards().entrySet()) {
-			coordsMap.add(i, entry.getKey());;
+			coordsMap.add(i, entry.getKey());
 			i++;
 		}
 		int scanX1, scanY1;
@@ -141,8 +140,20 @@ public class RealPlayer implements PlayerStrategy
 				finalScore += scores;
 			}
 			System.out.println("Player " + playerNumber + " : FINAL SCORE = " + finalScore);
-			playerNumber++;
 	}
 
+	public void setVictoryCard(Card victoryCard)
+	{
+		this.victoryCard = victoryCard;
+	}
 
+	public void drawCard(Card card)
+	{
+		this.playerHand.add(card);
+	}
+
+	public void addRoundScore(int scoreOfCurrentRound)
+	{
+		this.scoresRound.add(scoreOfCurrentRound);
+	}
 }

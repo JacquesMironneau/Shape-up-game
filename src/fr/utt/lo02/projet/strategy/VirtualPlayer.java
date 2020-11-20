@@ -18,16 +18,15 @@ import fr.utt.lo02.projet.board.Coordinates;
 public class VirtualPlayer implements PlayerStrategy
 {
 	
-	public List<Card> playerHand;
-	public List<Integer> scoresRound;
-	public Card victoryCard;
-	protected AbstractBoard board;
+	private List<Card> playerHand;
+	private List<Integer> scoresRound;
+	private Card victoryCard;
+	private AbstractBoard board;
 	
-	public VirtualPlayer(AbstractBoard b, Card vC, List<Integer> sR, List<Card> pH) {
+	public VirtualPlayer(AbstractBoard b) {
 		this.board = b;
-		this.victoryCard = vC;
-		this.scoresRound = sR;
-		this.playerHand = pH;
+		this.scoresRound = new ArrayList<>();
+		this.playerHand = new ArrayList<>();
 	}
 
 	@Override
@@ -61,7 +60,7 @@ public class VirtualPlayer implements PlayerStrategy
 		List <Coordinates> coordsMap = new ArrayList<Coordinates>();
 		int i=0;
 		for (Map.Entry<Coordinates, Card> entry : board.getPlacedCards().entrySet()) {
-			coordsMap.add(i, entry.getKey());;
+			coordsMap.add(i, entry.getKey());
 			i++;
 		}
 		int randomX = (Coordinates.smallestAbscissa(coordsMap)-1) + (int)(Math.random() * (((Coordinates.biggestAbscissa(coordsMap)+1) - (Coordinates.smallestAbscissa(coordsMap)-1)) + 1));
@@ -80,7 +79,7 @@ public class VirtualPlayer implements PlayerStrategy
 		List <Coordinates> coordsMap = new ArrayList<Coordinates>();
 		int i=0;
 		for (Map.Entry<Coordinates, Card> entry : board.getPlacedCards().entrySet()) {
-			coordsMap.add(i, entry.getKey());;
+			coordsMap.add(i, entry.getKey());
 			i++;
 		}
 		Coordinates randomCoord1;
@@ -122,5 +121,30 @@ public class VirtualPlayer implements PlayerStrategy
 			}
 			System.out.println("Player " + playerNumber + " : FINAL SCORE = " + finalScore);
 	}
-	
+
+
+	public void setVictoryCard(Card victoryCard)
+	{
+		this.victoryCard = victoryCard;
+	}
+
+	public void drawCard(Card card)
+	{
+		this.playerHand.add(card);
+	}
+
+	public void addRoundScore(int scoreOfCurrentRound)
+	{
+		this.scoresRound.add(scoreOfCurrentRound);
+	}
+
+	public List<Integer> getScoresRound()
+	{
+		return scoresRound;
+	}
+
+	public Card getVictoryCard()
+	{
+		return victoryCard;
+	}
 }
