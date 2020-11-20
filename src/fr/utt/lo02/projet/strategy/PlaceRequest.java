@@ -25,4 +25,13 @@ public class PlaceRequest
 	{
 		return card;
 	}
+
+	@Override
+	public String toString()
+	{
+		return "PlaceRequest{" +
+				"coordinates=" + coordinates +
+				", card=" + card +
+				'}';
+	}
 }

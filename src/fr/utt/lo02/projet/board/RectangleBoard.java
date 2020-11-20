@@ -190,6 +190,7 @@ public class RectangleBoard extends AbstractBoard
 	@Override
 	public void display()
 	{
+		if (placedCards.isEmpty()) return;
 		// Store every abscissas and ordinates in different lists.
 		Set<Integer> abscissaCoordinates = new HashSet<>();
 		Set<Integer> ordinateCoordinates = new HashSet<>();

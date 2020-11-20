@@ -24,4 +24,13 @@ public class MoveRequest
 	{
 		return destination;
 	}
+
+	@Override
+	public String toString()
+	{
+		return "MoveRequest{" +
+				"origin=" + origin +
+				", destination=" + destination +
+				'}';
+	}
 }
