@@ -53,15 +53,32 @@ public abstract class AbstractBoard
 	public abstract boolean isCardInTheLayout(Coordinates coordinates);
 
 	/**
-	* This method have to be called after the "isCardAdjacent" and/or "isCardInTheLayout" methods.
-	 * @param newCard
-	 * @param coordinates
+	 * This method have to be called after the "isCardAdjacent" and/or "isCardInTheLayout" methods.
+	 *
+	 * @param coordinates the position where the card will be placed
+	 * @param newCard     the card which we be placed
 	 */
-	public void addCard(Card newCard, Coordinates coordinates)
+	public void addCard(Coordinates coordinates, Card newCard)
 	{
 		this.placedCards.put(coordinates, newCard);
 	}
 
+	/**
+	 * Remove a given coordinate and card from the board
+	 *
+	 * @param oldCoordinates the position of the card to remove
+	 * @param oldCard        the card to remove
+	 */
+	public void removeCard(Coordinates oldCoordinates, Card oldCard)
+	{
+		this.placedCards.remove(oldCoordinates, oldCard);
+	}
+
+
+	/**
+	 * Display every card of board in a text based format
+	 */
+	public abstract void display();
 	/**
 	 * Return the card that have been placed on the board
 	 *

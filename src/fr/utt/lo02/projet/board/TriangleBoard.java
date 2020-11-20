@@ -34,4 +34,10 @@ public class TriangleBoard extends AbstractBoard {
 	{
 		return false;
 	}
+
+	@Override
+	public void display()
+	{
+
+	}
 }

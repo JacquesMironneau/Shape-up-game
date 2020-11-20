@@ -106,8 +106,11 @@ class RectangleBoardTest
 
 		for (int j = 1; j < 4; j++)
 		{
-			board.getPlacedCards().put(new Coordinates(j, 1), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+			board.getPlacedCards().put(new Coordinates(j, 1), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.FILLED));
 		}
+
+		board.display();
+
 	}
 
 	@Test
@@ -115,9 +118,10 @@ class RectangleBoardTest
 	{
 		board.getPlacedCards().clear();
 		IntStream.iterate(5, i -> i > 0, i -> i - 1).forEach(i -> board.getPlacedCards().put(new Coordinates(1, i), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED)));
-		IntStream.range(1, 3).forEach(i -> board.getPlacedCards().put(new Coordinates(2, i), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED)));
+		IntStream.range(1, 3).forEach(i -> board.getPlacedCards().put(new Coordinates(2, i), new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.FILLED)));
 
 
+		board.display();
 		for (int index = 0; index <= 4; index += 3)
 		{
 			for (int i = 1; i <= 5; ++i)
@@ -203,6 +207,7 @@ class RectangleBoardTest
 		board.getPlacedCards().put(new Coordinates(1, 1), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
 		board.getPlacedCards().put(new Coordinates(1, 0), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
 
+
 		for (int i = -3; i < 0; i++)
 		{
 			for (int j = -1; j < 3; j++)
@@ -249,6 +254,21 @@ class RectangleBoardTest
 	{
 		board.getPlacedCards().clear();
 		assertTrue(board.isCardInTheLayout(new Coordinates(0, 0)));
+	}
+
+	@Test
+	void displayTest()
+	{
+		board.getPlacedCards().put(new Coordinates(0, 1), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(0, 0), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(1, 1), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(1, 0), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(2, 0), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(2, 2), new Card(Card.Color.GREEN, Card.Shape.TRIANGLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(1, 2), new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(-1, 1), new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.FILLED));
+
+		board.display();
 	}
 
 }

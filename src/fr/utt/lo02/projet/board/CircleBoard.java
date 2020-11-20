@@ -33,4 +33,10 @@ public class CircleBoard extends AbstractBoard {
 		return false;
 	}
 
+	@Override
+	public void display()
+	{
+
+	}
+
 }

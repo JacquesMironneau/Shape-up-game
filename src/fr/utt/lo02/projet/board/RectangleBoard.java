@@ -4,6 +4,9 @@ import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 
 import java.util.*;
 
+import static com.diogonunes.jcolor.Ansi.colorize;
+import static com.diogonunes.jcolor.Attribute.*;
+
 /**
  * Represent a rectangle game board, one of the different shapes for the game.
  * It is extends by Abstract Board to follow the board's construction.
@@ -64,7 +67,7 @@ public class RectangleBoard extends AbstractBoard
 
 		// If one card is already at the given position the card can't me moved or placed here
 		if (placedCards.containsKey(coordinates)) return false;
- 
+
 
 		int x = coordinates.getX();
 		int y = coordinates.getY();
@@ -104,6 +107,7 @@ public class RectangleBoard extends AbstractBoard
 
 	/**
 	 * Return if the board is horizontal or not
+	 *
 	 * @return true if the board contains 4 or 5 elements on one of its ordinates
 	 */
 	public boolean isHorizontal()
@@ -121,6 +125,7 @@ public class RectangleBoard extends AbstractBoard
 
 	/**
 	 * Return if the board is vertical or not
+	 *
 	 * @return true if the board contains 4 or 5 element on one of its abscissas
 	 */
 	public boolean isVertical()
@@ -135,8 +140,6 @@ public class RectangleBoard extends AbstractBoard
 
 		return sortedAbscissasOccurrencesList.get(sortedAbscissasOccurrencesList.size() - 1) >= 4;
 	}
-
-
 
 
 	/**
@@ -165,7 +168,7 @@ public class RectangleBoard extends AbstractBoard
 		return sortedCoordinateFieldOccurrencesList;
 	}
 
-	
+
 	/**
 	 * @param coordinateField  A field of a coordinate (eg: x or y)
 	 * @param distanceMax      the max distance, see DISTANCE_MAX_HEIGHT a,d DISTANCE_MAX_WIDTH
@@ -182,6 +185,139 @@ public class RectangleBoard extends AbstractBoard
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public void display()
+	{
+		// Store every abscissas and ordinates in different lists.
+		Set<Integer> abscissaCoordinates = new HashSet<>();
+		Set<Integer> ordinateCoordinates = new HashSet<>();
+
+		for (Coordinates coord : placedCards.keySet())
+		{
+			abscissaCoordinates.add(coord.getX());
+			ordinateCoordinates.add(coord.getY());
+		}
+
+		int maxAbscissa = Collections.max(abscissaCoordinates);
+		int minAbscissa = Collections.min(abscissaCoordinates);
+		int minOrdinate = Collections.min(ordinateCoordinates);
+		int maxOrdinate = Collections.max(ordinateCoordinates);
+
+		for (int j = maxOrdinate; j >= minOrdinate; j--)
+		{
+			for (int i = minAbscissa; i <= maxAbscissa; i++)
+			{
+				Card card = placedCards.get(new Coordinates(i, j));
+//				System.out.println(card);
+				if (card != null)
+				{
+					printTop(card.getColor());
+				} else
+					System.out.print("   ");
+
+			}
+			System.out.println();
+
+			for (int i = minAbscissa; i <= maxAbscissa; i++)
+			{
+				Card card = placedCards.get(new Coordinates(i, j));
+//				System.out.println(card);
+
+				if (card != null)
+				{
+					printMiddle(card);
+				} else
+					System.out.print("   ");
+
+			}
+			System.out.println();
+
+
+			for (int i = minAbscissa; i <= maxAbscissa; i++)
+			{
+				Card card = placedCards.get(new Coordinates(i, j));
+//				System.out.println(card);
+
+				if (card != null)
+				{
+					printBottom(card.getColor());
+				} else
+					System.out.print("   ");
+
+			}
+
+			System.out.println();
+
+		}
+
+
+	}
+
+	private void printBottom(Card.Color color)
+	{
+		switch (color)
+		{
+			case RED -> System.out.print(colorize("└─┘ ", RED_TEXT()));
+			case BLUE -> System.out.print(colorize("└─┘ ", BLUE_TEXT()));
+			case GREEN -> System.out.print(colorize("└─┘ ", GREEN_TEXT()));
+		}
+	}
+
+	private void printMiddle(Card card)
+	{
+		StringBuilder buf = new StringBuilder();
+		buf.append("│");
+		switch (card.getShape())
+		{
+			case CIRCLE -> {
+				if (card.getFilling() == Card.Filling.HOLLOW)
+				{
+					buf.append("○");
+				} else
+				{
+					buf.append("●");
+				}
+			}
+			case TRIANGLE -> {
+				if (card.getFilling() == Card.Filling.HOLLOW)
+				{
+					buf.append("▵");
+				} else
+				{
+					buf.append("▲");
+				}
+			}
+			case SQUARE -> {
+				if (card.getFilling() == Card.Filling.HOLLOW)
+				{
+					buf.append("▫");
+				} else
+				{
+					buf.append("▪");
+				}
+			}
+		}
+		buf.append("│ ");
+		switch (card.getColor())
+		{
+			case BLUE -> System.out.print(colorize(buf.toString(), BLUE_TEXT()));
+			case GREEN -> System.out.print(colorize(buf.toString(), GREEN_TEXT()));
+			case RED -> System.out.print(colorize(buf.toString(), RED_TEXT()));
+		}
+
+	}
+
+	private void printTop(Card.Color color)
+	{
+		switch (color)
+		{
+			case RED -> System.out.print(colorize("┌─┐ ", RED_TEXT()));
+			case BLUE -> System.out.print(colorize("┌─┐ ", BLUE_TEXT()));
+			case GREEN -> System.out.print(colorize("┌─┐ ", GREEN_TEXT()));
+		}
+
 	}
 
 
