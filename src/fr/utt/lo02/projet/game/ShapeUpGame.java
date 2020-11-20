@@ -137,6 +137,6 @@ public class ShapeUpGame extends AbstractShapeUpGame
 
 	private PlayerStrategy nextPlayer(PlayerStrategy player)
 	{
-		return players.get(players.indexOf(player) + 1 % this.players.size());
+		return players.get((players.indexOf(player) + 1) % this.players.size());
 	}
 }

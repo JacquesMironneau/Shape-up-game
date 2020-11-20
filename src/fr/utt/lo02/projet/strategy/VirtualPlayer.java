@@ -22,6 +22,7 @@ public class VirtualPlayer implements PlayerStrategy
 	private List<Integer> scoresRound;
 	private Card victoryCard;
 	private AbstractBoard board;
+
 	
 	public VirtualPlayer(AbstractBoard b) {
 		this.board = b;
@@ -57,12 +58,9 @@ public class VirtualPlayer implements PlayerStrategy
 		}	
 		
 		Coordinates randomCoord;
-		List <Coordinates> coordsMap = new ArrayList<Coordinates>();
-		int i=0;
-		for (Map.Entry<Coordinates, Card> entry : board.getPlacedCards().entrySet()) {
-			coordsMap.add(i, entry.getKey());
-			i++;
-		}
+		List<Coordinates> coordsMap = new ArrayList<Coordinates>(board.getPlacedCards().keySet());
+		if (coordsMap.isEmpty()) return new PlaceRequest(new Coordinates(0,0), card);
+
 		int randomX = (Coordinates.smallestAbscissa(coordsMap)-1) + (int)(Math.random() * (((Coordinates.biggestAbscissa(coordsMap)+1) - (Coordinates.smallestAbscissa(coordsMap)-1)) + 1));
 		int randomY = (Coordinates.smallestOrdinate(coordsMap)-1) + (int)(Math.random() * (((Coordinates.biggestOrdinate(coordsMap)+1) - (Coordinates.smallestOrdinate(coordsMap)-1)) + 1));
 		randomCoord = new Coordinates(randomX, randomY);
@@ -76,12 +74,8 @@ public class VirtualPlayer implements PlayerStrategy
 	@Override
 	public MoveRequest askMoveCard()
 	{
-		List <Coordinates> coordsMap = new ArrayList<Coordinates>();
-		int i=0;
-		for (Map.Entry<Coordinates, Card> entry : board.getPlacedCards().entrySet()) {
-			coordsMap.add(i, entry.getKey());
-			i++;
-		}
+		List<Coordinates> coordsMap = new ArrayList<Coordinates>(board.getPlacedCards().keySet());
+
 		Coordinates randomCoord1;
 		do {
 		int randomX = (Coordinates.smallestAbscissa(coordsMap)) + (int)(Math.random() * (((Coordinates.biggestAbscissa(coordsMap)) - (Coordinates.smallestAbscissa(coordsMap))) + 1));

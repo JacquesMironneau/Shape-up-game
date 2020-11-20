@@ -135,6 +135,8 @@ public abstract class AbstractShapeUpGame
 
 		if (card == null) return false;
 
+		board.removeCard(origin, card);
+
 		boolean cardAdjacentToAnExistingCard = board.isCardAdjacent(destination);
 		boolean cardInTheLayout = board.isCardInTheLayout(destination);
 
@@ -144,6 +146,7 @@ public abstract class AbstractShapeUpGame
 			board.addCard(destination, card);
 			return true;
 		}
+		board.addCard(origin,card);
 		return false;
 	}
 
