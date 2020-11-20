@@ -147,4 +147,9 @@ public class VirtualPlayer implements PlayerStrategy
 	{
 		return victoryCard;
 	}
+
+	public List<Card> getPlayerHand()
+	{
+		return playerHand;
+	}
 }

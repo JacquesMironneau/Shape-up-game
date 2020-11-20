@@ -142,18 +142,32 @@ public class RealPlayer implements PlayerStrategy
 			System.out.println("Player " + playerNumber + " : FINAL SCORE = " + finalScore);
 	}
 
+	@Override
 	public void setVictoryCard(Card victoryCard)
 	{
 		this.victoryCard = victoryCard;
 	}
 
+	@Override
 	public void drawCard(Card card)
 	{
 		this.playerHand.add(card);
 	}
 
+	@Override
 	public void addRoundScore(int scoreOfCurrentRound)
 	{
 		this.scoresRound.add(scoreOfCurrentRound);
+	}
+
+	@Override
+	public Card getVictoryCard()
+	{
+		return victoryCard;
+	}
+
+	public List<Card> getPlayerHand()
+	{
+		return playerHand;
 	}
 }
