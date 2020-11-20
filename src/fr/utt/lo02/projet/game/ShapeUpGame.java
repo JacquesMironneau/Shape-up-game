@@ -1,21 +1,15 @@
 package fr.utt.lo02.projet.game;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import fr.utt.lo02.projet.board.AbstractBoard;
 import fr.utt.lo02.projet.board.Card;
-import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 import fr.utt.lo02.projet.strategy.Choice;
+import fr.utt.lo02.projet.strategy.MoveRequest;
+import fr.utt.lo02.projet.strategy.PlaceRequest;
 import fr.utt.lo02.projet.strategy.PlayerStrategy;
-import fr.utt.lo02.projet.strategy.Request;
+
+import java.util.*;
 
 public class ShapeUpGame extends AbstractShapeUpGame
 {
@@ -29,13 +23,12 @@ public class ShapeUpGame extends AbstractShapeUpGame
 	 * Initiate a round
 	 */
 	@Override
-	protected void initRound()
+	public void initRound()
 	{
-		this.playerCards = new ArrayList<Set<Card>>();
-
-		for (int i = 0; i < this.players.size(); i++)
+		for (PlayerStrategy ps : players)
 		{
-			this.playerCards.add(new HashSet<>());
+			List<Card> list = ps.getPlayerHand();
+			list = new ArrayList<>();
 		}
 
 		this.deck = new LinkedList<>();
@@ -46,95 +39,104 @@ public class ShapeUpGame extends AbstractShapeUpGame
 		// Remove hidden card
 		this.deck.poll();
 		// Draw victory cards to players
-		for (PlayerStrategy player: players)
+		for (PlayerStrategy player : players)
 		{
-			this.playerCards.get(this.players.indexOf(player)).add(this.deck.poll());
+			player.setVictoryCard(this.deck.poll());
 		}
 
 		this.isFirstTurn = true;
 	}
+
 	@Override
 	protected void playRound()
 	{
+		PlayerStrategy player = players.get(0);
+
 		while (!isRoundFinished())
 		{
-			playTurn();
+			playTurn(player);
+			player = nextPlayer(player);
 		}
 		calculateRoundScore();
 	}
 
 	@Override
-	protected void playTurn()
+	protected void playTurn(PlayerStrategy player)
 	{
-		for (PlayerStrategy player : this.players)
+		drawCard(player);
+		board.display();
+
+
+		if (this.isFirstTurn)
 		{
-			Set<Card> playerHand = playerCards.get(this.players.indexOf(player));
-			player.displayBoard();
-			
-			drawCard(this.players.indexOf(player));
-
-			if (this.isFirstTurn)
+			PlaceRequest placeRequest;
+			do
 			{
-				player.askPlaceCard(playerHand, this.board.getPlacedCards());
-				// The first turn is finished
-				this.isFirstTurn = false;
-			} 
-			else
-			{
-				Choice choice;
-				do {
-					choice = player.askChoice();
-				}
-				while (choice == Choice.END_THE_TURN);
+				placeRequest = player.askPlaceCard();
+			} while (!placeCardRequest(placeRequest, player));
 
-				switch (choice)
-				{
-					case PLACE_A_CARD -> {
-						Request request;
+			// The first turn is finished
+			this.isFirstTurn = false;
+		} else
+		{
+			Choice choice;
+			do
+			{
+				choice = player.askChoice();
+			}
+			while (choice == Choice.END_THE_TURN);
+
+			switch (choice)
+			{
+				case PLACE_A_CARD -> {
+					PlaceRequest placeRequest;
+					do
+					{
+						placeRequest = player.askPlaceCard();
+					} while (!placeCardRequest(placeRequest, player));
+
+					board.display();
+
+					Choice secondChoice = player.askChoice();
+
+					if (secondChoice == Choice.MOVE_A_CARD)
+					{
+						MoveRequest request;
 						do
 						{
-							request= player.askPlaceCard(playerHand, this.board.getPlacedCards());
-						}while (!placeCardRequest(request, player));
-
-						for (PlayerStrategy p : players)
-							p.displayBoard();
-						
-						Choice secondChoice = player.askChoice();
-
-						if (secondChoice == Choice.MOVE_A_CARD)
-						{
-							do
-							{
-								request = player.askMoveCard(this.board.getPlacedCards());
-							}while (!moveCardRequest(request));
-						}
+							request = player.askMoveCard();
+						} while (!moveCardRequest(request));
 					}
-					case MOVE_A_CARD -> {
-						Request request = player.askMoveCard(this.board.getPlacedCards());
-						moveCardRequest(request);
-
-						for (PlayerStrategy p : players)
-							p.displayBoard();
-
-						request = player.askPlaceCard(playerHand, this.board.getPlacedCards());
-						
-						placeCardRequest(request, player);
-					}
-					default -> System.out.println("Error: end choice have been selected !!!");
 				}
+				case MOVE_A_CARD -> {
+					MoveRequest moveRequest = player.askMoveCard();
+					moveCardRequest(moveRequest);
 
+					board.display();
+
+					PlaceRequest placeRequest = player.askPlaceCard();
+
+					placeCardRequest(placeRequest, player);
+				}
+				default -> System.out.println("Error: end choice have been selected !!!");
 			}
-			for (PlayerStrategy p: players)
-				p.displayBoard();
+
 		}
+		board.display();
+
 	}
 
 	private boolean isRoundFinished()
 	{
-		for (Set<Card> s :playerCards)
+		for (PlayerStrategy player : players)
 		{
-			if (!s.isEmpty()) return false;
+			if (!player.getPlayerHand().isEmpty()) return false;
 		}
 		return deck.isEmpty();
+	}
+
+	private PlayerStrategy nextPlayer(PlayerStrategy player)
+	{
+		return players.get(players.indexOf(player) + 1 % this.players.size());
 	}
 }

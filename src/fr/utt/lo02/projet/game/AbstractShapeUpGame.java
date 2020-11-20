@@ -4,10 +4,13 @@ import fr.utt.lo02.projet.board.AbstractBoard;
 import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
+import fr.utt.lo02.projet.strategy.MoveRequest;
+import fr.utt.lo02.projet.strategy.PlaceRequest;
 import fr.utt.lo02.projet.strategy.PlayerStrategy;
-import fr.utt.lo02.projet.strategy.Request;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Queue;
 
 public abstract class AbstractShapeUpGame
 {
@@ -24,26 +27,11 @@ public abstract class AbstractShapeUpGame
 	 */
 	protected boolean isFirstTurn;
 
-	// TODO: think about Collection type
-	/**
-	 * Scores of players in different rounds
-	 */
-	protected List<List<Integer>> scores;
 
 	/**
 	 * Deck of cards
 	 */
 	protected Queue<Card> deck;
-
-	/**
-	 * Victory card of each player
-	 */
-	protected Set<Card> victoryCards;
-
-	/**
-	 * Cards of each player
-	 */
-	protected List<Set<Card>> playerCards;
 
 	/**
 	 * Players of the game
@@ -69,7 +57,6 @@ public abstract class AbstractShapeUpGame
 
 
 		this.roundNumber = 0;
-		this.scores = new ArrayList<>(4);
 	}
 
 	/**
@@ -98,20 +85,23 @@ public abstract class AbstractShapeUpGame
 	protected abstract void playRound();
 
 	/**
-	 * Turns loop for each player
+	 * Turns loop for one player
 	 */
-	protected abstract void playTurn();
+	protected abstract void playTurn(PlayerStrategy player);
 
 	/**
 	 * Request to place a card from the player hand to a position on the board
 	 *
-	 * @param request
-	 * @return
+	 * @param placeRequest Which card and where the player want to put it
+	 * @param player       the player that is making the request
+	 * @return if the request is matching the game rules
 	 */
-	public boolean placeCardRequest(Request request, PlayerStrategy player)
+	public boolean placeCardRequest(PlaceRequest placeRequest, PlayerStrategy player)
 	{
-		Card aCard = request.getCard();
-		Coordinates coord = request.getCoordinates();
+		Card aCard = placeRequest.getCard();
+		Coordinates coord = placeRequest.getCoordinates();
+
+		if (!player.getPlayerHand().contains(aCard)) return false;
 
 		boolean cardInTheLayout = board.isCardInTheLayout(coord);
 		boolean cardAdjacentToAnExistingCard = true;
@@ -122,8 +112,8 @@ public abstract class AbstractShapeUpGame
 		}
 		if (cardAdjacentToAnExistingCard && cardInTheLayout)
 		{
-			board.addCard(aCard, coord);
-			this.playerCards.get(players.indexOf(player)).remove(aCard);
+			board.addCard(coord, aCard);
+			player.getPlayerHand().remove(aCard);
 			return true;
 		}
 
@@ -133,20 +123,25 @@ public abstract class AbstractShapeUpGame
 	/**
 	 * * Request to move a existing card from the board to another position
 	 *
-	 * @param request player request
+	 * @param moveRequest player request
 	 * @return if the card has been moved or not
 	 */
-	public boolean moveCardRequest(Request request)
+	public boolean moveCardRequest(MoveRequest moveRequest)
 	{
-		Card aCard = request.getCard();
-		Coordinates coord = request.getCoordinates();
+		Coordinates origin = moveRequest.getOrigin();
+		Coordinates destination = moveRequest.getDestination();
 
-		boolean cardAdjacentToAnExistingCard = board.isCardAdjacent(coord);
-		boolean cardInTheLayout = board.isCardInTheLayout(coord);
+		Card card = this.board.getPlacedCards().get(origin);
+
+		if (card == null) return false;
+
+		boolean cardAdjacentToAnExistingCard = board.isCardAdjacent(destination);
+		boolean cardInTheLayout = board.isCardInTheLayout(destination);
 
 		if (cardAdjacentToAnExistingCard && cardInTheLayout)
 		{
-			board.addCard(aCard, coord);
+			board.removeCard(origin, card);
+			board.addCard(destination, card);
 			return true;
 		}
 		return false;
@@ -156,11 +151,11 @@ public abstract class AbstractShapeUpGame
 	 * Add a card from the deck to a given player based on its index
 	 * If the deck is empty, it doesn't add anything to the player.
 	 *
-	 * @param playerIndex index of the player in the player Collection.
+	 * @param player The player which will be given a card.
 	 */
-	protected void drawCard(int playerIndex)
+	public void drawCard(PlayerStrategy player)
 	{
-		this.playerCards.get(playerIndex).add(this.deck.poll());
+		player.drawCard(this.deck.poll());
 	}
 
 	/**
@@ -169,29 +164,15 @@ public abstract class AbstractShapeUpGame
 	 */
 	protected void calculateGameScore()
 	{
-		ArrayList<Integer> gameScore = new ArrayList<>(this.players.size());
-
-		for (int i = 0; i < this.players.size(); i++)
-		{
-			int playerScore = 0;
-			for (int j = 0; j < MAX_ROUND_NUMBER; j++)
-			{
-				playerScore += this.scores.get(i).get(j);
-			}
-			gameScore.add(playerScore);
-		}
-		//TODO: display
 
 	}
 
 	protected void calculateRoundScore()
 	{
-		ArrayList<Integer> roundScore = new ArrayList<>();
-		for (Card card : victoryCards)
+		for (PlayerStrategy p : players)
 		{
-			roundScore.add(this.board.accept(visitor, card));
+			p.addRoundScore(this.board.accept(visitor, p.getVictoryCard()));
 		}
-		this.scores.add(roundNumber, roundScore);
 	}
 
 	protected void initDeck()
@@ -226,5 +207,4 @@ public abstract class AbstractShapeUpGame
 			this.deck.add(new Card(color, Card.Shape.TRIANGLE, Card.Filling.FILLED));
 		}
 	}
-
 }

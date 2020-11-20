@@ -15,7 +15,7 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 	}
 
 	@Override
-	protected void initRound()
+	public void initRound()
 	{
 		// TODO Auto-generated method stub
 
@@ -29,11 +29,11 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 	}
 
 	@Override
-	protected void playTurn()
+	public void playTurn(PlayerStrategy player)
 	{
-		// TODO Auto-generated method stub
 
 	}
+
 
 	@Override
 	protected void calculateGameScore()
