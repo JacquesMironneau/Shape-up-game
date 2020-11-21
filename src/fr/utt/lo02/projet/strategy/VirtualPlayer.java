@@ -1,90 +1,96 @@
 package fr.utt.lo02.projet.strategy;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import fr.utt.lo02.projet.board.AbstractBoard;
 import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.Coordinates;
+import fr.utt.lo02.projet.board.boardEmptyException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represent the strategy for a virtual player.
  * It implements Player Strategy to follow the player's construction.
- * @author Baptiste, Jacques
  *
+ * @author Baptiste, Jacques
  */
 
 public class VirtualPlayer implements PlayerStrategy
 {
-	
+
+	private String name;
 	private List<Card> playerHand;
 	private List<Integer> scoresRound;
 	private Card victoryCard;
 	private AbstractBoard board;
 
-	
-	public VirtualPlayer(AbstractBoard b) {
+
+	public VirtualPlayer(String name, AbstractBoard b)
+	{
+		this.name = name;
 		this.board = b;
 		this.scoresRound = new ArrayList<>();
 		this.playerHand = new ArrayList<>();
 	}
 
 	@Override
-	public Choice askChoice()
+	public Choice askChoice(ChoiceOrder choiceNumber)
 	{
-		int randomNumber = 1 + (int)(Math.random() * ((3 - 1) + 1));
-		if (randomNumber == 1) {
-			return Choice.MOVE_A_CARD;
-		} else if (randomNumber == 2) {
-			return Choice.PLACE_A_CARD;
-		} else {
-			return Choice.END_THE_TURN;
-		}
+		int randomNumber = 1 + (int) (Math.random() * ((3 - 1) + 1));
+		return Choice.PLACE_A_CARD;
+//		if (randomNumber == 1) {
+//			return Choice.MOVE_A_CARD;
+//		} else if (randomNumber == 2) {
+//			return Choice.PLACE_A_CARD;
+//		} else {
+//			return Choice.END_THE_TURN;
+//		}
 	}
 
 	@Override
-	public PlaceRequest askPlaceCard()
+	public PlaceRequest askPlaceCard() throws PlayerHandEmptyException
 	{
-		Card card = null;
-		if (playerHand.size()==1) {
-			card = playerHand.get(0);	
-		} else if (playerHand.size()==2){
-			int randomCard = 0 + (int)(Math.random() * ((1 - 0) + 1));
-			card = playerHand.get(randomCard);	
-		} else {
-			int randomCard = 0 + (int)(Math.random() * ((2 - 0) + 1));
-			card = playerHand.get(randomCard);	
-		}	
-		
+		if (playerHand.isEmpty()) throw new PlayerHandEmptyException();
+
+		Card card;
+		if (playerHand.size() == 1)
+		{
+			card = playerHand.get(0);
+		} else
+		{
+			int randomCard = (int) (Math.random() * ((playerHand.size() - 1) + 1));
+			card = playerHand.get(randomCard);
+		}
+
 		Coordinates randomCoord;
 		List<Coordinates> coordsMap = new ArrayList<Coordinates>(board.getPlacedCards().keySet());
-		if (coordsMap.isEmpty()) return new PlaceRequest(new Coordinates(0,0), card);
+		if (coordsMap.isEmpty()) return new PlaceRequest(new Coordinates(0, 0), card);
 
-		int randomX = (Coordinates.smallestAbscissa(coordsMap)-1) + (int)(Math.random() * (((Coordinates.biggestAbscissa(coordsMap)+1) - (Coordinates.smallestAbscissa(coordsMap)-1)) + 1));
-		int randomY = (Coordinates.smallestOrdinate(coordsMap)-1) + (int)(Math.random() * (((Coordinates.biggestOrdinate(coordsMap)+1) - (Coordinates.smallestOrdinate(coordsMap)-1)) + 1));
+		int randomX = (Coordinates.smallestAbscissa(coordsMap) - 1) + (int) (Math.random() * (((Coordinates.biggestAbscissa(coordsMap) + 1) - (Coordinates.smallestAbscissa(coordsMap) - 1)) + 1));
+		int randomY = (Coordinates.smallestOrdinate(coordsMap) - 1) + (int) (Math.random() * (((Coordinates.biggestOrdinate(coordsMap) + 1) - (Coordinates.smallestOrdinate(coordsMap) - 1)) + 1));
 		randomCoord = new Coordinates(randomX, randomY);
-		
-			
-		PlaceRequest request = new PlaceRequest(randomCoord, card);
-		return request;
+
+		return new PlaceRequest(randomCoord, card);
 
 	}
 
 	@Override
-	public MoveRequest askMoveCard()
+	public MoveRequest askMoveCard() throws boardEmptyException
 	{
+		if (board.getPlacedCards().isEmpty()) throw new boardEmptyException();
+
 		List<Coordinates> coordsMap = new ArrayList<Coordinates>(board.getPlacedCards().keySet());
 
 		Coordinates randomCoord1;
-		do {
-		int randomX = (Coordinates.smallestAbscissa(coordsMap)) + (int)(Math.random() * (((Coordinates.biggestAbscissa(coordsMap)) - (Coordinates.smallestAbscissa(coordsMap))) + 1));
-		int randomY = (Coordinates.smallestOrdinate(coordsMap)) + (int)(Math.random() * (((Coordinates.biggestOrdinate(coordsMap)) - (Coordinates.smallestOrdinate(coordsMap))) + 1));
-		randomCoord1 = new Coordinates(randomX, randomY);
-		} while (board.getPlacedCards().get(randomCoord1)==null);
-		
-		int randomX2 = (Coordinates.smallestAbscissa(coordsMap)-1) + (int)(Math.random() * (((Coordinates.biggestAbscissa(coordsMap)+1) - (Coordinates.smallestAbscissa(coordsMap)-1)) + 1));
-		int randomY2 = (Coordinates.smallestOrdinate(coordsMap)-1) + (int)(Math.random() * (((Coordinates.biggestOrdinate(coordsMap)+1) - (Coordinates.smallestOrdinate(coordsMap)-1)) + 1));
+		do
+		{
+			int randomX = (Coordinates.smallestAbscissa(coordsMap)) + (int) (Math.random() * (((Coordinates.biggestAbscissa(coordsMap)) - (Coordinates.smallestAbscissa(coordsMap))) + 1));
+			int randomY = (Coordinates.smallestOrdinate(coordsMap)) + (int) (Math.random() * (((Coordinates.biggestOrdinate(coordsMap)) - (Coordinates.smallestOrdinate(coordsMap))) + 1));
+			randomCoord1 = new Coordinates(randomX, randomY);
+		} while (board.getPlacedCards().get(randomCoord1) == null);
+
+		int randomX2 = (Coordinates.smallestAbscissa(coordsMap) - 1) + (int) (Math.random() * (((Coordinates.biggestAbscissa(coordsMap) + 1) - (Coordinates.smallestAbscissa(coordsMap) - 1)) + 1));
+		int randomY2 = (Coordinates.smallestOrdinate(coordsMap) - 1) + (int) (Math.random() * (((Coordinates.biggestOrdinate(coordsMap) + 1) - (Coordinates.smallestOrdinate(coordsMap) - 1)) + 1));
 		Coordinates randomCoord2 = new Coordinates(randomX2, randomY2);
 
 		MoveRequest request = new MoveRequest(randomCoord1, randomCoord2);
@@ -92,28 +98,25 @@ public class VirtualPlayer implements PlayerStrategy
 	}
 
 	@Override
-	public void displayRoundScore(int roundNumber)
+	public void displayRoundScore()
 	{
-		int score = scoresRound.get(roundNumber-1);
-		System.out.println("Score : "+ score);
-	}
-	
-	@Override
-	public void displayFinalScoreForThisRound (int roundNumber, int playerNumber) {
-		int score = scoresRound.get(roundNumber-1);
-		System.out.println("Player " + playerNumber + " : Final Score for this round -> " + score);
+		int score = scoresRound.get(scoresRound.size() - 1);
+		System.out.println(name + "Score : " + score);
 	}
 
+
 	@Override
-	public void displayFinalScore(int playerNumber) {
-			int roundNumber=1;
-			int finalScore=0;
-			for (int scores: scoresRound) {
-				System.out.println("Player " + playerNumber + " : Score for Round " + roundNumber + " -> " + scores);
-				roundNumber++;
-				finalScore += scores;
-			}
-			System.out.println("Player " + playerNumber + " : FINAL SCORE = " + finalScore);
+	public void displayFinalScore()
+	{
+		int roundNumber = 1;
+		int finalScore = 0;
+		for (int scores : scoresRound)
+		{
+			System.out.println(name + " : Score for Round " + roundNumber + " -> " + scores);
+			roundNumber++;
+			finalScore += scores;
+		}
+		System.out.println("Player " + name + " : FINAL SCORE = " + finalScore);
 	}
 
 
@@ -145,5 +148,10 @@ public class VirtualPlayer implements PlayerStrategy
 	public List<Card> getPlayerHand()
 	{
 		return playerHand;
+	}
+
+	public String getName()
+	{
+		return  this.name;
 	}
 }

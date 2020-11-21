@@ -1,5 +1,6 @@
 package fr.utt.lo02.projet.strategy;
 
+import fr.utt.lo02.projet.board.boardEmptyException;
 import fr.utt.lo02.projet.board.Card;
 
 import java.util.List;
@@ -15,29 +16,28 @@ public interface PlayerStrategy
 {
 	/**
 	 * Ask the player if he wants to place or move a card
+	 * @param choiceNumber
 	 */
-	Choice askChoice();
+	Choice askChoice(ChoiceOrder choiceNumber);
 
 	/**
 	 * Ask a player to place a card
 	 * So pick one card and select where he wants to put it
 	 */
-	PlaceRequest askPlaceCard();
+	PlaceRequest askPlaceCard() throws PlayerHandEmptyException;
 
 	/**
 	 * Ask a player to move a card
 	 * So pick one card and select where he wants to move it
 	 */
-	MoveRequest askMoveCard();
+	MoveRequest askMoveCard() throws boardEmptyException;
 
 	/**
 	 * Display the scores to player
 	 */
-	void displayRoundScore(int roundNumber);
+	void displayRoundScore();
 
-	void displayFinalScoreForThisRound(int roundNumber, int playerNumber);
-
-	void displayFinalScore(int playerNumber);
+	void displayFinalScore();
 
 	void setVictoryCard(Card victoryCard);
 
@@ -48,4 +48,6 @@ public interface PlayerStrategy
 	Card getVictoryCard();
 
 	List<Card> getPlayerHand();
+
+	public String getName();
 }

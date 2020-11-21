@@ -3,9 +3,11 @@ package fr.utt.lo02.projet.junit;
 import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.board.RectangleBoard;
+import fr.utt.lo02.projet.board.boardEmptyException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -53,13 +55,18 @@ class RectangleBoardTest
 	}
 
 	@Test
-	void testAlreadyExistingCard()
+	void testAlreadyExistingCard() throws boardEmptyException
 	{
-		board.getPlacedCards().forEach((key, value) -> assertFalse(board.isCardInTheLayout(key)));
+		for (Map.Entry<Coordinates, Card> entry : board.getPlacedCards().entrySet())
+		{
+			Coordinates key = entry.getKey();
+			Card value = entry.getValue();
+			assertFalse(board.isCardInTheLayout(key));
+		}
 	}
 
 	@Test
-	void testImpossibleLayoutConfiguration()
+	void testImpossibleLayoutConfiguration() throws boardEmptyException
 	{
 		board.getPlacedCards().put(new Coordinates(1, 1), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
 
@@ -69,7 +76,7 @@ class RectangleBoardTest
 	}
 
 	@Test
-	void testCase1()
+	void testCase1() throws boardEmptyException
 	{
 		initCase1();
 
@@ -114,7 +121,7 @@ class RectangleBoardTest
 	}
 
 	@Test
-	void testCase2()
+	void testCase2() throws boardEmptyException
 	{
 		board.getPlacedCards().clear();
 		IntStream.iterate(5, i -> i > 0, i -> i - 1).forEach(i -> board.getPlacedCards().put(new Coordinates(1, i), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED)));
@@ -145,7 +152,7 @@ class RectangleBoardTest
 	}
 
 	@Test
-	void testCase3()
+	void testCase3() throws boardEmptyException
 	{
 		board.getPlacedCards().clear();
 
@@ -199,7 +206,7 @@ class RectangleBoardTest
 	}
 
 	@Test
-	void testCase4()
+	void testCase4() throws boardEmptyException
 	{
 		board.getPlacedCards().clear();
 		board.getPlacedCards().put(new Coordinates(0, 1), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
@@ -250,7 +257,7 @@ class RectangleBoardTest
 	}
 
 	@Test
-	void emptyMap()
+	void emptyMap() throws boardEmptyException
 	{
 		board.getPlacedCards().clear();
 		assertTrue(board.isCardInTheLayout(new Coordinates(0, 0)));

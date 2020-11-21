@@ -42,4 +42,5 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 
 	}
 
+
 }

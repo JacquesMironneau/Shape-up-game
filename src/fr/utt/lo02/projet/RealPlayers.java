@@ -12,19 +12,24 @@ import fr.utt.lo02.projet.strategy.VirtualPlayer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main
+public class RealPlayers
 {
 
-	public static void main(String[] args) throws PlayerHandEmptyException, boardEmptyException
+	public static void main(String[] args)
 	{
 		// TODO Auto-generated method stub
 		RectangleBoard rb = new RectangleBoard();
 		List<PlayerStrategy> ps = new ArrayList<>();
-		ps.add(new VirtualPlayer("ord1",rb));
-		ps.add(new VirtualPlayer("ord2",rb));
+		ps.add(new RealPlayer("Vrai1",rb));
+		ps.add(new RealPlayer("Vrai2",rb));
 
 
-		new ShapeUpGame(new ScoreCalculatorVisitor(), ps, rb).playGame();
+		try
+		{
+			new ShapeUpGame(new ScoreCalculatorVisitor(), ps, rb).playGame();
+		} catch (PlayerHandEmptyException | boardEmptyException e)
+		{
+			e.printStackTrace();
+		}
 	}
-
 }

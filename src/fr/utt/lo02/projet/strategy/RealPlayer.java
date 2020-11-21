@@ -1,9 +1,9 @@
 package fr.utt.lo02.projet.strategy;
 
 import fr.utt.lo02.projet.board.AbstractBoard;
+import fr.utt.lo02.projet.board.boardEmptyException;
 import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.Coordinates;
-import fr.utt.lo02.projet.board.RectangleBoard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,14 +21,16 @@ import java.util.Scanner;
 public class RealPlayer implements PlayerStrategy
 {
 
+	private String name;
 	private List<Card> playerHand;
 	private List<Integer> scoresRound;
 	private Card victoryCard;
 	private AbstractBoard board;
 	private Scanner scan;
 
-	public RealPlayer(AbstractBoard b)
+	public RealPlayer(String name,AbstractBoard b)
 	{
+		this.name = name;
 		this.board = b;
 		this.scoresRound = new ArrayList<>();
 		this.playerHand = new ArrayList<>();
@@ -36,31 +38,47 @@ public class RealPlayer implements PlayerStrategy
 	}
 
 	@Override
-	public Choice askChoice()
+	public Choice askChoice(ChoiceOrder choiceNumber)
 	{
+		switch (choiceNumber)
+		{
+			case FIRST_CHOICE -> {
+				System.out.println("Please choose one action : ");
+				System.out.println("1. Move a Card");
+				System.out.println("2. Place a Card");
+				System.out.println("3. End the turn");
 
-		System.out.println("Please choose one action : ");
-		System.out.println("1. Move a Card");
-		System.out.println("2. Place a Card");
-		System.out.println("3. End the turn");
-		int choice = scan.nextInt();
+				int choice = scan.nextInt();
 
-		if (choice == 1)
-		{
-			return Choice.MOVE_A_CARD;
-		} else if (choice == 2)
-		{
-			return Choice.PLACE_A_CARD;
-		} else
-		{
-			return Choice.END_THE_TURN;
+				return switch (choice)
+						{
+							case 1 -> Choice.MOVE_A_CARD;
+							case 2 -> Choice.PLACE_A_CARD;
+							default -> Choice.END_THE_TURN;
+						};
+			}
+			case SECOND_CHOICE -> {
+				System.out.println("Do you want to move a card ?");
+				System.out.println("1. Yes (move a card)");
+				System.out.println("2. No (End the turn)");
+
+				int choice = scan.nextInt();
+				if (choice == 1)
+				{
+					return Choice.MOVE_A_CARD;
+				}
+				return Choice.END_THE_TURN;
+
+			}
+			default -> throw new IllegalStateException("Unexpected value: " + choiceNumber);
 		}
-
 	}
 
 	@Override
-	public PlaceRequest askPlaceCard()
+	public PlaceRequest askPlaceCard() throws PlayerHandEmptyException
 	{
+		if (playerHand.isEmpty()) throw new PlayerHandEmptyException();
+
 		int choiceCard;
 		if (playerHand.size() == 1)
 		{
@@ -91,8 +109,10 @@ public class RealPlayer implements PlayerStrategy
 	}
 
 	@Override
-	public MoveRequest askMoveCard()
+	public MoveRequest askMoveCard() throws boardEmptyException
 	{
+		if (board.getPlacedCards().isEmpty()) throw new boardEmptyException();
+
 		List<Coordinates> coordsMap = new ArrayList<Coordinates>();
 		int i = 0;
 		for (Map.Entry<Coordinates, Card> entry : board.getPlacedCards().entrySet())
@@ -129,32 +149,22 @@ public class RealPlayer implements PlayerStrategy
 	}
 
 	@Override
-	public void displayRoundScore(int roundNumber)
+	public void displayRoundScore()
 	{
-		int score = scoresRound.get(roundNumber - 1);
-		System.out.println("Score : " + score);
-
+		int score = scoresRound.get(scoresRound.size()-1);
+		System.out.println(name + "Score : "+ score);
 	}
 
 	@Override
-	public void displayFinalScoreForThisRound(int roundNumber, int playerNumber)
-	{
-		int score = scoresRound.get(roundNumber - 1);
-		System.out.println("Player " + playerNumber + " : Final Score for this round -> " + score);
-	}
-
-	@Override
-	public void displayFinalScore(int playerNumber)
-	{
-		int roundNumber = 1;
-		int finalScore = 0;
-		for (int scores : scoresRound)
-		{
-			System.out.println("Player " + playerNumber + " : Score for Round " + roundNumber + " -> " + scores);
+	public void displayFinalScore() {
+		int roundNumber=1;
+		int finalScore=0;
+		for (int scores: scoresRound) {
+			System.out.println(name + " : Score for Round " + roundNumber + " -> " + scores);
 			roundNumber++;
 			finalScore += scores;
 		}
-		System.out.println("Player " + playerNumber + " : FINAL SCORE = " + finalScore);
+		System.out.println("Player " + name + " : FINAL SCORE = " + finalScore);
 	}
 
 	@Override
@@ -186,4 +196,8 @@ public class RealPlayer implements PlayerStrategy
 		return playerHand;
 	}
 
+	public String getName()
+	{
+		return name;
+	}
 }

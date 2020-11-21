@@ -1,11 +1,13 @@
 package fr.utt.lo02.projet.game;
 
 import fr.utt.lo02.projet.board.AbstractBoard;
+import fr.utt.lo02.projet.board.boardEmptyException;
 import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 import fr.utt.lo02.projet.strategy.MoveRequest;
 import fr.utt.lo02.projet.strategy.PlaceRequest;
+import fr.utt.lo02.projet.strategy.PlayerHandEmptyException;
 import fr.utt.lo02.projet.strategy.PlayerStrategy;
 
 import java.util.Arrays;
@@ -62,13 +64,15 @@ public abstract class AbstractShapeUpGame
 	/**
 	 * Play several round for a game and calculate gameScore
 	 */
-	public void playGame()
+	public void playGame() throws PlayerHandEmptyException, boardEmptyException
 	{
 
 		for (this.roundNumber = 0; this.roundNumber < MAX_ROUND_NUMBER; ++this.roundNumber)
 		{
 			initRound();
 			playRound();
+			calculateRoundScore();
+
 		}
 		calculateGameScore();
 	}
@@ -82,12 +86,12 @@ public abstract class AbstractShapeUpGame
 	/**
 	 * Plays one of the game round
 	 */
-	protected abstract void playRound();
+	protected abstract void playRound() throws PlayerHandEmptyException, boardEmptyException;
 
 	/**
 	 * Turns loop for one player
 	 */
-	protected abstract void playTurn(PlayerStrategy player);
+	protected abstract void playTurn(PlayerStrategy player) throws PlayerHandEmptyException, boardEmptyException;
 
 	/**
 	 * Request to place a card from the player hand to a position on the board
@@ -96,7 +100,7 @@ public abstract class AbstractShapeUpGame
 	 * @param player       the player that is making the request
 	 * @return if the request is matching the game rules
 	 */
-	public boolean placeCardRequest(PlaceRequest placeRequest, PlayerStrategy player)
+	public boolean placeCardRequest(PlaceRequest placeRequest, PlayerStrategy player) throws boardEmptyException
 	{
 		Card aCard = placeRequest.getCard();
 		Coordinates coord = placeRequest.getCoordinates();
@@ -114,9 +118,10 @@ public abstract class AbstractShapeUpGame
 		{
 			board.addCard(coord, aCard);
 			player.getPlayerHand().remove(aCard);
+			System.out.println("[LOG] "+ aCard + " has been placed at " + coord);
+
 			return true;
 		}
-
 		return false;
 	}
 
@@ -126,10 +131,14 @@ public abstract class AbstractShapeUpGame
 	 * @param moveRequest player request
 	 * @return if the card has been moved or not
 	 */
-	public boolean moveCardRequest(MoveRequest moveRequest)
+	public boolean moveCardRequest(MoveRequest moveRequest) throws boardEmptyException
 	{
 		Coordinates origin = moveRequest.getOrigin();
 		Coordinates destination = moveRequest.getDestination();
+
+		if (origin.equals(destination)) return false;
+
+
 
 		Card card = this.board.getPlacedCards().get(origin);
 
@@ -137,16 +146,23 @@ public abstract class AbstractShapeUpGame
 
 		board.removeCard(origin, card);
 
+		if (board.getPlacedCards().isEmpty())
+		{
+			board.addCard(destination, card);
+			return true;
+		}
 		boolean cardAdjacentToAnExistingCard = board.isCardAdjacent(destination);
 		boolean cardInTheLayout = board.isCardInTheLayout(destination);
 
 		if (cardAdjacentToAnExistingCard && cardInTheLayout)
 		{
-			board.removeCard(origin, card);
+			//board.removeCard(origin, card);
 			board.addCard(destination, card);
+			System.out.println("[LOG] " + card + " has been moved from" + origin + "to "+ destination);
 			return true;
 		}
 		board.addCard(origin,card);
+		System.out.println("euuuuuuh ?");
 		return false;
 	}
 
@@ -167,7 +183,10 @@ public abstract class AbstractShapeUpGame
 	 */
 	protected void calculateGameScore()
 	{
-
+		for (PlayerStrategy player: players)
+		{
+			player.displayFinalScore();
+		}
 	}
 
 	protected void calculateRoundScore()
@@ -175,11 +194,15 @@ public abstract class AbstractShapeUpGame
 		for (PlayerStrategy p : players)
 		{
 			p.addRoundScore(this.board.accept(visitor, p.getVictoryCard()));
+			p.displayRoundScore();
 		}
+
 	}
 
 	protected void initDeck()
 	{
+		if (!deck.isEmpty()) return;
+
 		for (Card.Color color : Arrays.asList(Card.Color.BLUE, Card.Color.GREEN, Card.Color.RED))
 		{
 			this.deck.add(new Card(color, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
@@ -209,5 +232,14 @@ public abstract class AbstractShapeUpGame
 		{
 			this.deck.add(new Card(color, Card.Shape.TRIANGLE, Card.Filling.FILLED));
 		}
+	}
+
+	protected boolean isRoundFinished()
+	{
+		for (PlayerStrategy player : players)
+		{
+			if (!player.getPlayerHand().isEmpty()) return false;
+		}
+		return deck.isEmpty();
 	}
 }
