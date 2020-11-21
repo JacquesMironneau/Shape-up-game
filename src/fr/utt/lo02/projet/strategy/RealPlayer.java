@@ -18,22 +18,14 @@ import java.util.Scanner;
  */
 
 
-public class RealPlayer implements PlayerStrategy
+public class RealPlayer extends PlayerStrategy
 {
 
-	private String name;
-	private List<Card> playerHand;
-	private List<Integer> scoresRound;
-	private Card victoryCard;
-	private AbstractBoard board;
 	private Scanner scan;
 
 	public RealPlayer(String name,AbstractBoard b)
 	{
-		this.name = name;
-		this.board = b;
-		this.scoresRound = new ArrayList<>();
-		this.playerHand = new ArrayList<>();
+		super(name,b);
 		scan = new Scanner(System.in);
 	}
 
@@ -104,8 +96,7 @@ public class RealPlayer implements PlayerStrategy
 		scanY = scan.nextInt();
 
 		Coordinates scanCoord = new Coordinates(scanX, scanY);
-		PlaceRequest request = new PlaceRequest(scanCoord, card);
-		return request;
+		return new PlaceRequest(scanCoord, card);
 	}
 
 	@Override
@@ -144,60 +135,7 @@ public class RealPlayer implements PlayerStrategy
 
 		Coordinates scanCoord2 = new Coordinates(scanX2, scanY2);
 
-		MoveRequest request = new MoveRequest(scanCoord1, scanCoord2);
-		return request;
-	}
+		return new MoveRequest(scanCoord1, scanCoord2);
 
-	@Override
-	public void displayRoundScore()
-	{
-		int score = scoresRound.get(scoresRound.size()-1);
-		System.out.println(name + "Score : "+ score);
-	}
-
-	@Override
-	public void displayFinalScore() {
-		int roundNumber=1;
-		int finalScore=0;
-		for (int scores: scoresRound) {
-			System.out.println(name + " : Score for Round " + roundNumber + " -> " + scores);
-			roundNumber++;
-			finalScore += scores;
-		}
-		System.out.println("Player " + name + " : FINAL SCORE = " + finalScore);
-	}
-
-	@Override
-	public void setVictoryCard(Card victoryCard)
-	{
-		this.victoryCard = victoryCard;
-	}
-
-	@Override
-	public void drawCard(Card card)
-	{
-		this.playerHand.add(card);
-	}
-
-	@Override
-	public void addRoundScore(int scoreOfCurrentRound)
-	{
-		this.scoresRound.add(scoreOfCurrentRound);
-	}
-
-	@Override
-	public Card getVictoryCard()
-	{
-		return victoryCard;
-	}
-
-	public List<Card> getPlayerHand()
-	{
-		return playerHand;
-	}
-
-	public String getName()
-	{
-		return name;
 	}
 }

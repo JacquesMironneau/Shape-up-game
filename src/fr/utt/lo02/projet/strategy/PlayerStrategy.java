@@ -1,8 +1,10 @@
 package fr.utt.lo02.projet.strategy;
 
+import fr.utt.lo02.projet.board.AbstractBoard;
 import fr.utt.lo02.projet.board.boardEmptyException;
 import fr.utt.lo02.projet.board.Card;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,42 +14,86 @@ import java.util.List;
  * @author Baptiste, Jacques
  */
 
-public interface PlayerStrategy
+public abstract class PlayerStrategy
 {
+	private String name;
+	protected List<Card> playerHand;
+	private List<Integer> scoresRound;
+	private Card victoryCard;
+	protected AbstractBoard board;
+
+	public PlayerStrategy(String name, AbstractBoard b)
+	{
+		this.name = name;
+		this.board = b;
+		this.scoresRound = new ArrayList<>();
+		this.playerHand = new ArrayList<>();
+	}
 	/**
 	 * Ask the player if he wants to place or move a card
 	 * @param choiceNumber
 	 */
-	Choice askChoice(ChoiceOrder choiceNumber);
+	public abstract Choice askChoice(ChoiceOrder choiceNumber);
 
 	/**
 	 * Ask a player to place a card
 	 * So pick one card and select where he wants to put it
 	 */
-	PlaceRequest askPlaceCard() throws PlayerHandEmptyException;
+	public  abstract PlaceRequest askPlaceCard() throws PlayerHandEmptyException;
 
 	/**
 	 * Ask a player to move a card
 	 * So pick one card and select where he wants to move it
 	 */
-	MoveRequest askMoveCard() throws boardEmptyException;
+	public abstract MoveRequest askMoveCard() throws boardEmptyException;
 
 	/**
 	 * Display the scores to player
 	 */
-	void displayRoundScore();
+	public void displayRoundScore()
+	{
+		int score = scoresRound.get(scoresRound.size()-1);
+		System.out.println(name + "Score : "+ score);
+	}
 
-	void displayFinalScore();
+	public void displayFinalScore() {
+		int roundNumber=1;
+		int finalScore=0;
+		for (int scores: scoresRound) {
+			System.out.println(name + " : Score for Round " + roundNumber + " -> " + scores);
+			roundNumber++;
+			finalScore += scores;
+		}
+		System.out.println("Player " + name + " : FINAL SCORE = " + finalScore);
+	}
 
-	void setVictoryCard(Card victoryCard);
+	public void setVictoryCard(Card victoryCard)
+	{
+		this.victoryCard = victoryCard;
+	}
 
-	void drawCard(Card card);
+	public void drawCard(Card card)
+	{
+		this.playerHand.add(card);
+	}
 
-	void addRoundScore(int scoreOfCurrentRound);
+	public void addRoundScore(int scoreOfCurrentRound)
+	{
+		this.scoresRound.add(scoreOfCurrentRound);
+	}
 
-	Card getVictoryCard();
+	public Card getVictoryCard()
+	{
+		return victoryCard;
+	}
 
-	List<Card> getPlayerHand();
+	public List<Card> getPlayerHand()
+	{
+		return playerHand;
+	}
 
-	public String getName();
+	public String getName()
+	{
+		return name;
+	}
 }

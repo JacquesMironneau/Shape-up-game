@@ -15,36 +15,25 @@ import java.util.List;
  * @author Baptiste, Jacques
  */
 
-public class VirtualPlayer implements PlayerStrategy
+public class VirtualPlayer extends PlayerStrategy
 {
-
-	private String name;
-	private List<Card> playerHand;
-	private List<Integer> scoresRound;
-	private Card victoryCard;
-	private AbstractBoard board;
-
 
 	public VirtualPlayer(String name, AbstractBoard b)
 	{
-		this.name = name;
-		this.board = b;
-		this.scoresRound = new ArrayList<>();
-		this.playerHand = new ArrayList<>();
+		super(name, b);
 	}
 
 	@Override
 	public Choice askChoice(ChoiceOrder choiceNumber)
 	{
 		int randomNumber = 1 + (int) (Math.random() * ((3 - 1) + 1));
-		return Choice.PLACE_A_CARD;
-//		if (randomNumber == 1) {
-//			return Choice.MOVE_A_CARD;
-//		} else if (randomNumber == 2) {
-//			return Choice.PLACE_A_CARD;
-//		} else {
-//			return Choice.END_THE_TURN;
-//		}
+		if (randomNumber == 1) {
+			return Choice.MOVE_A_CARD;
+		} else if (randomNumber == 2) {
+			return Choice.PLACE_A_CARD;
+		} else {
+			return Choice.END_THE_TURN;
+		}
 	}
 
 	@Override
@@ -93,65 +82,7 @@ public class VirtualPlayer implements PlayerStrategy
 		int randomY2 = (Coordinates.smallestOrdinate(coordsMap) - 1) + (int) (Math.random() * (((Coordinates.biggestOrdinate(coordsMap) + 1) - (Coordinates.smallestOrdinate(coordsMap) - 1)) + 1));
 		Coordinates randomCoord2 = new Coordinates(randomX2, randomY2);
 
-		MoveRequest request = new MoveRequest(randomCoord1, randomCoord2);
-		return request;
+		return new MoveRequest(randomCoord1, randomCoord2);
 	}
 
-	@Override
-	public void displayRoundScore()
-	{
-		int score = scoresRound.get(scoresRound.size() - 1);
-		System.out.println(name + "Score : " + score);
-	}
-
-
-	@Override
-	public void displayFinalScore()
-	{
-		int roundNumber = 1;
-		int finalScore = 0;
-		for (int scores : scoresRound)
-		{
-			System.out.println(name + " : Score for Round " + roundNumber + " -> " + scores);
-			roundNumber++;
-			finalScore += scores;
-		}
-		System.out.println("Player " + name + " : FINAL SCORE = " + finalScore);
-	}
-
-
-	public void setVictoryCard(Card victoryCard)
-	{
-		this.victoryCard = victoryCard;
-	}
-
-	public void drawCard(Card card)
-	{
-		this.playerHand.add(card);
-	}
-
-	public void addRoundScore(int scoreOfCurrentRound)
-	{
-		this.scoresRound.add(scoreOfCurrentRound);
-	}
-
-	public List<Integer> getScoresRound()
-	{
-		return scoresRound;
-	}
-
-	public Card getVictoryCard()
-	{
-		return victoryCard;
-	}
-
-	public List<Card> getPlayerHand()
-	{
-		return playerHand;
-	}
-
-	public String getName()
-	{
-		return  this.name;
-	}
 }
