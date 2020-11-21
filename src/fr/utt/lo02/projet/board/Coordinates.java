@@ -117,7 +117,7 @@ public class Coordinates
 	public static int biggestOrdinate(List<Coordinates> coords) {
 		int smallestOrdinate = coords.get(0).getY();
 		for (Coordinates y: coords) {
-			if (y.getY() < smallestOrdinate) {
+			if (y.getY() > smallestOrdinate) {
 				smallestOrdinate = y.getY();
 			}
 		}
