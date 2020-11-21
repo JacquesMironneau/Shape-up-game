@@ -23,12 +23,13 @@ public class ShapeUpGame extends AbstractShapeUpGame
 	@Override
 	protected void initRound()
 	{
-		for (PlayerStrategy ps : players)
-		{
-			List<Card> list = ps.getPlayerHand();
-			list = new ArrayList<>();
-		}
+//		for (PlayerStrategy ps : players)
+//		{
+//			List<Card> list = ps.getPlayerHand();
+//			list = new ArrayList<>();
+//		}
 
+		this.board.getPlacedCards().clear();
 		this.deck = new LinkedList<>();
 		initDeck();
 

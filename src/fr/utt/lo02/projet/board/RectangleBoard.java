@@ -110,17 +110,12 @@ public class RectangleBoard extends AbstractBoard
 	 *
 	 * @return true if the board contains 4 or 5 elements on one of its ordinates
 	 */
-	public boolean isHorizontal()
+	public boolean isVertical()
 	{
-		List<Integer> ordinateCoordinates = new ArrayList<>();
+		int smallestAbscissa = Coordinates.smallestOrdinate(new ArrayList<>(placedCards.keySet()));
+		int biggestAbscissa = Coordinates.biggestOrdinate(new ArrayList<>(placedCards.keySet()));
 
-		for (Coordinates coordinates : placedCards.keySet())
-		{
-			ordinateCoordinates.add(coordinates.getY());
-		}
-		List<Integer> sortedOrdinatesOccurrencesList = getSortedOccurrences(ordinateCoordinates);
-
-		return sortedOrdinatesOccurrencesList.get(sortedOrdinatesOccurrencesList.size() - 1) >= 4;
+		return Math.abs(smallestAbscissa - biggestAbscissa) >= 3;
 	}
 
 	/**
@@ -128,44 +123,12 @@ public class RectangleBoard extends AbstractBoard
 	 *
 	 * @return true if the board contains 4 or 5 element on one of its abscissas
 	 */
-	public boolean isVertical()
+	public boolean isHorizontal()
 	{
-		List<Integer> abscissasCordinates = new ArrayList<>();
+		int smallestAbscissa = Coordinates.smallestAbscissa(new ArrayList<>(placedCards.keySet()));
+		int biggestAbscissa = Coordinates.biggestAbscissa(new ArrayList<>(placedCards.keySet()));
 
-		for (Coordinates coordinates : placedCards.keySet())
-		{
-			abscissasCordinates.add(coordinates.getX());
-		}
-		List<Integer> sortedAbscissasOccurrencesList = getSortedOccurrences(abscissasCordinates);
-
-		return sortedAbscissasOccurrencesList.get(sortedAbscissasOccurrencesList.size() - 1) >= 4;
-	}
-
-
-	/**
-	 * Create a list of occurrences for a coordinates list sorted in ascending order.
-	 *
-	 * @param coordinatesList : List of unique coordinate (For instance: a list of abscissas)
-	 * @return a list of occurrences of the given list sorted in ascending order
-	 */
-	private List<Integer> getSortedOccurrences(List<Integer> coordinatesList)
-	{
-		Map<Integer, Integer> coordinateFieldOccurrence = new HashMap<>();
-		for (int coordinate : coordinatesList)
-		{
-			Integer nbOccurrence = coordinateFieldOccurrence.get(coordinate);
-			if (nbOccurrence == null)
-			{
-				coordinateFieldOccurrence.put(coordinate, 1);
-			} else
-			{
-				coordinateFieldOccurrence.put(coordinate, nbOccurrence + 1);
-			}
-		}
-
-		List<Integer> sortedCoordinateFieldOccurrencesList = new ArrayList<Integer>(coordinateFieldOccurrence.values());
-		Collections.sort(sortedCoordinateFieldOccurrencesList);
-		return sortedCoordinateFieldOccurrencesList;
+		return Math.abs(smallestAbscissa - biggestAbscissa) >= 3;
 	}
 
 

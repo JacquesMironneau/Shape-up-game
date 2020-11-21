@@ -53,7 +53,7 @@ public class VirtualPlayer extends PlayerStrategy
 
 		Coordinates randomCoord;
 		List<Coordinates> coordsMap = new ArrayList<Coordinates>(board.getPlacedCards().keySet());
-		if (coordsMap.isEmpty()) return new PlaceRequest(new Coordinates(0, 0), card);
+		if (coordsMap.isEmpty()) return new PlaceRequest(new Coordinates(-40, -40), card);
 
 		int randomX = (Coordinates.smallestAbscissa(coordsMap) - 1) + (int) (Math.random() * (((Coordinates.biggestAbscissa(coordsMap) + 1) - (Coordinates.smallestAbscissa(coordsMap) - 1)) + 1));
 		int randomY = (Coordinates.smallestOrdinate(coordsMap) - 1) + (int) (Math.random() * (((Coordinates.biggestOrdinate(coordsMap) + 1) - (Coordinates.smallestOrdinate(coordsMap) - 1)) + 1));

@@ -72,7 +72,6 @@ public abstract class AbstractShapeUpGame
 			initRound();
 			playRound();
 			calculateRoundScore();
-
 		}
 		calculateGameScore();
 	}
@@ -100,7 +99,7 @@ public abstract class AbstractShapeUpGame
 	 * @param player       the player that is making the request
 	 * @return if the request is matching the game rules
 	 */
-	public boolean placeCardRequest(PlaceRequest placeRequest, PlayerStrategy player) throws boardEmptyException
+	public boolean placeCardRequest(PlaceRequest placeRequest, PlayerStrategy player)
 	{
 		Card aCard = placeRequest.getCard();
 		Coordinates coord = placeRequest.getCoordinates();
@@ -131,7 +130,7 @@ public abstract class AbstractShapeUpGame
 	 * @param moveRequest player request
 	 * @return if the card has been moved or not
 	 */
-	public boolean moveCardRequest(MoveRequest moveRequest) throws boardEmptyException
+	public boolean moveCardRequest(MoveRequest moveRequest)
 	{
 		Coordinates origin = moveRequest.getOrigin();
 		Coordinates destination = moveRequest.getDestination();
@@ -162,7 +161,6 @@ public abstract class AbstractShapeUpGame
 			return true;
 		}
 		board.addCard(origin,card);
-		System.out.println("euuuuuuh ?");
 		return false;
 	}
 

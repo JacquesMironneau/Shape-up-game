@@ -7,6 +7,7 @@ import fr.utt.lo02.projet.board.boardEmptyException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -55,7 +56,7 @@ class RectangleBoardTest
 	}
 
 	@Test
-	void testAlreadyExistingCard() throws boardEmptyException
+	void testAlreadyExistingCard()
 	{
 		for (Map.Entry<Coordinates, Card> entry : board.getPlacedCards().entrySet())
 		{
@@ -66,7 +67,7 @@ class RectangleBoardTest
 	}
 
 	@Test
-	void testImpossibleLayoutConfiguration() throws boardEmptyException
+	void testImpossibleLayoutConfiguration()
 	{
 		board.getPlacedCards().put(new Coordinates(1, 1), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
 
@@ -76,7 +77,7 @@ class RectangleBoardTest
 	}
 
 	@Test
-	void testCase1() throws boardEmptyException
+	void testCase1()
 	{
 		initCase1();
 
@@ -121,11 +122,14 @@ class RectangleBoardTest
 	}
 
 	@Test
-	void testCase2() throws boardEmptyException
+	void testCase2()
 	{
 		board.getPlacedCards().clear();
 		IntStream.iterate(5, i -> i > 0, i -> i - 1).forEach(i -> board.getPlacedCards().put(new Coordinates(1, i), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED)));
-		IntStream.range(1, 3).forEach(i -> board.getPlacedCards().put(new Coordinates(2, i), new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.FILLED)));
+		for (int i1 = 1; i1 < 3; i1++)
+		{
+			board.getPlacedCards().put(new Coordinates(2, i1), new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		}
 
 
 		board.display();
@@ -137,22 +141,27 @@ class RectangleBoardTest
 			}
 		}
 
-		for (int i = 0; i < 6; ++i)
+		assertFalse(board.isCardInTheLayout(new Coordinates(-1, 0)));
+		assertFalse(board.isCardInTheLayout(new Coordinates(-1, 1)));
+		assertFalse(board.isCardInTheLayout(new Coordinates(-1, 2)));
+		assertFalse(board.isCardInTheLayout(new Coordinates(-1, 3)));
+		assertFalse(board.isCardInTheLayout(new Coordinates(-1, 4)));
+
+		for (Coordinates coordinates : Arrays.asList(new Coordinates(-1, 5), new Coordinates(0, 6), new Coordinates(4, 0), new Coordinates(1, 6), new Coordinates(4, 1), new Coordinates(2, 6), new Coordinates(4, 2), new Coordinates(3, 6), new Coordinates(4, 3), new Coordinates(4, 6), new Coordinates(4, 4), new Coordinates(5, 6)))
 		{
-			assertFalse(board.isCardInTheLayout(new Coordinates(-1, i)));
+			assertFalse(board.isCardInTheLayout(coordinates));
 		}
 
-		for (int i = 0; i < 6; ++i)
-		{
-			assertFalse(board.isCardInTheLayout(new Coordinates(i, 6)));
-			assertFalse(board.isCardInTheLayout(new Coordinates(4, i)));
 
-		}
+		assertFalse(board.isCardInTheLayout(new Coordinates(4, 5)));
+
+		System.out.println("--------------");
+		board.display();
 
 	}
 
 	@Test
-	void testCase3() throws boardEmptyException
+	void testCase3()
 	{
 		board.getPlacedCards().clear();
 
@@ -206,7 +215,7 @@ class RectangleBoardTest
 	}
 
 	@Test
-	void testCase4() throws boardEmptyException
+	void testCase4()
 	{
 		board.getPlacedCards().clear();
 		board.getPlacedCards().put(new Coordinates(0, 1), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
@@ -257,7 +266,7 @@ class RectangleBoardTest
 	}
 
 	@Test
-	void emptyMap() throws boardEmptyException
+	void emptyMap()
 	{
 		board.getPlacedCards().clear();
 		assertTrue(board.isCardInTheLayout(new Coordinates(0, 0)));
@@ -278,4 +287,51 @@ class RectangleBoardTest
 		board.display();
 	}
 
+	@Test
+	void horizontalTest()
+	{
+		board.getPlacedCards().clear();
+		board.getPlacedCards().put(new Coordinates(0, 0), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(1, 0), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(2, 0), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(3, 0), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		assertFalse(board.isVertical());
+		// 0 - 3 = -3 abs =3
+		assertTrue(board.isHorizontal());
+		//assertTrue();
+	}
+
+	@Test
+	void horizontalHoleTest()
+	{
+		board.getPlacedCards().clear();
+		board.getPlacedCards().put(new Coordinates(0, 2), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(0, 1), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(0, 0), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(0, -1), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(-1, 1), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(-1, 0), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(-2, 0), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(-2, -1), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+
+		board.display();
+
+
+		assertFalse(board.isHorizontal());
+		// 0 - 3 = -3 abs =3
+		assertTrue(board.isVertical());
+
+		assertFalse(board.isCardInTheLayout(new Coordinates(-3,0)));
+
+		board.getPlacedCards().remove(new Coordinates(0,0));
+		assertTrue(board.isVertical());
+		assertFalse(board.isHorizontal());
+
+		assertFalse(board.isCardInTheLayout(new Coordinates(-3,0)));
+
+
+
+
+
+	}
 }

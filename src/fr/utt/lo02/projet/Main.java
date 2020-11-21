@@ -22,6 +22,7 @@ public class Main
 		List<PlayerStrategy> ps = new ArrayList<>();
 		ps.add(new VirtualPlayer("ord1",rb));
 		ps.add(new VirtualPlayer("ord2",rb));
+		//ps.add(new VirtualPlayer("ord3",rb));
 
 
 		new ShapeUpGame(new ScoreCalculatorVisitor(), ps, rb).playGame();
