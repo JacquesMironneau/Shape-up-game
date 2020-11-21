@@ -139,4 +139,14 @@ public class ShapeUpGame extends AbstractShapeUpGame
 	{
 		return players.get((players.indexOf(player) + 1) % this.players.size());
 	}
+
+	@Override
+	protected  boolean isRoundFinished()
+	{
+		for (PlayerStrategy player : players)
+		{
+			if (!player.getPlayerHand().isEmpty()) return false;
+		}
+		return deck.isEmpty();
+	}
 }

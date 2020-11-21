@@ -41,4 +41,10 @@ public class ShapeUpGameWithoutAdajencyRule extends AbstractShapeUpGame
 
 	}
 
+	@Override
+	protected boolean isRoundFinished()
+	{
+		return false;
+	}
+
 }

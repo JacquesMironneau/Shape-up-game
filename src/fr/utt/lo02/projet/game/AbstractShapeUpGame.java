@@ -104,8 +104,6 @@ public abstract class AbstractShapeUpGame
 		Card aCard = placeRequest.getCard();
 		Coordinates coord = placeRequest.getCoordinates();
 
-		if (!player.getPlayerHand().contains(aCard)) return false;
-
 		boolean cardInTheLayout = board.isCardInTheLayout(coord);
 		boolean cardAdjacentToAnExistingCard = true;
 
@@ -121,6 +119,7 @@ public abstract class AbstractShapeUpGame
 
 			return true;
 		}
+		System.out.println("Please choose a correct location");
 		return false;
 	}
 
@@ -161,6 +160,8 @@ public abstract class AbstractShapeUpGame
 			return true;
 		}
 		board.addCard(origin,card);
+
+		//System.out.println("Please choose a correct movement");
 		return false;
 	}
 
@@ -232,12 +233,6 @@ public abstract class AbstractShapeUpGame
 		}
 	}
 
-	protected boolean isRoundFinished()
-	{
-		for (PlayerStrategy player : players)
-		{
-			if (!player.getPlayerHand().isEmpty()) return false;
-		}
-		return deck.isEmpty();
-	}
+	protected abstract boolean isRoundFinished();
+
 }

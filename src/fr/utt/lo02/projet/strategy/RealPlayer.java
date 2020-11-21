@@ -71,9 +71,11 @@ public class RealPlayer extends PlayerStrategy
 	{
 		if (playerHand.isEmpty()) throw new PlayerHandEmptyException();
 
+		System.out.println("Your victory card is " + getVictoryCard());
 		int choiceCard;
 		if (playerHand.size() == 1)
 		{
+			System.out.println("Your card is "+playerHand.get(0));
 			choiceCard = 0;
 		} else
 		{
@@ -103,6 +105,8 @@ public class RealPlayer extends PlayerStrategy
 	public MoveRequest askMoveCard() throws boardEmptyException
 	{
 		if (board.getPlacedCards().isEmpty()) throw new boardEmptyException();
+
+		System.out.println("Your victory card is " + getVictoryCard());
 
 		List<Coordinates> coordsMap = new ArrayList<Coordinates>();
 		int i = 0;
