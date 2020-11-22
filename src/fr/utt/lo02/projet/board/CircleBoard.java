@@ -2,9 +2,7 @@ package fr.utt.lo02.projet.board;
 
 import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Represent a circle game board, one of the different shapes for the game.
@@ -23,7 +21,6 @@ public class CircleBoard extends AbstractBoard
 		pattern = new ArrayList<>();
 		initPattern();
 	}
-
 
 
 	@Override
@@ -66,19 +63,21 @@ public class CircleBoard extends AbstractBoard
 		Iterator<Coordinates> iterator = list.iterator();
 		Coordinates topLeftCard = iterator.next();
 
-		while (iterator.hasNext()) {
+		while (iterator.hasNext())
+		{
 			Coordinates key = iterator.next();
-			if (Coordinates.isOneMoreTopLeftThanTwo(key,topLeftCard)) {
+			if (Coordinates.isOneMoreTopLeftThanTwo(key, topLeftCard))
+			{
 				topLeftCard = key;
 			}
 		}
 
-		for (Coordinates patternCoord: pattern)
+		for (Coordinates patternCoord : pattern)
 		{
 			ArrayList<Coordinates> res = new ArrayList<>();
-			for (Coordinates coord: list)
+			for (Coordinates coord : list)
 			{
-				Coordinates co = new Coordinates(coord.getX() - topLeftCard.getX() + patternCoord.getX(), coord.getY() - topLeftCard.getY()+patternCoord.getY());
+				Coordinates co = new Coordinates(coord.getX() - topLeftCard.getX() + patternCoord.getX(), coord.getY() - topLeftCard.getY() + patternCoord.getY());
 				res.add(co);
 			}
 			if (pattern.containsAll(res)) return true;
@@ -89,25 +88,102 @@ public class CircleBoard extends AbstractBoard
 	@Override
 	public void display()
 	{
+		if (placedCards.isEmpty()) return;
+		// Store every abscissas and ordinates in different lists.
+		Set<Integer> abscissaCoordinates = new HashSet<>();
+		Set<Integer> ordinateCoordinates = new HashSet<>();
 
+		for (Coordinates coord : placedCards.keySet())
+		{
+			abscissaCoordinates.add(coord.getX());
+			ordinateCoordinates.add(coord.getY());
+		}
+
+		int maxAbscissa = Collections.max(abscissaCoordinates);
+		int minAbscissa = Collections.min(abscissaCoordinates);
+		int minOrdinate = Collections.min(ordinateCoordinates);
+		int maxOrdinate = Collections.max(ordinateCoordinates);
+
+		int spaceNumber = 0;
+		String space = "";
+
+		for (int j = maxOrdinate; j >= minOrdinate; j--)
+		{
+			switch (spaceNumber)
+			{
+				case 0, 4 -> space = "    ";
+				case 1, 3 -> space = "  ";
+				case 2 -> space = " ";
+			}
+			spaceNumber++;
+
+			for (int i = minAbscissa; i <= maxAbscissa; i++)
+			{
+				if (i == minAbscissa)
+					System.out.print(space);
+				Card card = placedCards.get(new Coordinates(i, j));
+				if (card != null)
+				{
+					Card.printTop(card.getColor());
+				} else
+					System.out.print("    ");
+
+			}
+			System.out.println();
+
+			for (int i = minAbscissa; i <= maxAbscissa; i++)
+			{
+				if (i == minAbscissa)
+					System.out.print(space);
+
+				Card card = placedCards.get(new Coordinates(i, j));
+				if (card != null)
+				{
+					Card.printMiddle(card);
+				}
+			else
+			System.out.print("    ");
+
+			}
+			System.out.println();
+
+
+			for (int i = minAbscissa; i <= maxAbscissa; i++)
+			{
+				if (i == minAbscissa)
+					System.out.print(space);
+
+				Card card = placedCards.get(new Coordinates(i, j));
+
+				if (card != null)
+				{
+					Card.printBottom(card.getColor());
+
+				} else
+					System.out.print("    ");
+			}
+
+			System.out.println();
+
+		}
 	}
 
 	private void initPattern()
 	{
-		pattern.add(new Coordinates(0,0));
-		pattern.add(new Coordinates(1,0));
-		pattern.add(new Coordinates(0,-1));
-		pattern.add(new Coordinates(1,-1));
-		pattern.add(new Coordinates(2,-1));
+		pattern.add(new Coordinates(0, 0));
+		pattern.add(new Coordinates(1, 0));
+		pattern.add(new Coordinates(0, -1));
+		pattern.add(new Coordinates(1, -1));
+		pattern.add(new Coordinates(2, -1));
 		pattern.add(new Coordinates(0, -2));
-		pattern.add(new Coordinates(1,-2));
-		pattern.add(new Coordinates(2,-2));
-		pattern.add(new Coordinates(3,-2));
-		pattern.add(new Coordinates(1,-3));
-		pattern.add(new Coordinates(2,-3));
-		pattern.add(new Coordinates(3,-3));
-		pattern.add(new Coordinates(2,-4));
-		pattern.add(new Coordinates(3,-4));
+		pattern.add(new Coordinates(1, -2));
+		pattern.add(new Coordinates(2, -2));
+		pattern.add(new Coordinates(3, -2));
+		pattern.add(new Coordinates(1, -3));
+		pattern.add(new Coordinates(2, -3));
+		pattern.add(new Coordinates(3, -3));
+		pattern.add(new Coordinates(2, -4));
+		pattern.add(new Coordinates(3, -4));
 	}
 
 }
