@@ -1,13 +1,10 @@
 package fr.utt.lo02.projet.strategy;
 
 import fr.utt.lo02.projet.board.AbstractBoard;
-import fr.utt.lo02.projet.board.boardEmptyException;
 import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.Coordinates;
+import fr.utt.lo02.projet.board.boardEmptyException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -21,11 +18,11 @@ import java.util.Scanner;
 public class RealPlayer extends PlayerStrategy
 {
 
-	private Scanner scan;
+	private final Scanner scan;
 
-	public RealPlayer(String name,AbstractBoard b)
+	public RealPlayer(String name, AbstractBoard b)
 	{
-		super(name,b);
+		super(name, b);
 		scan = new Scanner(System.in);
 	}
 
@@ -71,26 +68,26 @@ public class RealPlayer extends PlayerStrategy
 	{
 		if (playerHand.isEmpty()) throw new PlayerHandEmptyException();
 
-		System.out.println("Your victory card is " + getVictoryCard());
 		int choiceCard;
 		if (playerHand.size() == 1)
 		{
-			System.out.println("Your card is "+playerHand.get(0));
 			choiceCard = 0;
 		} else
 		{
 			System.out.println("Please choose one card from your Hand : ");
 			for (int i = 0; i < playerHand.size(); i++)
 			{
-				System.out.println((i + 1) + ". " + playerHand.get(i));
+				System.out.println((i + 1) + ". ");
+				Card.printSingleCard(playerHand.get(i));
 			}
 			choiceCard = scan.nextInt();
+			choiceCard--;
 		}
 
 		Card card = playerHand.get(choiceCard);
 
 		int scanX, scanY;
-		System.out.println("You have to enter coordinates for where you want to place this card. ");
+		System.out.println("You have to enter coordinates for where you want to place the card you draw. ");
 		System.out.println("Please enter X pos");
 
 		scanX = scan.nextInt();
@@ -106,15 +103,6 @@ public class RealPlayer extends PlayerStrategy
 	{
 		if (board.getPlacedCards().isEmpty()) throw new boardEmptyException();
 
-		System.out.println("Your victory card is " + getVictoryCard());
-
-		List<Coordinates> coordsMap = new ArrayList<Coordinates>();
-		int i = 0;
-		for (Map.Entry<Coordinates, Card> entry : board.getPlacedCards().entrySet())
-		{
-			coordsMap.add(i, entry.getKey());
-			i++;
-		}
 		int scanX1, scanY1;
 		Coordinates scanCoord1;
 		do
@@ -131,7 +119,7 @@ public class RealPlayer extends PlayerStrategy
 
 		int scanX2, scanY2;
 
-		System.out.println("You have to enter coordinates for where you want to move this card. ");
+		System.out.println("You have to enter coordinates for where you want to move the card you choose. ");
 		System.out.println("Please enter X pos : ");
 		scanX2 = scan.nextInt();
 		System.out.println("Please enter Y pos : ");
