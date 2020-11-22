@@ -1,7 +1,12 @@
 package fr.utt.lo02.projet.board;
 
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+
+import static com.diogonunes.jcolor.Ansi.colorize;
+import static com.diogonunes.jcolor.Attribute.*;
 
 /**
  * Represents a card from the Game
@@ -55,6 +60,80 @@ public class Card
 		return filling;
 	}
 
+	public static void printSingleCard(Card card)
+	{
+		printTop(card.getColor());
+		System.out.println();
+		printMiddle(card);
+		System.out.println();
+		printBottom(card.getColor());
+		System.out.println();
+	}
+
+	public static void printBottom(Card.Color color)
+	{
+		switch (color)
+		{
+			case RED -> System.out.print(colorize("└─┘ ", RED_TEXT()));
+			case BLUE -> System.out.print(colorize("└─┘ ", BLUE_TEXT()));
+			case GREEN -> System.out.print(colorize("└─┘ ", GREEN_TEXT()));
+		}
+	}
+
+	public static void printTop(Card.Color color)
+	{
+		switch (color)
+		{
+			case RED -> System.out.print(colorize("┌─┐ ", RED_TEXT()));
+			case BLUE -> System.out.print(colorize("┌─┐ ", BLUE_TEXT()));
+			case GREEN -> System.out.print(colorize("┌─┐ ", GREEN_TEXT()));
+		}
+
+	}
+
+	public static void printMiddle(Card card)
+	{
+		StringBuilder buf = new StringBuilder();
+		buf.append("│");
+		switch (card.getShape())
+		{
+			case CIRCLE -> {
+				if (card.getFilling() == Card.Filling.HOLLOW)
+				{
+					buf.append("○");
+				} else
+				{
+					buf.append("●");
+				}
+			}
+			case TRIANGLE -> {
+				if (card.getFilling() == Card.Filling.HOLLOW)
+				{
+					buf.append("▵");
+				} else
+				{
+					buf.append("▲");
+				}
+			}
+			case SQUARE -> {
+				if (card.getFilling() == Card.Filling.HOLLOW)
+				{
+					buf.append("▫");
+				} else
+				{
+					buf.append("▪");
+				}
+			}
+		}
+		buf.append("│ ");
+		switch (card.getColor())
+		{
+			case BLUE -> System.out.print(colorize(buf.toString(), BLUE_TEXT()));
+			case GREEN -> System.out.print(colorize(buf.toString(), GREEN_TEXT()));
+			case RED -> System.out.print(colorize(buf.toString(), RED_TEXT()));
+		}
+
+	}
 	@Override
 	public boolean equals(Object o)
 	{
@@ -81,4 +160,5 @@ public class Card
 				", filling=" + filling +
 				'}';
 	}
+
 }

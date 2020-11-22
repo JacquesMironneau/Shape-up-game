@@ -136,12 +136,6 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 
 	}
 
-
-	private PlayerStrategy nextPlayer(PlayerStrategy player)
-	{
-		return players.get((players.indexOf(player) + 1) % this.players.size());
-	}
-
 	@Override
 	protected  boolean isRoundFinished()
 	{
@@ -149,10 +143,12 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 		
 		for (PlayerStrategy player : players)
 		{
-			
-			if ((player.getPlayerHand().size()-1>1)) return false;
+			if ((player.getPlayerHand().size() > 1))
+			{
+				return false;
+			}
 		}
-		
+
 		for (PlayerStrategy player : players)
 		{
 			player.setVictoryCard(player.getPlayerHand().get(0));

@@ -23,11 +23,6 @@ public class ShapeUpGame extends AbstractShapeUpGame
 	@Override
 	protected void initRound()
 	{
-//		for (PlayerStrategy ps : players)
-//		{
-//			List<Card> list = ps.getPlayerHand();
-//			list = new ArrayList<>();
-//		}
 
 		this.board.getPlacedCards().clear();
 		this.deck = new LinkedList<>();
@@ -61,9 +56,13 @@ public class ShapeUpGame extends AbstractShapeUpGame
 	@Override
 	protected void playTurn(PlayerStrategy player) throws PlayerHandEmptyException, boardEmptyException
 	{
+		System.out.println(player.getName() +"'s turn !");
+
+		System.out.println("Your victory card is:");
+		Card.printSingleCard(player.getVictoryCard());
+
 		drawCard(player);
 
-		System.out.println(player.getName() +"'s turn !");
 		if (this.isFirstTurn)
 		{
 			PlaceRequest placeRequest;
@@ -134,11 +133,6 @@ public class ShapeUpGame extends AbstractShapeUpGame
 
 	}
 
-
-	private PlayerStrategy nextPlayer(PlayerStrategy player)
-	{
-		return players.get((players.indexOf(player) + 1) % this.players.size());
-	}
 
 	@Override
 	protected  boolean isRoundFinished()

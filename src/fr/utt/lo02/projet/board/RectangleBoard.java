@@ -174,10 +174,9 @@ public class RectangleBoard extends AbstractBoard
 			for (int i = minAbscissa; i <= maxAbscissa; i++)
 			{
 				Card card = placedCards.get(new Coordinates(i, j));
-//				System.out.println(card);
 				if (card != null)
 				{
-					printTop(card.getColor());
+					Card.printTop(card.getColor());
 				} else
 					System.out.print("   ");
 
@@ -187,11 +186,9 @@ public class RectangleBoard extends AbstractBoard
 			for (int i = minAbscissa; i <= maxAbscissa; i++)
 			{
 				Card card = placedCards.get(new Coordinates(i, j));
-//				System.out.println(card);
-
 				if (card != null)
 				{
-					printMiddle(card);
+					Card.printMiddle(card);
 				} else
 					System.out.print("   ");
 
@@ -202,11 +199,10 @@ public class RectangleBoard extends AbstractBoard
 			for (int i = minAbscissa; i <= maxAbscissa; i++)
 			{
 				Card card = placedCards.get(new Coordinates(i, j));
-//				System.out.println(card);
 
 				if (card != null)
 				{
-					printBottom(card.getColor());
+					Card.printBottom(card.getColor());
 				} else
 					System.out.print("   ");
 
@@ -218,71 +214,5 @@ public class RectangleBoard extends AbstractBoard
 
 
 	}
-
-	private void printBottom(Card.Color color)
-	{
-		switch (color)
-		{
-			case RED -> System.out.print(colorize("└─┘ ", RED_TEXT()));
-			case BLUE -> System.out.print(colorize("└─┘ ", BLUE_TEXT()));
-			case GREEN -> System.out.print(colorize("└─┘ ", GREEN_TEXT()));
-		}
-	}
-
-	private void printMiddle(Card card)
-	{
-		StringBuilder buf = new StringBuilder();
-		buf.append("│");
-		switch (card.getShape())
-		{
-			case CIRCLE -> {
-				if (card.getFilling() == Card.Filling.HOLLOW)
-				{
-					buf.append("○");
-				} else
-				{
-					buf.append("●");
-				}
-			}
-			case TRIANGLE -> {
-				if (card.getFilling() == Card.Filling.HOLLOW)
-				{
-					buf.append("▵");
-				} else
-				{
-					buf.append("▲");
-				}
-			}
-			case SQUARE -> {
-				if (card.getFilling() == Card.Filling.HOLLOW)
-				{
-					buf.append("▫");
-				} else
-				{
-					buf.append("▪");
-				}
-			}
-		}
-		buf.append("│ ");
-		switch (card.getColor())
-		{
-			case BLUE -> System.out.print(colorize(buf.toString(), BLUE_TEXT()));
-			case GREEN -> System.out.print(colorize(buf.toString(), GREEN_TEXT()));
-			case RED -> System.out.print(colorize(buf.toString(), RED_TEXT()));
-		}
-
-	}
-
-	private void printTop(Card.Color color)
-	{
-		switch (color)
-		{
-			case RED -> System.out.print(colorize("┌─┐ ", RED_TEXT()));
-			case BLUE -> System.out.print(colorize("┌─┐ ", BLUE_TEXT()));
-			case GREEN -> System.out.print(colorize("┌─┐ ", GREEN_TEXT()));
-		}
-
-	}
-
 
 }

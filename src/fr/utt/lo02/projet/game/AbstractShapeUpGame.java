@@ -104,6 +104,8 @@ public abstract class AbstractShapeUpGame
 		Card aCard = placeRequest.getCard();
 		Coordinates coord = placeRequest.getCoordinates();
 
+		if (!player.getPlayerHand().contains(aCard)) return false;
+
 		boolean cardInTheLayout = board.isCardInTheLayout(coord);
 		boolean cardAdjacentToAnExistingCard = true;
 
@@ -136,8 +138,6 @@ public abstract class AbstractShapeUpGame
 
 		if (origin.equals(destination)) return false;
 
-
-
 		Card card = this.board.getPlacedCards().get(origin);
 
 		if (card == null) return false;
@@ -147,6 +147,7 @@ public abstract class AbstractShapeUpGame
 		if (board.getPlacedCards().isEmpty())
 		{
 			board.addCard(destination, card);
+			System.out.println("[LOG] " + card + " has been moved from" + origin + "to "+ destination);
 			return true;
 		}
 		boolean cardAdjacentToAnExistingCard = board.isCardAdjacent(destination);
@@ -173,7 +174,8 @@ public abstract class AbstractShapeUpGame
 	 */
 	public void drawCard(PlayerStrategy player)
 	{
-		player.drawCard(this.deck.poll());
+		if (!this.deck.isEmpty())
+			player.drawCard(this.deck.poll());
 	}
 
 	/**
@@ -196,6 +198,11 @@ public abstract class AbstractShapeUpGame
 			p.displayRoundScore();
 		}
 
+	}
+
+	protected PlayerStrategy nextPlayer(PlayerStrategy player)
+	{
+		return players.get((players.indexOf(player) + 1) % this.players.size());
 	}
 
 	protected void initDeck()
