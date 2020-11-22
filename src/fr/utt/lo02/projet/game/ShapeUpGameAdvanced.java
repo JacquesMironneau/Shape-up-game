@@ -24,11 +24,6 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 	@Override
 	protected void initRound()
 	{
-//		for (PlayerStrategy ps : players)
-//		{
-//			List<Card> list = ps.getPlayerHand();
-//			list = new ArrayList<>();
-//		}
 		for (PlayerStrategy player : players)
 		{
 			player.getPlayerHand().clear();
@@ -41,7 +36,7 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 
 		// Remove hidden card
 		this.deck.poll();
-		// Draw victory cards to players
+		// Draw cards to players
 		for (PlayerStrategy player : players)
 		{
 			player.getPlayerHand().add(this.deck.poll());
@@ -150,19 +145,19 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 	@Override
 	protected  boolean isRoundFinished()
 	{
-		boolean victoryCards = false;
-		if(players.get(players.size()-1).getPlayerHand().size()-1==1) {
-			for (PlayerStrategy player : players)
-			{
-				player.setVictoryCard(player.getPlayerHand().get(0));
-			}
-			victoryCards = true;
-		}
+		if (!deck.isEmpty()) return false;
+		
 		for (PlayerStrategy player : players)
 		{
-			if (!(player.getPlayerHand().size()-1==1)) return false;
+			
+			if ((player.getPlayerHand().size()-1>1)) return false;
 		}
 		
-		return deck.isEmpty()&victoryCards;
+		for (PlayerStrategy player : players)
+		{
+			player.setVictoryCard(player.getPlayerHand().get(0));
+		}
+		
+		return true;
 	}
 }
