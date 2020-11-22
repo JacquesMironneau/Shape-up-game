@@ -74,6 +74,8 @@ public abstract class PlayerStrategy
 
 	public void drawCard(Card card)
 	{
+		System.out.println("You have draw :");
+		Card.printSingleCard(card);
 		this.playerHand.add(card);
 	}
 
