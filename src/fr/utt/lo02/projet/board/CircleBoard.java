@@ -13,6 +13,15 @@ import java.util.*;
 public class CircleBoard extends AbstractBoard
 {
 
+	private static final String SPACE_BETWEEN_CARDS = "    ";
+
+	private static final String SPACE_FIRST_LAST_ROW = "         ";
+
+	private static final String SPACE_SECOND_FOURTH_ROW = "     ";
+
+	private static final String SPACE_MIDDLE_ROW = " ";
+
+
 	private final List<Coordinates> pattern;
 
 	public CircleBoard()
@@ -137,7 +146,6 @@ public class CircleBoard extends AbstractBoard
 		Map<Coordinates,Card> map = retrievePattern();
 		addMissingEmptyCase(map);
 		printPattern(map);
-
 	}
 
 	private void initPattern()
@@ -184,9 +192,9 @@ public class CircleBoard extends AbstractBoard
 		{
 			switch (spaceNumber)
 			{
-				case 0, 4 -> space = "     ";
-				case 1, 3 -> space = "   ";
-				case 2 -> space = " ";
+				case 0, 4 -> space = SPACE_FIRST_LAST_ROW;
+				case 1, 3 -> space = SPACE_SECOND_FOURTH_ROW;
+				case 2 -> space = SPACE_MIDDLE_ROW;
 			}
 			spaceNumber++;
 			abscissaCoordinates = new HashSet<>();
@@ -207,9 +215,10 @@ public class CircleBoard extends AbstractBoard
 				if (card != null)
 				{
 					Card.printTop(card.getColor());
+					System.out.print(SPACE_BETWEEN_CARDS);
 				}
 				else
-					System.out.print("   ");
+					printNullCard();
 
 			}
 			System.out.println();
@@ -223,9 +232,11 @@ public class CircleBoard extends AbstractBoard
 				if (card != null)
 				{
 					Card.printMiddle(card);
+					System.out.print(SPACE_BETWEEN_CARDS);
+
 				}
 				else
-					System.out.print("   ");
+					printNullCard();
 
 
 			}
@@ -242,15 +253,21 @@ public class CircleBoard extends AbstractBoard
 				if (card != null)
 				{
 					Card.printBottom(card.getColor());
+					System.out.print(SPACE_BETWEEN_CARDS);
+
 
 				}
 				else
-					System.out.print("   ");
+					printNullCard();
 			}
 
 			System.out.println();
-
 		}
+	}
+
+	private void printNullCard()
+	{
+		System.out.print("       ");
 	}
 }
 

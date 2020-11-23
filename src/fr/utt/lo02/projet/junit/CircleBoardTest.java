@@ -74,7 +74,6 @@ class CircleBoardTest
 		board.getPlacedCards().put(new Coordinates(4,-1), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
 		board.getPlacedCards().put(new Coordinates(5,-2), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
 		board.getPlacedCards().put(new Coordinates(4,-2), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
-		System.out.println("aa");
 		board.display();
 
 		assertTrue(board.isCardInTheLayout(new Coordinates(5,-1)));
