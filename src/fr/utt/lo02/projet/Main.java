@@ -1,5 +1,7 @@
 package fr.utt.lo02.projet;
 
+import fr.utt.lo02.projet.board.AbstractBoard;
+import fr.utt.lo02.projet.board.CircleBoard;
 import fr.utt.lo02.projet.board.RectangleBoard;
 import fr.utt.lo02.projet.board.boardEmptyException;
 import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
@@ -19,14 +21,14 @@ public class Main
 	public static void main(String[] args) throws PlayerHandEmptyException, boardEmptyException
 	{
 		// TODO Auto-generated method stub
-		RectangleBoard rb = new RectangleBoard();
+		AbstractBoard rb = new CircleBoard();
 		List<PlayerStrategy> ps = new ArrayList<>();
 		ps.add(new VirtualPlayer("ord1",rb));
 		ps.add(new VirtualPlayer("ord2",rb));
 		ps.add(new VirtualPlayer("ord3",rb));
 
 
-		new ShapeUpGameAdvanced(new ScoreCalculatorVisitor(), ps, rb).playGame();
+		new ShapeUpGame(new ScoreCalculatorVisitor(), ps, rb).playGame();
 	}
 
 }

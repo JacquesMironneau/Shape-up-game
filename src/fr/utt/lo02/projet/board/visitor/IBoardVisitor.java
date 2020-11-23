@@ -20,7 +20,7 @@ public interface IBoardVisitor {
 	 * @param victoryCard The victory card associated with the score
 	 * @return the value of the score
 	 */
-	public abstract int visit(CircleBoard board, Card victoryCard);
+	int visit(CircleBoard board, Card victoryCard);
 	
 	/**
 	 * Calculate the score for a TriangleBoard
@@ -28,7 +28,7 @@ public interface IBoardVisitor {
 	 * @param victoryCard The victory card associated with the score
 	 * @return the value of the score
 	 */
-	public abstract int visit(TriangleBoard board, Card victoryCard);
+	int visit(TriangleBoard board, Card victoryCard);
 	
 	/**
 	 * Calculate the score for a RectangleBoard
@@ -36,7 +36,7 @@ public interface IBoardVisitor {
 	 * @param victoryCard The victory card associated with the score
 	 * @return the value of the score
 	 */
-	public abstract int visit(RectangleBoard board, Card victoryCard);
+	int visit(RectangleBoard board, Card victoryCard);
 	
 }
 	
