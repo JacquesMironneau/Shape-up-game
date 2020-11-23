@@ -94,7 +94,7 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 						do
 						{
 							request = player.askMoveCard();
-						} while (!moveCardRequest(request));
+						} while (!moveCardRequest(request, player));
 						board.display();
 
 					}
@@ -104,7 +104,7 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 					do
 					{
 						request = player.askMoveCard();
-					} while (!moveCardRequest(request));
+					} while (!moveCardRequest(request, player));
 
 					board.display();
 

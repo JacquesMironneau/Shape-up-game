@@ -53,7 +53,7 @@ public abstract class PlayerStrategy
 	public void displayRoundScore()
 	{
 		int score = scoresRound.get(scoresRound.size()-1);
-		System.out.println(name + "Score : "+ score);
+		System.out.println(name + " score : "+ score);
 	}
 
 	public void displayFinalScore() {
@@ -64,7 +64,7 @@ public abstract class PlayerStrategy
 			roundNumber++;
 			finalScore += scores;
 		}
-		System.out.println("Player " + name + " : FINAL SCORE = " + finalScore);
+		System.out.println(name + " : FINAL SCORE = " + finalScore);
 	}
 
 	public void setVictoryCard(Card victoryCard)

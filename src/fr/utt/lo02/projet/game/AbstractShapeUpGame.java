@@ -6,6 +6,7 @@ import fr.utt.lo02.projet.strategy.MoveRequest;
 import fr.utt.lo02.projet.strategy.PlaceRequest;
 import fr.utt.lo02.projet.strategy.PlayerHandEmptyException;
 import fr.utt.lo02.projet.strategy.PlayerStrategy;
+import fr.utt.lo02.projet.strategy.RealPlayer;
 
 import java.util.*;
 
@@ -136,7 +137,10 @@ public abstract class AbstractShapeUpGame
 
 			return true;
 		}
-		System.out.println("Please choose a correct location");
+		if (player instanceof RealPlayer) {
+			System.out.println("Please choose a correct location");
+		}
+		
 		return false;
 	}
 
@@ -146,7 +150,7 @@ public abstract class AbstractShapeUpGame
 	 * @param moveRequest player request
 	 * @return if the card has been moved or not
 	 */
-	public boolean moveCardRequest(MoveRequest moveRequest)
+	public boolean moveCardRequest(MoveRequest moveRequest, PlayerStrategy player)
 	{
 		Coordinates origin = moveRequest.getOrigin();
 		Coordinates destination = moveRequest.getDestination();
@@ -170,14 +174,14 @@ public abstract class AbstractShapeUpGame
 
 		if (cardAdjacentToAnExistingCard && cardInTheLayout)
 		{
-			//board.removeCard(origin, card);
 			board.addCard(destination, card);
 			System.out.println("[LOG] " + card + " has been moved from" + origin + "to "+ destination);
 			return true;
 		}
 		board.addCard(origin,card);
-
-		//System.out.println("Please choose a correct movement");
+		if (player instanceof RealPlayer) {
+			System.out.println("Please choose a correct movement");
+		}
 		return false;
 	}
 

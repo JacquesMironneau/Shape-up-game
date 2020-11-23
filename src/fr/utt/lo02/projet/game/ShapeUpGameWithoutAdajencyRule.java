@@ -7,6 +7,7 @@ import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 import fr.utt.lo02.projet.strategy.MoveRequest;
 import fr.utt.lo02.projet.strategy.PlaceRequest;
 import fr.utt.lo02.projet.strategy.PlayerStrategy;
+import fr.utt.lo02.projet.strategy.RealPlayer;
 
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class ShapeUpGameWithoutAdajencyRule extends ShapeUpGame
 	 * @return if the card has been moved or not
 	 */
 	@Override
-	public boolean moveCardRequest(MoveRequest moveRequest)
+	public boolean moveCardRequest(MoveRequest moveRequest, PlayerStrategy player)
 	{
 		Coordinates origin = moveRequest.getOrigin();
 		Coordinates destination = moveRequest.getDestination();
@@ -81,7 +82,9 @@ public class ShapeUpGameWithoutAdajencyRule extends ShapeUpGame
 			return true;
 		}
 		board.addCard(origin,card);
-
+		if (player instanceof RealPlayer) {
+			System.out.println("Please choose a correct movement");
+		}
 		return false;
 	}
 }
