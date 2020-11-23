@@ -89,80 +89,113 @@ public class CircleBoard extends AbstractBoard
 	public void display()
 	{
 		if (placedCards.isEmpty()) return;
-		// Store every abscissas and ordinates in different lists.
-		Set<Integer> abscissaCoordinates = new HashSet<>();
+		
+		// Store every ordinates in different lists.
 		Set<Integer> ordinateCoordinates = new HashSet<>();
 
 		for (Coordinates coord : placedCards.keySet())
 		{
-			abscissaCoordinates.add(coord.getX());
 			ordinateCoordinates.add(coord.getY());
 		}
 
-		int maxAbscissa = Collections.max(abscissaCoordinates);
-		int minAbscissa = Collections.min(abscissaCoordinates);
 		int minOrdinate = Collections.min(ordinateCoordinates);
 		int maxOrdinate = Collections.max(ordinateCoordinates);
 
+		// Je récup la top left card comme dans le isCardInTheLayout
+		List<Coordinates> list = new ArrayList<>(placedCards.keySet());
+		Iterator<Coordinates> iterator = list.iterator();
+		Coordinates topLeftCard = iterator.next();
+
+		while (iterator.hasNext())
+			{
+				Coordinates key = iterator.next();
+			if (Coordinates.isOneMoreTopLeftThanTwo(key, topLeftCard))
+				{
+					topLeftCard = key;
+				}
+			}
+		
 		int spaceNumber = 0;
 		String space = "";
 
+		// On parcourt toutes les lignes du jeu
 		for (int j = maxOrdinate; j >= minOrdinate; j--)
 		{
+			//Même chose que t'avais fait sauf que j'ai décrémenté spaceNumber 
+			//pour avoir des chiffres correspondants aux ordonnées du pattern
 			switch (spaceNumber)
 			{
-				case 0, 4 -> space = "    ";
-				case 1, 3 -> space = "  ";
-				case 2 -> space = " ";
+				case 0, -4 -> space = "    ";
+				case -1, -3 -> space = "  ";
+				case -2 -> space = " ";
 			}
-			spaceNumber++;
-
-			for (int i = minAbscissa; i <= maxAbscissa; i++)
+			spaceNumber--;
+			//booléen qui se réinitialise à vrai à chaque fois qu'on parcourt une nouvelle ligne
+			boolean firstCardOnTheRow = true;
+			
+			//On parcourt mnt toutes les cartes du pattern
+			for (Coordinates patternCoord : pattern)
 			{
-				if (i == minAbscissa)
-					System.out.print(space);
-				Card card = placedCards.get(new Coordinates(i, j));
-				if (card != null)
-				{
-					Card.printTop(card.getColor());
-				} else
-					System.out.print("    ");
-
-			}
-			System.out.println();
-
-			for (int i = minAbscissa; i <= maxAbscissa; i++)
-			{
-				if (i == minAbscissa)
-					System.out.print(space);
-
-				Card card = placedCards.get(new Coordinates(i, j));
-				if (card != null)
-				{
-					Card.printMiddle(card);
+				//Si la carte du pattern parcourue n'est pas sur la ligne qu'on vérifie,
+				//on fait rien et on passe à la suivante
+				if (patternCoord.getY()==spaceNumber) {
+					//Si c'est la première carte de la ligne on print l'espace
+					//On met à faux le bool: pas d'espace pour les autres cartes de la ligne
+					if (firstCardOnTheRow) {
+						System.out.print(space);
+						firstCardOnTheRow = false;
+					}
+					//On projete la carte du pattern parcourue avec des coordonnées correspondantes à notre partie
+					//à l'aide de la top left card du board
+					Coordinates patternCoordInGame = new Coordinates(topLeftCard.getX() + patternCoord.getX(), topLeftCard.getY() + patternCoord.getY());
+					//Si la carte du pattern avec ses coordonnées projetées existe dans le jeu, on la print
+					if (placedCards.containsKey(patternCoordInGame))
+					{
+						Card.printTop(placedCards.get(patternCoordInGame).getColor());
+					} else { //Sinon on met un espace
+						System.out.print("    ");
+					}
 				}
-			else
-			System.out.print("    ");
 
 			}
 			System.out.println();
 
-
-			for (int i = minAbscissa; i <= maxAbscissa; i++)
+			for (Coordinates patternCoord : pattern)
 			{
-				if (i == minAbscissa)
-					System.out.print(space);
-
-				Card card = placedCards.get(new Coordinates(i, j));
-
-				if (card != null)
-				{
-					Card.printBottom(card.getColor());
-
-				} else
-					System.out.print("    ");
+				if (patternCoord.getY()==spaceNumber) {
+					if (firstCardOnTheRow) {
+						System.out.print(space);
+						firstCardOnTheRow = false;
+					}
+					Coordinates patternCoordInGame = new Coordinates(topLeftCard.getX() + patternCoord.getX(), topLeftCard.getY() + patternCoord.getY());
+					if (placedCards.containsKey(patternCoordInGame))
+					{
+						Card.printMiddle(placedCards.get(patternCoordInGame));
+					} else {
+						System.out.print("    ");
+					}
+				}
 			}
+			System.out.println();
 
+
+			for (Coordinates patternCoord : pattern)
+			{
+				if (patternCoord.getY()==spaceNumber) {
+					if (firstCardOnTheRow) {
+						System.out.print(space);
+						firstCardOnTheRow = false;
+					}
+					Coordinates patternCoordInGame = new Coordinates(topLeftCard.getX() + patternCoord.getX(), topLeftCard.getY() + patternCoord.getY());
+					if (placedCards.containsKey(patternCoordInGame))
+					{
+						Card.printBottom(placedCards.get(patternCoordInGame).getColor());
+					} else {
+						System.out.print("    ");
+					}	
+					
+				}
+			}
 			System.out.println();
 
 		}
