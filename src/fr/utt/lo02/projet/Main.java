@@ -7,6 +7,7 @@ import fr.utt.lo02.projet.board.boardEmptyException;
 import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.game.ShapeUpGame;
 import fr.utt.lo02.projet.game.ShapeUpGameAdvanced;
+import fr.utt.lo02.projet.game.ShapeUpGameWithoutAdajencyRule;
 import fr.utt.lo02.projet.strategy.PlayerHandEmptyException;
 import fr.utt.lo02.projet.strategy.PlayerStrategy;
 import fr.utt.lo02.projet.strategy.RealPlayer;
@@ -25,10 +26,12 @@ public class Main
 		List<PlayerStrategy> ps = new ArrayList<>();
 		ps.add(new VirtualPlayer("ord1",rb));
 		ps.add(new VirtualPlayer("ord2",rb));
-		ps.add(new VirtualPlayer("ord3",rb));
+		ps.add(new VirtualPlayer("ord2",rb));
+		ps.add(new VirtualPlayer("ord2",rb));
+		//ps.add(new VirtualPlayer("ord3",rb));
 
 
-		new ShapeUpGame(new ScoreCalculatorVisitor(), ps, rb).playGame();
+		new ShapeUpGameWithoutAdajencyRule(new ScoreCalculatorVisitor(), ps, rb).playGame();
 	}
 
 }
