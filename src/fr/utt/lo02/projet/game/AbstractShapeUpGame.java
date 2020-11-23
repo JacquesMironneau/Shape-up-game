@@ -1,18 +1,13 @@
 package fr.utt.lo02.projet.game;
 
-import fr.utt.lo02.projet.board.AbstractBoard;
-import fr.utt.lo02.projet.board.boardEmptyException;
-import fr.utt.lo02.projet.board.Card;
-import fr.utt.lo02.projet.board.Coordinates;
+import fr.utt.lo02.projet.board.*;
 import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 import fr.utt.lo02.projet.strategy.MoveRequest;
 import fr.utt.lo02.projet.strategy.PlaceRequest;
 import fr.utt.lo02.projet.strategy.PlayerHandEmptyException;
 import fr.utt.lo02.projet.strategy.PlayerStrategy;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public abstract class AbstractShapeUpGame
 {
@@ -79,7 +74,27 @@ public abstract class AbstractShapeUpGame
 	/**
 	 * Initiate a round
 	 */
-	protected abstract void initRound();
+	protected void initRound()
+	{
+		this.board.getPlacedCards().clear();
+		this.deck = new LinkedList<>();
+		initDeck();
+		Collections.shuffle((LinkedList<Card>) this.deck);
+
+		for (PlayerStrategy player : players)
+		{
+			player.getPlayerHand().clear();
+		}
+
+		// Remove hidden card
+		this.deck.poll();
+
+		if (board instanceof CircleBoard)
+		{
+			this.deck.poll();
+		}
+		this.isFirstTurn = true;
+	}
 
 
 	/**

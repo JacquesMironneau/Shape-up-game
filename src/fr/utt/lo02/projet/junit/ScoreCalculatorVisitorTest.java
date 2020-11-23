@@ -47,9 +47,9 @@ class ScoreCalculatorVisitorTest {
 		board.getPlacedCards().put(new Coordinates(3,-2), new Card(Card.Color.BLUE,Card.Shape.SQUARE,Card.Filling.HOLLOW));
 		board.getPlacedCards().put(new Coordinates(4,-2), new Card(Card.Color.GREEN,Card.Shape.SQUARE,Card.Filling.FILLED));
 		ScoreCalculatorVisitor test = new ScoreCalculatorVisitor();
-		assertTrue(test.visit(board, victoryCardA)==13);
-		assertTrue(test.visit(board, victoryCardB)==10);
-		assertTrue(test.visit(board, victoryCardC)==12);
+		assertEquals(test.visit(board, victoryCardA), 13);
+		assertEquals(test.visit(board, victoryCardB), 10);
+		assertEquals(test.visit(board, victoryCardC), 12);
 	}
 	
 	@Test
@@ -71,9 +71,9 @@ class ScoreCalculatorVisitorTest {
 		board.getPlacedCards().put(new Coordinates(0,-3), new Card(Card.Color.BLUE,Card.Shape.SQUARE,Card.Filling.HOLLOW));
 		board.getPlacedCards().put(new Coordinates(0,-4), new Card(Card.Color.GREEN,Card.Shape.SQUARE,Card.Filling.FILLED));
 		ScoreCalculatorVisitor test = new ScoreCalculatorVisitor();
-		assertTrue(test.visit(board, victoryCardA)==13);
-		assertTrue(test.visit(board, victoryCardB)==10);
-		assertTrue(test.visit(board, victoryCardC)==12);
+		assertEquals(test.visit(board, victoryCardA), 13);
+		assertEquals(test.visit(board, victoryCardB), 10);
+		assertEquals(test.visit(board, victoryCardC), 12);
 	}
 	
 	@Test
@@ -95,10 +95,10 @@ class ScoreCalculatorVisitorTest {
 		board.getPlacedCards().put(new Coordinates(0,-4), new Card(Card.Color.GREEN,Card.Shape.SQUARE,Card.Filling.FILLED));
 		ScoreCalculatorVisitor test = new ScoreCalculatorVisitor();
 		victoryCardD = new Card(Card.Color.BLUE,Card.Shape.TRIANGLE,Card.Filling.FILLED);
-		assertTrue(test.visit(board, victoryCardA)==13);
-		assertTrue(test.visit(board, victoryCardB)==7);
-		assertTrue(test.visit(board, victoryCardC)==12);
-		assertTrue(test.visit(board, victoryCardD)==6);
+		assertEquals(test.visit(board, victoryCardA), 13);
+		assertEquals(test.visit(board, victoryCardB), 7);
+		assertEquals(test.visit(board, victoryCardC), 12);
+		assertEquals(test.visit(board, victoryCardD), 6);
 	}
 	
 	
@@ -121,10 +121,10 @@ class ScoreCalculatorVisitorTest {
 		board.getPlacedCards().put(new Coordinates(4,-2), new Card(Card.Color.GREEN,Card.Shape.SQUARE,Card.Filling.FILLED));
 		ScoreCalculatorVisitor test = new ScoreCalculatorVisitor();
 		victoryCardD = new Card(Card.Color.GREEN,Card.Shape.SQUARE,Card.Filling.HOLLOW);
-		assertTrue(test.visit(board, victoryCardA)==6);
-		assertTrue(test.visit(board, victoryCardB)==10);
-		assertTrue(test.visit(board, victoryCardC)==9);
-		assertTrue(test.visit(board, victoryCardD)==6);
+		assertEquals(test.visit(board, victoryCardA), 6);
+		assertEquals(test.visit(board, victoryCardB), 10);
+		assertEquals(test.visit(board, victoryCardC), 9);
+		assertEquals(test.visit(board, victoryCardD), 6);
 	}
 	
 	@Test
@@ -140,9 +140,9 @@ class ScoreCalculatorVisitorTest {
 		board.getPlacedCards().put(new Coordinates(1,-2), new Card(Card.Color.BLUE,Card.Shape.CIRCLE,Card.Filling.FILLED));
 		board.getPlacedCards().put(new Coordinates(2,-2), new Card(Card.Color.BLUE,Card.Shape.CIRCLE,Card.Filling.HOLLOW));
 		ScoreCalculatorVisitor test = new ScoreCalculatorVisitor();
-		assertTrue(test.visit(board, victoryCardA)==13);
-		assertTrue(test.visit(board, victoryCardB)==6);
-		assertTrue(test.visit(board, victoryCardC)==8);
+		assertEquals(test.visit(board, victoryCardA), 13);
+		assertEquals(test.visit(board, victoryCardB), 6);
+		assertEquals(test.visit(board, victoryCardC), 8);
 	}
 	
 	@Test
@@ -153,9 +153,10 @@ class ScoreCalculatorVisitorTest {
 			board.getPlacedCards().put(new Coordinates(0,-1), new Card(Card.Color.GREEN,Card.Shape.TRIANGLE,Card.Filling.FILLED));
 			board.getPlacedCards().put(new Coordinates(1,-1), new Card(Card.Color.GREEN,Card.Shape.CIRCLE,Card.Filling.FILLED));
 			ScoreCalculatorVisitor test = new ScoreCalculatorVisitor();
-			assertTrue(test.visit(board, victoryCardA)==1);
-			assertTrue(test.visit(board, victoryCardB)==1);
-			assertTrue(test.visit(board, victoryCardC)==1);
+
+			assertEquals(test.visit(board, victoryCardA), 1);
+			assertEquals(test.visit(board, victoryCardB), 1);
+			assertEquals(test.visit(board, victoryCardC), 1);
 	}
 	
 	@Test
@@ -163,9 +164,15 @@ class ScoreCalculatorVisitorTest {
 		board = new RectangleBoard();
 		board.getPlacedCards().put(new Coordinates(0,0), new Card(Card.Color.RED,Card.Shape.TRIANGLE,Card.Filling.HOLLOW));
 		ScoreCalculatorVisitor test = new ScoreCalculatorVisitor();
-		assertTrue(test.visit(board, victoryCardA)==0);
-		assertTrue(test.visit(board, victoryCardB)==0);
-		assertTrue(test.visit(board, victoryCardC)==0);
+		assertEquals(test.visit(board, victoryCardA), 0);
+		assertEquals(test.visit(board, victoryCardB), 0);
+		assertEquals(test.visit(board, victoryCardC), 0);
+	}
+
+	@Test
+	void caseCircle1()
+	{
+
 	}
 
 }

@@ -36,16 +36,6 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 	 * @param victoryCard, the victory card associated with the score
 	 */
 	public int visit(CircleBoard board, Card victoryCard) {
-		int score=1;
-		return score;
-	}
-
-	/**
-	 * This method calculate and return score for a triangle board, one of the board variants.
-	 * @param board, the triangle board
-	 * @param victoryCard, the victory card associated with the score
-	 */
-	public int visit(TriangleBoard board, Card victoryCard) {
 		Shape victoryShape = victoryCard.getShape();
 		Color victoryColor = victoryCard.getColor();
 		Filling victoryFilling = victoryCard.getFilling();
@@ -53,7 +43,7 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 		int width=4;
 		int height=5;
 		boolean isARow;
-	
+
 		// We recover coordinates of the placed Cards.
 		Set<Coordinates> listKeys = board.getPlacedCards().keySet();
 		Iterator<Coordinates> iterator = listKeys.iterator();
@@ -88,6 +78,15 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 			final_score += calculateScoreOfFillingRow(fillingList, height, victoryFilling);
 		}
 		return final_score;
+	}
+
+	/**
+	 * This method calculate and return score for a triangle board, one of the board variants.
+	 * @param board, the triangle board
+	 * @param victoryCard, the victory card associated with the score
+	 */
+	public int visit(TriangleBoard board, Card victoryCard) {
+		return -1;
 	}
 
 	/**

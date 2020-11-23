@@ -2,6 +2,7 @@ package fr.utt.lo02.projet.game;
 
 
 import fr.utt.lo02.projet.board.AbstractBoard;
+import fr.utt.lo02.projet.board.CircleBoard;
 import fr.utt.lo02.projet.board.boardEmptyException;
 import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
@@ -23,22 +24,13 @@ public class ShapeUpGame extends AbstractShapeUpGame
 	@Override
 	protected void initRound()
 	{
+		super.initRound();
 
-		this.board.getPlacedCards().clear();
-		this.deck = new LinkedList<>();
-		initDeck();
-
-		Collections.shuffle((LinkedList<Card>) this.deck);
-
-		// Remove hidden card
-		this.deck.poll();
 		// Draw victory cards to players
 		for (PlayerStrategy player : players)
 		{
 			player.setVictoryCard(this.deck.poll());
 		}
-
-		this.isFirstTurn = true;
 	}
 
 	@Override

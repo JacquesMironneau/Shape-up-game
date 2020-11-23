@@ -24,18 +24,8 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 	@Override
 	protected void initRound()
 	{
-		for (PlayerStrategy player : players)
-		{
-			player.getPlayerHand().clear();
-		}
-		this.board.getPlacedCards().clear();
-		this.deck = new LinkedList<>();
-		initDeck();
+		super.initRound();
 
-		Collections.shuffle((LinkedList<Card>) this.deck);
-
-		// Remove hidden card
-		this.deck.poll();
 		// Draw cards to players
 		for (PlayerStrategy player : players)
 		{
@@ -44,7 +34,6 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 			player.getPlayerHand().add(this.deck.poll());
 		}
 
-		this.isFirstTurn = true;
 	}
 
 	@Override
