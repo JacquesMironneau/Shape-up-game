@@ -46,8 +46,48 @@ public class ScoreCalculatorVisitor implements IBoardVisitor {
 	 * @param victoryCard, the victory card associated with the score
 	 */
 	public int visit(TriangleBoard board, Card victoryCard) {
-		int score=1;
-		return score;
+		Shape victoryShape = victoryCard.getShape();
+		Color victoryColor = victoryCard.getColor();
+		Filling victoryFilling = victoryCard.getFilling();
+		int final_score=0;
+		int width=4;
+		int height=5;
+		boolean isARow;
+	
+		// We recover coordinates of the placed Cards.
+		Set<Coordinates> listKeys = board.getPlacedCards().keySet();
+		Iterator<Coordinates> iterator = listKeys.iterator();
+		Coordinates topLeftCard = iterator.next();
+		//We recover the card which is in the top left corner of the rectangle.
+		while (iterator.hasNext()) {
+			Coordinates key = iterator.next();
+			if (Coordinates.isOneMoreTopLeftThanTwo(key,topLeftCard)) {
+				topLeftCard = key;
+			}
+		}
+		//We browse each row and add the row score in the final score each time, for each card's attribute.
+		for (int i=0; i<height; i++) {
+			isARow=true;
+			Coordinates nextCard = new Coordinates(topLeftCard.getX(), topLeftCard.getY()-i);
+			ArrayList<Card.Color> colorList = colorListOfOneRow(board.getPlacedCards(), width, nextCard, isARow);
+			final_score += calculateScoreOfColorRow(colorList, width, victoryColor);
+			ArrayList<Card.Shape> shapeList = shapeListOfOneRow(board.getPlacedCards(), width, nextCard, isARow);
+			final_score += calculateScoreOfShapeRow(shapeList, width, victoryShape);
+			ArrayList<Card.Filling> fillingList = fillingListOfOneRow(board.getPlacedCards(), width, nextCard, isARow);
+			final_score += calculateScoreOfFillingRow(fillingList, width, victoryFilling);
+		}
+		//We browse each column and add the row score in the final score each time, for each card's attribute.
+		for (int j=0; j<width; j++) {
+			isARow=false;
+			Coordinates nextCard = new Coordinates(topLeftCard.getX()+j, topLeftCard.getY());
+			ArrayList<Card.Color> colorList = colorListOfOneRow(board.getPlacedCards(), height, nextCard, isARow);
+			final_score += calculateScoreOfColorRow(colorList, height, victoryColor);
+			ArrayList<Card.Shape> shapeList = shapeListOfOneRow(board.getPlacedCards(), height, nextCard, isARow);
+			final_score += calculateScoreOfShapeRow(shapeList, height, victoryShape);
+			ArrayList<Card.Filling> fillingList = fillingListOfOneRow(board.getPlacedCards(), height, nextCard, isARow);
+			final_score += calculateScoreOfFillingRow(fillingList, height, victoryFilling);
+		}
+		return final_score;
 	}
 
 	/**
