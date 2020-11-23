@@ -17,33 +17,30 @@ class CircleBoardTest
 	{
 		board = new CircleBoard();
 	}
-	/*
 	@Test
 	void testCompletePattern()
 	{
 		
-		board.getPlacedCards().put(new Coordinates(2,2), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
-		board.getPlacedCards().put(new Coordinates(3,2), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
-		board.getPlacedCards().put(new Coordinates(2,1), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
-		board.getPlacedCards().put(new Coordinates(3,1), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(2,2), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(3,2), new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(2,1), new Card(Card.Color.BLUE, Card.Shape.SQUARE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(3,1), new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
 		board.getPlacedCards().put(new Coordinates(4,1), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
-		board.getPlacedCards().put(new Coordinates(2,0), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
-		board.getPlacedCards().put(new Coordinates(3,0), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(2,0), new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(3,0), new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
 		board.getPlacedCards().put(new Coordinates(4,0), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
-		board.getPlacedCards().put(new Coordinates(5,0), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
-		board.getPlacedCards().put(new Coordinates(3,-1), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(5,0), new Card(Card.Color.BLUE, Card.Shape.SQUARE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(3,-1), new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
 		board.getPlacedCards().put(new Coordinates(4,-1), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
-		board.getPlacedCards().put(new Coordinates(5,-1), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(5,-1), new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
 		board.getPlacedCards().put(new Coordinates(4,-2), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
-		board.getPlacedCards().put(new Coordinates(5,-2), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(5,-2), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
 		board.display();
 		//assertTrue(board.isCardInTheLayout(new Coordinates(5,-2)));
 		assertFalse(board.isCardInTheLayout(new Coordinates(6,-2)));
 		assertFalse(board.isCardInTheLayout(new Coordinates(5,-3)));
 
 	}
-	*/
-	/*
 	@Test
 	void testRow()
 	{
@@ -67,8 +64,7 @@ class CircleBoardTest
 		assertFalse(board.isCardInTheLayout(new Coordinates(4,-1)));
 		assertFalse(board.isCardInTheLayout(new Coordinates(2,2)));
 	}
-	*/
-	/*@Test
+	@Test
 	void testSnake() {
 		board.getPlacedCards().put(new Coordinates(2,2), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
 		board.getPlacedCards().put(new Coordinates(3,2), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
@@ -92,7 +88,6 @@ class CircleBoardTest
 		assertFalse(board.isCardInTheLayout(new Coordinates(3,-2)));
 		assertFalse(board.isCardInTheLayout(new Coordinates(4,2)));
 	}
- */
 	@Test
 	void testSquare()
 	{
@@ -125,5 +120,30 @@ class CircleBoardTest
 		assertTrue(board.isCardInTheLayout(new Coordinates(1,-2)));
 		assertTrue(board.isCardInTheLayout(new Coordinates(0,-1)));
 		assertFalse(board.isCardInTheLayout(new Coordinates(0,-2)));
+	}
+
+	@Test
+	void testCompleteWithHoleLeftPattern()
+	{
+
+	//	board.getPlacedCards().put(new Coordinates(2,2), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(3,2), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(2,1), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(3,1), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(4,1), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(2,0), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		//board.getPlacedCards().put(new Coordinates(3,0), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(4,0), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(5,0), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(3,-1), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(4,-1), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(5,-1), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(4,-2), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		//board.getPlacedCards().put(new Coordinates(5,-2), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.display();
+		assertTrue(board.isCardInTheLayout(new Coordinates(5,-2)));
+		assertFalse(board.isCardInTheLayout(new Coordinates(6,-2)));
+		assertFalse(board.isCardInTheLayout(new Coordinates(5,-3)));
+
 	}
 }
