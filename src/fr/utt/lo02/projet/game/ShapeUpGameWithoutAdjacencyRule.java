@@ -11,10 +11,10 @@ import fr.utt.lo02.projet.strategy.RealPlayer;
 
 import java.util.List;
 
-public class ShapeUpGameWithoutAdajencyRule extends ShapeUpGame
+public class ShapeUpGameWithoutAdjacencyRule extends ShapeUpGame
 {
 
-	public ShapeUpGameWithoutAdajencyRule(IBoardVisitor visitor, List<PlayerStrategy> players, AbstractBoard board)
+	public ShapeUpGameWithoutAdjacencyRule(IBoardVisitor visitor, List<PlayerStrategy> players, AbstractBoard board)
 	{
 		super(visitor, players, board);
 	}

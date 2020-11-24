@@ -182,7 +182,6 @@ public class ScoreCalculatorVisitor implements IBoardVisitor
 		//We browse each row and add the row score in the final score each time, for each card's attribute.
 		boolean isARow;
 		int final_score = 0;
-		
 		for (int i = 0; i < height; i++)
 		{
 			isARow = true;

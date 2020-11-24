@@ -5,7 +5,7 @@ import fr.utt.lo02.projet.board.*;
 import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.game.ShapeUpGame;
 import fr.utt.lo02.projet.game.ShapeUpGameAdvanced;
-import fr.utt.lo02.projet.game.ShapeUpGameWithoutAdajencyRule;
+import fr.utt.lo02.projet.game.ShapeUpGameWithoutAdjacencyRule;
 import fr.utt.lo02.projet.strategy.PlayerHandEmptyException;
 import fr.utt.lo02.projet.strategy.PlayerStrategy;
 import fr.utt.lo02.projet.strategy.RealPlayer;
@@ -38,7 +38,7 @@ public class LaunchGame {
 				int menuChoice = readInt(3);
 				switch (menuChoice) {
 					case 1:
-						System.out.println("Welcome in Shape Up ! Before to play, you have to set up your game: ");
+						System.out.println("Welcome in Shape Up ! Please set up your game: ");
 						System.out.println("What game mode do you want to play ?");
 						System.out.println("1. Normal");
 						System.out.println("2. Advanced");
@@ -49,7 +49,7 @@ public class LaunchGame {
 							default: 
 								System.exit(0);
 						}
-						System.out.println("What form of board do you want to play ?");
+						System.out.println("Which shape of board would you like to play with ?");
 						System.out.println("1. Rectangle board");
 						System.out.println("2. Circle board ");
 						System.out.println("3. Triangle board ");
@@ -75,7 +75,7 @@ public class LaunchGame {
 						List<PlayerStrategy> players = new ArrayList<PlayerStrategy>();
 						int virtualNumber=1;
 						for (int i=1; i<=choiceNumberPlayers+1; i++) {
-							System.out.println("Is Player " + i + " a real or a virtual player ? ");
+							System.out.println("Is Pslayer " + i + " a real or a virtual player ? ");
 							System.out.println("1. Real");
 							System.out.println("2. Virtual");
 							int choiceRealOrVirtual = readInt(2);
@@ -102,7 +102,7 @@ public class LaunchGame {
 								new ShapeUpGameAdvanced(new ScoreCalculatorVisitor(), players, board).playGame();
 								break;
 							case 3: 
-								new ShapeUpGameWithoutAdajencyRule(new ScoreCalculatorVisitor(), players, board).playGame();
+								new ShapeUpGameWithoutAdjacencyRule(new ScoreCalculatorVisitor(), players, board).playGame();
 								break;
 						}
 						break;
