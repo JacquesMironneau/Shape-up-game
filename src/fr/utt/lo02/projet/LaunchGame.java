@@ -1,13 +1,7 @@
 package fr.utt.lo02.projet;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
-import fr.utt.lo02.projet.board.AbstractBoard;
-import fr.utt.lo02.projet.board.CircleBoard;
-import fr.utt.lo02.projet.board.RectangleBoard;
-import fr.utt.lo02.projet.board.TriangleBoard;
-import fr.utt.lo02.projet.board.boardEmptyException;
+import com.diogonunes.jcolor.Attribute;
+import fr.utt.lo02.projet.board.*;
 import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.game.ShapeUpGame;
 import fr.utt.lo02.projet.game.ShapeUpGameAdvanced;
@@ -17,6 +11,12 @@ import fr.utt.lo02.projet.strategy.PlayerStrategy;
 import fr.utt.lo02.projet.strategy.RealPlayer;
 import fr.utt.lo02.projet.strategy.VirtualPlayer;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import static com.diogonunes.jcolor.Ansi.colorize;
+
 public class LaunchGame {
 
 	 private static Scanner scanner = new Scanner( System.in );
@@ -24,8 +24,14 @@ public class LaunchGame {
 	public static void main(String[] args) throws PlayerHandEmptyException, boardEmptyException
 	{
 			boolean quit = false;
-			while (quit==false) {
-				System.out.println("-------------SHAPE UP-------------");
+			while (!quit) {
+				System.out.println(colorize(" ____    _                                _   _         ", Attribute.BLUE_TEXT()));
+				System.out.println(colorize("/ ___|  | |__     __ _   _ __     ___    | | | |  _ __  ", Attribute.BLUE_TEXT()));
+				System.out.println(colorize("\\___ \\  | '_ \\   / _` | | '_ \\   / _ \\   | | | | | '_ \\ ", Attribute.GREEN_TEXT()));
+				System.out.println(colorize(" ___) | | | | | | (_| | | |_) | |  __/   | |_| | | |_) |", Attribute.GREEN_TEXT()));
+				System.out.println(colorize("|____/  |_| |_|  \\__,_| | .__/   \\___|    \\___/  | .__/ ",Attribute.RED_TEXT()));
+				System.out.println(colorize("                        |_|                      |_|    ", Attribute.RED_TEXT()));
+
 				System.out.println("1. Play");
 				System.out.println("2. Rules");
 				System.out.println("3. Quit");
@@ -36,7 +42,7 @@ public class LaunchGame {
 						System.out.println("What game mode do you want to play ?");
 						System.out.println("1. Normal");
 						System.out.println("2. Advanced");
-						System.out.println("3. NoAdajency");
+						System.out.println("3. NoAdjacency");
 						int choiceMode = readInt(3);
 						switch (choiceMode) {
 							case 1, 2, 3: break;
@@ -101,7 +107,8 @@ public class LaunchGame {
 						}
 						break;
 					case 2: 
-						System.out.println("RULES blablablablablabla");
+						System.out.println("For the rules\n \tSee: https://github.com/PashmiDev/Shape-up-game/");
+						System.out.println("\n\n");
 						break;
 					case 3:
 						System.out.println("Thanks for playing !");
@@ -119,7 +126,7 @@ public class LaunchGame {
 			switch (possibilities) {
 			case 2:
 				do {
-					choice = scanner.nextInt();
+					choice = getNumber();
 					if (choice!=1 && choice!=2) {
 						System.err.println("Please enter a correct answer.");
 					}
@@ -127,7 +134,7 @@ public class LaunchGame {
 				break;
 			case 3:
 				do {
-					choice = scanner.nextInt();
+					choice = getNumber();
 					if (choice!=1 && choice!=2 && choice!=3) {
 						System.err.println("Please enter a correct answer.");
 					}
@@ -135,7 +142,21 @@ public class LaunchGame {
 				break;
 			default: break;
 			}
-			
+
 			return choice;
+	}
+
+	private static int getNumber()
+	{
+		int choice;
+		try {
+			choice= scanner.nextInt();
+		} catch (Exception exception)
+		{
+			choice= -1;
+		}
+		scanner.nextLine();
+		return choice;
+
 	}
 }

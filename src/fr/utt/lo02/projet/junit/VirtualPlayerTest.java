@@ -1,10 +1,10 @@
 package fr.utt.lo02.projet.junit;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import fr.utt.lo02.projet.board.*;
 import fr.utt.lo02.projet.strategy.*;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class VirtualPlayerTest
 {

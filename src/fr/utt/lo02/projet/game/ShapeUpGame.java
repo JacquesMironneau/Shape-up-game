@@ -2,13 +2,12 @@ package fr.utt.lo02.projet.game;
 
 
 import fr.utt.lo02.projet.board.AbstractBoard;
-import fr.utt.lo02.projet.board.CircleBoard;
-import fr.utt.lo02.projet.board.boardEmptyException;
 import fr.utt.lo02.projet.board.Card;
+import fr.utt.lo02.projet.board.boardEmptyException;
 import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 import fr.utt.lo02.projet.strategy.*;
 
-import java.util.*;
+import java.util.List;
 
 public class ShapeUpGame extends AbstractShapeUpGame
 {

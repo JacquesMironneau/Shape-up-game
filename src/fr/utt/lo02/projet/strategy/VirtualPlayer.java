@@ -8,6 +8,9 @@ import fr.utt.lo02.projet.board.boardEmptyException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.diogonunes.jcolor.Ansi.colorize;
+import static com.diogonunes.jcolor.Attribute.GREEN_TEXT;
+
 /**
  * Represent the strategy for a virtual player.
  * It implements Player Strategy to follow the player's construction.
@@ -83,6 +86,25 @@ public class VirtualPlayer extends PlayerStrategy
 		Coordinates randomCoord2 = new Coordinates(randomX2, randomY2);
 
 		return new MoveRequest(randomCoord1, randomCoord2);
+	}
+
+	@Override
+	public void MoveResult(MoveRequestResult result)
+	{
+		if (result == MoveRequestResult.MOVE_VALID)
+		{
+			System.out.println(colorize("The card has been moved", GREEN_TEXT()));
+		}
+	}
+
+	@Override
+	public void PlaceResult(PlaceRequestResult result)
+	{
+
+		if (result == PlaceRequestResult.CORRECT_PLACEMENT)
+		{
+			System.out.println(colorize("The card has been placed", GREEN_TEXT()));
+		}
 	}
 
 }

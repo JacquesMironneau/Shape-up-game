@@ -1,8 +1,6 @@
 package fr.utt.lo02.projet.board;
 
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 import static com.diogonunes.jcolor.Ansi.colorize;

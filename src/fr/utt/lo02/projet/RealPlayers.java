@@ -4,11 +4,9 @@ import fr.utt.lo02.projet.board.RectangleBoard;
 import fr.utt.lo02.projet.board.boardEmptyException;
 import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.game.ShapeUpGame;
-import fr.utt.lo02.projet.game.ShapeUpGameAdvanced;
 import fr.utt.lo02.projet.strategy.PlayerHandEmptyException;
 import fr.utt.lo02.projet.strategy.PlayerStrategy;
 import fr.utt.lo02.projet.strategy.RealPlayer;
-import fr.utt.lo02.projet.strategy.VirtualPlayer;
 
 import java.util.ArrayList;
 import java.util.List;

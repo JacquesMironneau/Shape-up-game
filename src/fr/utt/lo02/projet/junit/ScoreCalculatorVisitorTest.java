@@ -1,11 +1,10 @@
 package fr.utt.lo02.projet.junit;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import fr.utt.lo02.projet.board.*;
+import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
 import org.junit.jupiter.api.Test;
 
-import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 

@@ -1,10 +1,6 @@
 package fr.utt.lo02.projet.board;
 
 import java.util.List;
-import java.util.Set;
-
-import static com.diogonunes.jcolor.Ansi.colorize;
-import static com.diogonunes.jcolor.Attribute.*;
 
 /**
  * The class represents mere 2D coordinates with an abscissa (x) and an ordinate (y).

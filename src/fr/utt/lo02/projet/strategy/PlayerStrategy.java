@@ -1,8 +1,8 @@
 package fr.utt.lo02.projet.strategy;
 
 import fr.utt.lo02.projet.board.AbstractBoard;
-import fr.utt.lo02.projet.board.boardEmptyException;
 import fr.utt.lo02.projet.board.Card;
+import fr.utt.lo02.projet.board.boardEmptyException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +47,10 @@ public abstract class PlayerStrategy
 	 */
 	public abstract MoveRequest askMoveCard() throws boardEmptyException;
 
+
+	public abstract void MoveResult(MoveRequestResult result);
+
+	public abstract void PlaceResult(PlaceRequestResult result);
 	/**
 	 * Display the scores to player
 	 */

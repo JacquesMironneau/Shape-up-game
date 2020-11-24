@@ -3,7 +3,6 @@ package fr.utt.lo02.projet.junit;
 import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.board.RectangleBoard;
-import fr.utt.lo02.projet.board.boardEmptyException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

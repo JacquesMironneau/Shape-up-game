@@ -2,11 +2,7 @@ package fr.utt.lo02.projet.game;
 
 import fr.utt.lo02.projet.board.*;
 import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
-import fr.utt.lo02.projet.strategy.MoveRequest;
-import fr.utt.lo02.projet.strategy.PlaceRequest;
-import fr.utt.lo02.projet.strategy.PlayerHandEmptyException;
-import fr.utt.lo02.projet.strategy.PlayerStrategy;
-import fr.utt.lo02.projet.strategy.RealPlayer;
+import fr.utt.lo02.projet.strategy.*;
 
 import java.util.*;
 
@@ -117,10 +113,15 @@ public abstract class AbstractShapeUpGame
 	 */
 	public boolean placeCardRequest(PlaceRequest placeRequest, PlayerStrategy player)
 	{
+
 		Card aCard = placeRequest.getCard();
 		Coordinates coord = placeRequest.getCoordinates();
 
-		if (!player.getPlayerHand().contains(aCard)) return false;
+		if (!player.getPlayerHand().contains(aCard))
+		{
+			player.PlaceResult(PlaceRequestResult.PLAYER_DOESNT_OWN_CARD);
+			return false;
+		}
 
 		boolean cardInTheLayout = board.isCardInTheLayout(coord);
 		boolean cardAdjacentToAnExistingCard = true;
@@ -133,14 +134,17 @@ public abstract class AbstractShapeUpGame
 		{
 			board.addCard(coord, aCard);
 			player.getPlayerHand().remove(aCard);
-			System.out.println("[LOG] "+ aCard + " has been placed at " + coord);
-
+			player.PlaceResult(PlaceRequestResult.CORRECT_PLACEMENT);
+			//System.out.println("[LOG] "+ aCard + " has been placed at " + coord);
 			return true;
 		}
-		if (player instanceof RealPlayer) {
-			System.out.println("Please choose a correct location");
+
+		if (!cardAdjacentToAnExistingCard)
+		{
+			player.PlaceResult(PlaceRequestResult.CARD_NOT_ADJACENT);
+			return false;
 		}
-		
+		player.PlaceResult(PlaceRequestResult.CARD_NOT_IN_THE_LAYOUT);
 		return false;
 	}
 
@@ -152,21 +156,31 @@ public abstract class AbstractShapeUpGame
 	 */
 	public boolean moveCardRequest(MoveRequest moveRequest, PlayerStrategy player)
 	{
+
 		Coordinates origin = moveRequest.getOrigin();
 		Coordinates destination = moveRequest.getDestination();
 
-		if (origin.equals(destination)) return false;
+		if (origin.equals(destination))
+		{
+			player.MoveResult(MoveRequestResult.ORIGIN_AND_DESTINATION_ARE_EQUAL);
+			return false;
+		}
 
 		Card card = this.board.getPlacedCards().get(origin);
 
-		if (card == null) return false;
+		if (card == null)
+		{
+			player.MoveResult(MoveRequestResult.NO_CARD_IN_THE_ORIGIN_COORDINATE);
+			return false;
+		}
 
 		board.removeCard(origin, card);
 
 		if (board.getPlacedCards().isEmpty())
 		{
 			board.addCard(destination, card);
-			System.out.println("[LOG] " + card + " has been moved from" + origin + "to "+ destination);
+			player.MoveResult(MoveRequestResult.MOVE_VALID);
+			//System.out.println("[LOG] " + card + " has been moved from" + origin + "to "+ destination);
 			return true;
 		}
 		boolean cardAdjacentToAnExistingCard = board.isCardAdjacent(destination);
@@ -175,14 +189,20 @@ public abstract class AbstractShapeUpGame
 		if (cardAdjacentToAnExistingCard && cardInTheLayout)
 		{
 			board.addCard(destination, card);
-			System.out.println("[LOG] " + card + " has been moved from" + origin + "to "+ destination);
+			player.MoveResult(MoveRequestResult.MOVE_VALID);
+			//System.out.println("[LOG] " + card + " has been moved from" + origin + "to "+ destination);
 			return true;
 		}
 		board.addCard(origin,card);
-		if (player instanceof RealPlayer) {
-			System.out.println("Please choose a correct movement");
+
+		if (!cardAdjacentToAnExistingCard)
+		{
+			player.MoveResult(MoveRequestResult.CARD_NOT_ADJACENT);
+			return false;
 		}
+		player.MoveResult(MoveRequestResult.CARD_NOT_IN_THE_LAYOUT);
 		return false;
+
 	}
 
 	/**

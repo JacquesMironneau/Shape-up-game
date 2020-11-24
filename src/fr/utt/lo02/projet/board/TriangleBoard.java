@@ -1,15 +1,8 @@
 package fr.utt.lo02.projet.board;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
+
+import java.util.*;
 
 /**
  * Represent a triangle game board, one of the different shapes for the game.

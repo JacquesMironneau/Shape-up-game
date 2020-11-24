@@ -1,14 +1,11 @@
 package fr.utt.lo02.projet.game;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
 import fr.utt.lo02.projet.board.AbstractBoard;
-import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.boardEmptyException;
 import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 import fr.utt.lo02.projet.strategy.*;
+
+import java.util.List;
 
 public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 {

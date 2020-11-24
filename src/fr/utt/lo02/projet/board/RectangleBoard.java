@@ -4,9 +4,6 @@ import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 
 import java.util.*;
 
-import static com.diogonunes.jcolor.Ansi.colorize;
-import static com.diogonunes.jcolor.Attribute.*;
-
 /**
  * Represent a rectangle game board, one of the different shapes for the game.
  * It is extends by Abstract Board to follow the board's construction.

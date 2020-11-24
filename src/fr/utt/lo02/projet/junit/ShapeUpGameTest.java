@@ -4,7 +4,10 @@ import fr.utt.lo02.projet.board.*;
 import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.game.AbstractShapeUpGame;
 import fr.utt.lo02.projet.game.ShapeUpGame;
-import fr.utt.lo02.projet.strategy.*;
+import fr.utt.lo02.projet.strategy.MoveRequest;
+import fr.utt.lo02.projet.strategy.PlaceRequest;
+import fr.utt.lo02.projet.strategy.PlayerStrategy;
+import fr.utt.lo02.projet.strategy.VirtualPlayer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -14,11 +17,13 @@ import org.mockito.Mockito;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 class ShapeUpGameTest
 {
@@ -217,23 +222,23 @@ class ShapeUpGameTest
 
 
 		// Non existent card && non full destination
-		assertFalse(game.moveCardRequest(new MoveRequest(new Coordinates(-1, -1), new Coordinates(1, 0))));
+		assertFalse(game.moveCardRequest(new MoveRequest(new Coordinates(-1, -1), new Coordinates(1, 0)), playerVirtual2));
 		// Non existent card && free destination
-		assertFalse(game.moveCardRequest(new MoveRequest(new Coordinates(-1, -1), new Coordinates(1, -2))));
+		assertFalse(game.moveCardRequest(new MoveRequest(new Coordinates(-1, -1), new Coordinates(1, -2)), playerVirtual2));
 
 		// Non existent card && dest out of the layout
-		assertFalse(game.moveCardRequest(new MoveRequest(new Coordinates(-50, -50), new Coordinates(-51, -51))));
+		assertFalse(game.moveCardRequest(new MoveRequest(new Coordinates(-50, -50), new Coordinates(-51, -51)), playerVirtual2));
 
 		// Existent card , full dest
-		assertFalse(game.moveCardRequest(new MoveRequest(new Coordinates(0, 0), new Coordinates(1, 0))));
+		assertFalse(game.moveCardRequest(new MoveRequest(new Coordinates(0, 0), new Coordinates(1, 0)), playerVirtual2));
 
 		//Existent card, dest out of the layout
-		assertFalse(game.moveCardRequest(new MoveRequest(new Coordinates(0, 0), new Coordinates(-3, -3))));
+		assertFalse(game.moveCardRequest(new MoveRequest(new Coordinates(0, 0), new Coordinates(-3, -3)), playerVirtual2));
 
 		assertEquals(board.getPlacedCards().get(new Coordinates(0, 0)), new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
 
 		//Correct move
-		assertTrue(game.moveCardRequest(new MoveRequest(new Coordinates(0, 0), new Coordinates(1, -2))));
+		assertTrue(game.moveCardRequest(new MoveRequest(new Coordinates(0, 0), new Coordinates(1, -2)), playerVirtual2));
 		// here the card (0,0) has been moved to (1,-2)
 		// The coordinate 0,0 is now free
 		assertFalse(board.getPlacedCards().containsKey(new Coordinates(0, 0)));
