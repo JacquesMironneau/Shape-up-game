@@ -75,7 +75,7 @@ public class LaunchGame {
 						List<PlayerStrategy> players = new ArrayList<PlayerStrategy>();
 						int virtualNumber=1;
 						for (int i=1; i<=choiceNumberPlayers+1; i++) {
-							System.out.println("Is Pslayer " + i + " a real or a virtual player ? ");
+							System.out.println("Is Player " + i + " a real or a virtual player ? ");
 							System.out.println("1. Real");
 							System.out.println("2. Virtual");
 							int choiceRealOrVirtual = readInt(2);
@@ -106,8 +106,8 @@ public class LaunchGame {
 								break;
 						}
 						break;
-					case 2: 
-						System.out.println("For the rules\n \tSee: https://github.com/PashmiDev/Shape-up-game/");
+					case 2:
+						System.out.println("For the rules\n \t"+ colorize("See2 http://goodlittlegames.co.uk/packages/glg06a-ShapeUp.zip\n",Attribute.YELLOW_TEXT()));
 						System.out.println("\n\n");
 						break;
 					case 3:
