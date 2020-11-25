@@ -234,4 +234,135 @@ class ScoreCalculatorVisitorTest {
 
 	}
 
+	@Test
+	void CaseTrianglePattern2()
+	{
+		board = new TriangleBoard();
+		board.getPlacedCards().put(new Coordinates(2, 0), new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(2, -1), new Card(Card.Color.BLUE, Card.Shape.SQUARE , Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(3, -1), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(2, -2), new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(3, -2), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(4, -2), new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.FILLED));
+
+		board.getPlacedCards().put(new Coordinates(2, -3), new Card(Card.Color.BLUE, Card.Shape.SQUARE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(3, -3), new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(4, -3), new Card(Card.Color.GREEN, Card.Shape.TRIANGLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(5, -3), new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
+
+		board.getPlacedCards().put(new Coordinates(2, -4), new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(3, -4), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(4, -4), new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(5, -4), new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(6, -4), new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.FILLED));
+
+		ScoreCalculatorVisitor test = new ScoreCalculatorVisitor();
+
+		board.display();
+		Card victoryCard = new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.FILLED);
+		assertEquals(test.visit((TriangleBoard) board, victoryCard), 9 );
+
+		Card victoryCard2 = new Card(Card.Color.GREEN, Card.Shape.TRIANGLE, Card.Filling.HOLLOW);
+		assertEquals(test.visit((TriangleBoard) board, victoryCard2), 7);
+
+	}
+
+	@Test
+	void TestTrianglePattern3()
+	{
+		board = new TriangleBoard();
+
+		board.getPlacedCards().put(new Coordinates(6, 0), new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(5, -1), new Card(Card.Color.BLUE, Card.Shape.SQUARE , Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(6, -1), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(4, -2), new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(5, -2), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(6, -2), new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.FILLED));
+
+		board.getPlacedCards().put(new Coordinates(3, -3), new Card(Card.Color.BLUE, Card.Shape.SQUARE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(4, -3), new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(5, -3), new Card(Card.Color.GREEN, Card.Shape.TRIANGLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(6, -3), new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
+
+		board.getPlacedCards().put(new Coordinates(2, -4), new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(3, -4), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(4, -4), new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(5, -4), new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(6, -4), new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.FILLED));
+		ScoreCalculatorVisitor test = new ScoreCalculatorVisitor();
+
+		board.display();
+		Card victoryCard = new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.FILLED);
+		assertEquals(9,test.visit((TriangleBoard) board, victoryCard));
+
+		Card victoryCard2 = new Card(Card.Color.GREEN, Card.Shape.TRIANGLE, Card.Filling.HOLLOW);
+		assertEquals(7,test.visit((TriangleBoard) board, victoryCard2));
+
+	}
+
+	@Test
+	void TestTriangle0()
+	{
+		board = new TriangleBoard();
+		board.getPlacedCards().put(new Coordinates(2, -4), new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(2, -3), new Card(Card.Color.BLUE, Card.Shape.SQUARE , Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(3, -3), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(2, -2), new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(3, -2), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(4, -2), new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.FILLED));
+
+		board.getPlacedCards().put(new Coordinates(2, -1), new Card(Card.Color.BLUE, Card.Shape.SQUARE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(3, -1), new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(4, -1), new Card(Card.Color.GREEN, Card.Shape.TRIANGLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(5, -1), new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
+
+		board.getPlacedCards().put(new Coordinates(2, 0), new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(3, 0), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(4, 0), new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(5, 0), new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(6, 0), new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.FILLED));
+
+		ScoreCalculatorVisitor test = new ScoreCalculatorVisitor();
+
+		board.display();
+		Card victoryCard = new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.FILLED);
+		assertEquals(9,test.visit((TriangleBoard) board, victoryCard));
+
+		Card victoryCard2 = new Card(Card.Color.GREEN, Card.Shape.TRIANGLE, Card.Filling.HOLLOW);
+		assertEquals(7,test.visit((TriangleBoard) board, victoryCard2));
+	}
+
+	@Test
+	void TestTriangle1()
+	{
+		board = new TriangleBoard();
+		board.getPlacedCards().put(new Coordinates(6, -4), new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(6, -3), new Card(Card.Color.BLUE, Card.Shape.SQUARE , Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(5, -3), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(6, -2), new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(5, -2), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(4, -2), new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.FILLED));
+
+		board.getPlacedCards().put(new Coordinates(6, -1), new Card(Card.Color.BLUE, Card.Shape.SQUARE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(3, -1), new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(4, -1), new Card(Card.Color.GREEN, Card.Shape.TRIANGLE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(5, -1), new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
+
+		board.getPlacedCards().put(new Coordinates(2, 0), new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(3, 0), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(4, 0), new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.HOLLOW));
+		board.getPlacedCards().put(new Coordinates(5, 0), new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.FILLED));
+		board.getPlacedCards().put(new Coordinates(6, 0), new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.FILLED));
+
+		ScoreCalculatorVisitor test = new ScoreCalculatorVisitor();
+
+		board.display();
+		Card victoryCard = new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.FILLED);
+		assertEquals(11,test.visit((TriangleBoard) board, victoryCard));
+
+		Card victoryCard2 = new Card(Card.Color.GREEN, Card.Shape.TRIANGLE, Card.Filling.HOLLOW);
+		assertEquals(4,test.visit((TriangleBoard) board, victoryCard2));
+
+
+	}
 }

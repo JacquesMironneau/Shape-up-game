@@ -168,7 +168,7 @@ public class RectangleBoard extends AbstractBoard
 
 		for (int j = maxOrdinate; j >= minOrdinate; j--)
 		{
-			/*for (int i = minAbscissa; i <= maxAbscissa; i++)
+			for (int i = minAbscissa; i <= maxAbscissa; i++)
 			{
 				Card card = placedCards.get(new Coordinates(i, j));
 				if (card != null)
@@ -178,7 +178,7 @@ public class RectangleBoard extends AbstractBoard
 					System.out.print("   ");
 
 			}
-			//ystem.out.println();*/
+			System.out.println();
 
 			for (int i = minAbscissa; i <= maxAbscissa; i++)
 			{
@@ -193,7 +193,7 @@ public class RectangleBoard extends AbstractBoard
 			System.out.println();
 
 
-			/*for (int i = minAbscissa; i <= maxAbscissa; i++)
+			for (int i = minAbscissa; i <= maxAbscissa; i++)
 			{
 				Card card = placedCards.get(new Coordinates(i, j));
 
@@ -206,7 +206,6 @@ public class RectangleBoard extends AbstractBoard
 			}
 
 			System.out.println();
-			*/
 
 		}
 

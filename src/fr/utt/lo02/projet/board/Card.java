@@ -14,7 +14,7 @@ import static com.diogonunes.jcolor.Attribute.*;
  */
 public class Card
 {
-	
+
 	/**
 	 * The color of the card can be red, green or blue
 	 */
@@ -29,18 +29,18 @@ public class Card
 	 * A card can be filled or not (hollow).
 	 */
 	public enum Filling {HOLLOW, FILLED}
-	
-	
+
+
 	private Color color;
 	private Shape shape;
 	private Filling filling;
-	
+
 	public Card (Color c, Shape s, Filling f)
 	{
 		this.color = c;
 		this.shape = s;
 		this.filling = f;
-		
+
 	}
 
 	public Color getColor()
@@ -72,9 +72,9 @@ public class Card
 	{
 		switch (color)
 		{
-			//case RED -> System.out.print(colorize("--", RED_TEXT()));
-			//case BLUE -> System.out.print(colorize("--", BLUE_TEXT()));
-			//case GREEN -> System.out.print(colorize("--", GREEN_TEXT()));
+			case RED -> System.out.print(colorize("└─┘ ", RED_TEXT()));
+			case BLUE -> System.out.print(colorize("└─┘ ", BLUE_TEXT()));
+			case GREEN -> System.out.print(colorize("└─┘ ", GREEN_TEXT()));
 		}
 	}
 
@@ -82,9 +82,9 @@ public class Card
 	{
 		switch (color)
 		{
-			//case RED -> System.out.print(colorize("__", RED_TEXT()));
-			//case BLUE -> System.out.print(colorize("__", BLUE_TEXT()));
-			//case GREEN -> System.out.print(colorize("__", GREEN_TEXT()));
+			case RED -> System.out.print(colorize("┌─┐ ", RED_TEXT()));
+			case BLUE -> System.out.print(colorize("┌─┐ ", BLUE_TEXT()));
+			case GREEN -> System.out.print(colorize("┌─┐ ", GREEN_TEXT()));
 		}
 
 	}
@@ -92,38 +92,38 @@ public class Card
 	public static void printMiddle(Card card)
 	{
 		StringBuilder buf = new StringBuilder();
-		buf.append("|");
+		buf.append("│");
 		switch (card.getShape())
 		{
 			case CIRCLE -> {
 				if (card.getFilling() == Card.Filling.HOLLOW)
 				{
-					buf.append("o");
+					buf.append("○");
 				} else
 				{
-					buf.append("d");
+					buf.append("●");
 				}
 			}
 			case TRIANGLE -> {
 				if (card.getFilling() == Card.Filling.HOLLOW)
 				{
-					buf.append("u");
+					buf.append("▵");
 				} else
 				{
-					buf.append("v");
+					buf.append("▲");
 				}
 			}
 			case SQUARE -> {
 				if (card.getFilling() == Card.Filling.HOLLOW)
 				{
-					buf.append("n");
+					buf.append("▫");
 				} else
 				{
-					buf.append("m");
+					buf.append("▪");
 				}
 			}
 		}
-		buf.append("|");
+		buf.append("│ ");
 		switch (card.getColor())
 		{
 			case BLUE -> System.out.print(colorize(buf.toString(), BLUE_TEXT()));

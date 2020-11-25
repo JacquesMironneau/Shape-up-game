@@ -7,14 +7,15 @@ import java.util.*;
 /**
  * Represent a triangle game board, one of the different shapes for the game.
  * It is extends by Abstract Board to follow the board's construction.
- * @author Baptiste, Jacques
  *
+ * @author Baptiste, Jacques
  */
 
-public class TriangleBoard extends AbstractBoard {
+public class TriangleBoard extends AbstractBoard
+{
 
 	//private static final String SPACE_BETWEEN_CARDS = "    ";
-	
+
 	private static final String SPACE_ONE = "   ";
 
 	private static final String SPACE_TWO = "       ";
@@ -23,17 +24,21 @@ public class TriangleBoard extends AbstractBoard {
 
 	private static final String SPACE_FOUR = "             ";
 
-	private int patternNumber=1;
-	
+	private int patternNumber = 1;
+	private int currentPattern;
+
+
 	private final List<List<Coordinates>> patterns;
-	
-	public TriangleBoard() {
+
+	public TriangleBoard()
+	{
 		super();
 		patterns = new ArrayList<>();
 		initPattern();
+		currentPattern = 0;
 	}
 
-	
+
 	@Override
 	public int accept(IBoardVisitor board, Card victoryCard)
 	{
@@ -62,43 +67,44 @@ public class TriangleBoard extends AbstractBoard {
 	public boolean isCardInTheLayout(Coordinates coordinates)
 	{
 		// If no cards has been placed, the card is obligatory in the layout
-				if (placedCards.isEmpty()) return true; // maybe exception
+		if (placedCards.isEmpty()) return true; // maybe exception
 
-				// If one card is already at the given position the card can't me moved or placed here
-				if (placedCards.containsKey(coordinates)) return false;
+		// If one card is already at the given position the card can't me moved or placed here
+		if (placedCards.containsKey(coordinates)) return false;
 
-				// Get the top left card, in order to apply the map to the pattern
-				List<Coordinates> list = new ArrayList<>(placedCards.keySet());
-				list.add(coordinates);
+		// Get the top left card, in order to apply the map to the pattern
+		List<Coordinates> list = new ArrayList<>(placedCards.keySet());
+		list.add(coordinates);
 
-				Iterator<Coordinates> iterator = list.iterator();
-				Coordinates topLeftCard = iterator.next();
+		Iterator<Coordinates> iterator = list.iterator();
+		Coordinates topLeftCard = iterator.next();
 
-				while (iterator.hasNext())
+		while (iterator.hasNext())
+		{
+			Coordinates key = iterator.next();
+			if (Coordinates.isOneMoreTopLeftThanTwo(key, topLeftCard))
+			{
+				topLeftCard = key;
+			}
+		}
+
+		for (List<Coordinates> pattern : patterns)
+		{
+			for (Coordinates patternCoord : pattern)
+			{
+				ArrayList<Coordinates> res = new ArrayList<>();
+				for (Coordinates coord : list)
 				{
-					Coordinates key = iterator.next();
-					if (Coordinates.isOneMoreTopLeftThanTwo(key, topLeftCard))
-					{
-						topLeftCard = key;
-					}
+					Coordinates co = new Coordinates(coord.getX() - topLeftCard.getX() + patternCoord.getX(), coord.getY() - topLeftCard.getY() + patternCoord.getY());
+					res.add(co);
 				}
-				
-				for (List<Coordinates> pattern : patterns) {
-					for (Coordinates patternCoord : pattern)
-					{
-						ArrayList<Coordinates> res = new ArrayList<>();
-						for (Coordinates coord : list)
-						{
-							Coordinates co = new Coordinates(coord.getX() - topLeftCard.getX() + patternCoord.getX(), coord.getY() - topLeftCard.getY() + patternCoord.getY());
-							res.add(co);
-						}
-						if (pattern.containsAll(res)) return true;
-					}
-				}
-				return false;
+				if (pattern.containsAll(res)) return true;
+			}
+		}
+		return false;
 	}
-	
-	public Map<Coordinates,Card> retrievePattern()
+
+	public Map<Coordinates, Card> retrievePattern()
 	{
 		// Get the top left card, in order to apply the map to the pattern
 		List<Coordinates> list = new ArrayList<>(placedCards.keySet());
@@ -114,37 +120,40 @@ public class TriangleBoard extends AbstractBoard {
 				topLeftCard = key;
 			}
 		}
-		for (List<Coordinates> pattern : patterns) {
+		for (List<Coordinates> pattern : patterns)
+		{
 			for (Coordinates patternCoord : pattern)
 			{
 				HashMap<Coordinates, Card> res = new HashMap<>();
 				for (Coordinates coord : list)
 				{
 					Coordinates co = new Coordinates(coord.getX() - topLeftCard.getX() + patternCoord.getX(), coord.getY() - topLeftCard.getY() + patternCoord.getY());
-					res.put(co, placedCards.get(new Coordinates(coord.getX(),coord.getY())));
+					res.put(co, placedCards.get(new Coordinates(coord.getX(), coord.getY())));
 				}
 				if (pattern.containsAll(new ArrayList<>(res.keySet())))
 				{
+					patternNumber = patterns.indexOf(pattern);
 					return res;
 				}
 			}
 			patternNumber++;
 		}
 		return null;
-	//	throw new Exception();
+		//	throw new Exception();
 	}
 
-	public void addMissingEmptyCase(Map<Coordinates,Card> coordinates)
+	public void addMissingEmptyCase(Map<Coordinates, Card> coordinates)
 	{
-		for (List<Coordinates> pattern : patterns) {
-			for (Coordinates coord: pattern)
+		List<Coordinates> pattern = patterns.get(patternNumber);
+		System.out.println("Pattern number"+patternNumber);
+		for (Coordinates coord : pattern)
+		{
+			if (!coordinates.containsKey(coord))
 			{
-				if (!coordinates.containsKey(coord))
-				{
-					coordinates.put(coord,null);
-				}
+				coordinates.put(coord, null);
 			}
 		}
+
 	}
 
 	@Override
@@ -152,86 +161,86 @@ public class TriangleBoard extends AbstractBoard {
 	{
 		if (placedCards.isEmpty()) return;
 
-		Map<Coordinates,Card> map = retrievePattern();
+		Map<Coordinates, Card> map = retrievePattern();
 		addMissingEmptyCase(map);
 		printPattern(map);
 	}
-	
+
 	private void initPattern()
 	{
-		List<Coordinates> pattern1 = new ArrayList<Coordinates>();
-		List<Coordinates> pattern2 = new ArrayList<Coordinates>();
-		List<Coordinates> pattern3 = new ArrayList<Coordinates>();
-		List<Coordinates> pattern4 = new ArrayList<Coordinates>();
-		
-		pattern1.add(new Coordinates(0, 0));
-		pattern1.add(new Coordinates(1, 0));
-		pattern1.add(new Coordinates(2, 0));
-		pattern1.add(new Coordinates(3, 0));
-		pattern1.add(new Coordinates(4, 0));
-		pattern1.add(new Coordinates(0, -1));
-		pattern1.add(new Coordinates(1, -1));
-		pattern1.add(new Coordinates(2, -1));
-		pattern1.add(new Coordinates(3, -1));
-		pattern1.add(new Coordinates(0, -2));
-		pattern1.add(new Coordinates(1, -2));
-		pattern1.add(new Coordinates(2, -2));
-		pattern1.add(new Coordinates(0, -3));
-		pattern1.add(new Coordinates(1, -3));
-		pattern1.add(new Coordinates(0, -4));
-		
-		pattern2.add(new Coordinates(0, 0));
-		pattern2.add(new Coordinates(1, 0));
-		pattern2.add(new Coordinates(2, 0));
-		pattern2.add(new Coordinates(3, 0));
-		pattern2.add(new Coordinates(4, 0));
-		pattern2.add(new Coordinates(1, -1));
-		pattern2.add(new Coordinates(2, -1));
-		pattern2.add(new Coordinates(3, -1));
-		pattern2.add(new Coordinates(4, -1));
-		pattern2.add(new Coordinates(2, -2));
-		pattern2.add(new Coordinates(3, -2));
-		pattern2.add(new Coordinates(4, -2));
-		pattern2.add(new Coordinates(3, -3));
-		pattern2.add(new Coordinates(4, -3));
-		pattern2.add(new Coordinates(4, -4));
-		
-		pattern3.add(new Coordinates(0, 0));
-		pattern3.add(new Coordinates(0, -1));
-		pattern3.add(new Coordinates(1, -1));
-		pattern3.add(new Coordinates(0, -2));
-		pattern3.add(new Coordinates(1, -2));
-		pattern3.add(new Coordinates(2, -2));
-		pattern3.add(new Coordinates(0, -3));
-		pattern3.add(new Coordinates(1, -3));
-		pattern3.add(new Coordinates(2, -3));
-		pattern3.add(new Coordinates(3, -3));
-		pattern3.add(new Coordinates(0, -4));
-		pattern3.add(new Coordinates(1, -4));
-		pattern3.add(new Coordinates(2, -4));
-		pattern3.add(new Coordinates(3, -4));
-		pattern3.add(new Coordinates(4, -4));
-		
-		pattern4.add(new Coordinates(4, 0));
-		pattern4.add(new Coordinates(3, -1));
-		pattern4.add(new Coordinates(4, -1));
-		pattern4.add(new Coordinates(2, -2));
-		pattern4.add(new Coordinates(3, -2));
-		pattern4.add(new Coordinates(4, -2));
-		pattern4.add(new Coordinates(1, -3));
-		pattern4.add(new Coordinates(2, -3));
-		pattern4.add(new Coordinates(3, -3));
-		pattern4.add(new Coordinates(4, -3));
-		pattern4.add(new Coordinates(0, -4));
-		pattern4.add(new Coordinates(1, -4));
-		pattern4.add(new Coordinates(2, -4));
-		pattern4.add(new Coordinates(3, -4));
-		pattern4.add(new Coordinates(4, -4));
-		
-		patterns.add(pattern1);
-		patterns.add(pattern2);
-		patterns.add(pattern3);
-		patterns.add(pattern4);
+		List<Coordinates> pattern0 = new ArrayList<Coordinates>();
+		List<Coordinates> pattern_1 = new ArrayList<Coordinates>();
+		List<Coordinates> pattern_2 = new ArrayList<Coordinates>();
+		List<Coordinates> pattern_3 = new ArrayList<Coordinates>();
+
+		pattern0.add(new Coordinates(0, 0));
+		pattern0.add(new Coordinates(1, 0));
+		pattern0.add(new Coordinates(2, 0));
+		pattern0.add(new Coordinates(3, 0));
+		pattern0.add(new Coordinates(4, 0));
+		pattern0.add(new Coordinates(0, -1));
+		pattern0.add(new Coordinates(1, -1));
+		pattern0.add(new Coordinates(2, -1));
+		pattern0.add(new Coordinates(3, -1));
+		pattern0.add(new Coordinates(0, -2));
+		pattern0.add(new Coordinates(1, -2));
+		pattern0.add(new Coordinates(2, -2));
+		pattern0.add(new Coordinates(0, -3));
+		pattern0.add(new Coordinates(1, -3));
+		pattern0.add(new Coordinates(0, -4));
+
+		pattern_1.add(new Coordinates(0, 0));
+		pattern_1.add(new Coordinates(1, 0));
+		pattern_1.add(new Coordinates(2, 0));
+		pattern_1.add(new Coordinates(3, 0));
+		pattern_1.add(new Coordinates(4, 0));
+		pattern_1.add(new Coordinates(1, -1));
+		pattern_1.add(new Coordinates(2, -1));
+		pattern_1.add(new Coordinates(3, -1));
+		pattern_1.add(new Coordinates(4, -1));
+		pattern_1.add(new Coordinates(2, -2));
+		pattern_1.add(new Coordinates(3, -2));
+		pattern_1.add(new Coordinates(4, -2));
+		pattern_1.add(new Coordinates(3, -3));
+		pattern_1.add(new Coordinates(4, -3));
+		pattern_1.add(new Coordinates(4, -4));
+
+		pattern_2.add(new Coordinates(0, 0));
+		pattern_2.add(new Coordinates(0, -1));
+		pattern_2.add(new Coordinates(1, -1));
+		pattern_2.add(new Coordinates(0, -2));
+		pattern_2.add(new Coordinates(1, -2));
+		pattern_2.add(new Coordinates(2, -2));
+		pattern_2.add(new Coordinates(0, -3));
+		pattern_2.add(new Coordinates(1, -3));
+		pattern_2.add(new Coordinates(2, -3));
+		pattern_2.add(new Coordinates(3, -3));
+		pattern_2.add(new Coordinates(0, -4));
+		pattern_2.add(new Coordinates(1, -4));
+		pattern_2.add(new Coordinates(2, -4));
+		pattern_2.add(new Coordinates(3, -4));
+		pattern_2.add(new Coordinates(4, -4));
+
+		pattern_3.add(new Coordinates(4, 0));
+		pattern_3.add(new Coordinates(3, -1));
+		pattern_3.add(new Coordinates(4, -1));
+		pattern_3.add(new Coordinates(2, -2));
+		pattern_3.add(new Coordinates(3, -2));
+		pattern_3.add(new Coordinates(4, -2));
+		pattern_3.add(new Coordinates(1, -3));
+		pattern_3.add(new Coordinates(2, -3));
+		pattern_3.add(new Coordinates(3, -3));
+		pattern_3.add(new Coordinates(4, -3));
+		pattern_3.add(new Coordinates(0, -4));
+		pattern_3.add(new Coordinates(1, -4));
+		pattern_3.add(new Coordinates(2, -4));
+		pattern_3.add(new Coordinates(3, -4));
+		pattern_3.add(new Coordinates(4, -4));
+
+		patterns.add(pattern0);
+		patterns.add(pattern_1);
+		patterns.add(pattern_2);
+		patterns.add(pattern_3);
 	}
 
 
@@ -248,8 +257,6 @@ public class TriangleBoard extends AbstractBoard {
 			ordinateCoordinates.add(coord.getY());
 		}
 
-		int maxAbscissa;
-		int minAbscissa;
 		int minOrdinate = Collections.min(ordinateCoordinates);
 		int maxOrdinate = Collections.max(ordinateCoordinates);
 
@@ -258,46 +265,53 @@ public class TriangleBoard extends AbstractBoard {
 
 		for (int j = maxOrdinate; j >= minOrdinate; j--)
 		{
-			if (patternNumber==1 || patternNumber==3) {
-				
-				switch (spaceNumber) {
-					case 0,1,2,3,4 -> space = "";
-				}				
-				
-			} else if (patternNumber==2) {
-				
-				switch (spaceNumber) {
-					case 0 -> space = "";
-					case 1 -> space = SPACE_ONE;
-					case 2 -> space = SPACE_TWO;
-					case 3 -> space = SPACE_THREE;
-					case 4 -> space = SPACE_FOUR;
-				}
-				
-			} else if (patternNumber==4) {
-				
-				switch (spaceNumber) {
-					case 4 -> space = "";
-					case 3 -> space = SPACE_ONE;
-					case 2 -> space = SPACE_TWO;
-					case 1 -> space = SPACE_THREE;
-					case 0 -> space = SPACE_FOUR;
-				}
-				
+			switch (patternNumber)
+			{
+				case 0:
+				case 2:
+
+					switch (spaceNumber)
+					{
+						case 0, 1, 2, 3, 4 -> space = "";
+					}
+					break;
+				case 1:
+
+					switch (spaceNumber)
+					{
+						case 0 -> space = "";
+						case 1 -> space = SPACE_ONE;
+						case 2 -> space = SPACE_TWO;
+						case 3 -> space = SPACE_THREE;
+						case 4 -> space = SPACE_FOUR;
+					}
+
+					break;
+				case 3:
+
+					switch (spaceNumber)
+					{
+						case 4 -> space = "";
+						case 3 -> space = SPACE_ONE;
+						case 2 -> space = SPACE_TWO;
+						case 1 -> space = SPACE_THREE;
+						case 0 -> space = SPACE_FOUR;
+					}
+					break;
 			}
-			
-			spaceNumber++;
+
+			++spaceNumber;
 			abscissaCoordinates = new HashSet<>();
-			for (Coordinates coord :map.keySet())
+			for (Coordinates coord : map.keySet())
 			{
 				if (coord.getY() == j)
 					abscissaCoordinates.add(coord.getX());
 			}
 
-			maxAbscissa = Collections.max(abscissaCoordinates);
-			minAbscissa = Collections.min(abscissaCoordinates);
+			int maxAbscissa = Collections.max(abscissaCoordinates);
+			int minAbscissa = Collections.min(abscissaCoordinates);
 
-			/*for (int i = minAbscissa; i <= maxAbscissa; i++)
+			for (int i = minAbscissa; i <= maxAbscissa; i++)
 			{
 				if (i == minAbscissa)
 					System.out.print(space);
@@ -305,13 +319,12 @@ public class TriangleBoard extends AbstractBoard {
 				if (card != null)
 				{
 					Card.printTop(card.getColor());
-					System.out.print(SPACE_BETWEEN_CARDS);
-				}
-				else
+//					System.out.print(" ");
+				} else
 					printNullCard();
 
 			}
-			System.out.println();*/
+			System.out.println();
 
 			for (int i = minAbscissa; i <= maxAbscissa; i++)
 			{
@@ -324,8 +337,7 @@ public class TriangleBoard extends AbstractBoard {
 					Card.printMiddle(card);
 					//System.out.print(SPACE_BETWEEN_CARDS);
 
-				}
-				else
+				} else
 					printNullCard();
 
 
@@ -333,7 +345,7 @@ public class TriangleBoard extends AbstractBoard {
 			System.out.println();
 
 
-			/*for (int i = minAbscissa; i <= maxAbscissa; i++)
+			for (int i = minAbscissa; i <= maxAbscissa; i++)
 			{
 				if (i == minAbscissa)
 					System.out.print(space);
@@ -343,20 +355,19 @@ public class TriangleBoard extends AbstractBoard {
 				if (card != null)
 				{
 					Card.printBottom(card.getColor());
-					System.out.print(SPACE_BETWEEN_CARDS);
+					//	System.out.print(SPACE_BETWEEN_CARDS);
 
 
-				}
-				else
+				} else
 					printNullCard();
 			}
 
-			System.out.println();*/
+			System.out.println();
 		}
 	}
 
 	private void printNullCard()
 	{
-		System.out.print("  ");
+		System.out.print("    ");
 	}
 }
