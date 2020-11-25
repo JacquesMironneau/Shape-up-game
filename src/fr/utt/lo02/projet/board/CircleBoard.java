@@ -207,7 +207,7 @@ public class CircleBoard extends AbstractBoard
 			maxAbscissa = Collections.max(abscissaCoordinates);
 			minAbscissa = Collections.min(abscissaCoordinates);
 
-			for (int i = minAbscissa; i <= maxAbscissa; i++)
+			/*for (int i = minAbscissa; i <= maxAbscissa; i++)
 			{
 				if (i == minAbscissa)
 					System.out.print(space);
@@ -221,7 +221,7 @@ public class CircleBoard extends AbstractBoard
 					printNullCard();
 
 			}
-			System.out.println();
+			System.out.println(); */
 
 			for (int i = minAbscissa; i <= maxAbscissa; i++)
 			{
@@ -243,7 +243,7 @@ public class CircleBoard extends AbstractBoard
 			System.out.println();
 
 
-			for (int i = minAbscissa; i <= maxAbscissa; i++)
+			/*for (int i = minAbscissa; i <= maxAbscissa; i++)
 			{
 				if (i == minAbscissa)
 					System.out.print(space);
@@ -261,7 +261,7 @@ public class CircleBoard extends AbstractBoard
 					printNullCard();
 			}
 
-			System.out.println();
+			System.out.println();*/
 		}
 	}
 

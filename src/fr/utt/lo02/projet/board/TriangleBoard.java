@@ -13,15 +13,18 @@ import java.util.*;
 
 public class TriangleBoard extends AbstractBoard {
 
-	private static final String SPACE_BETWEEN_CARDS = "    ";
+	//private static final String SPACE_BETWEEN_CARDS = "    ";
+	
+	private static final String SPACE_ONE = "   ";
 
-	private static final String SPACE_FIRST_LAST_ROW = "         ";
+	private static final String SPACE_TWO = "       ";
 
-	private static final String SPACE_SECOND_FOURTH_ROW = "     ";
+	private static final String SPACE_THREE = "          ";
 
-	private static final String SPACE_MIDDLE_ROW = " ";
+	private static final String SPACE_FOUR = "             ";
 
-
+	private int patternNumber=1;
+	
 	private final List<List<Coordinates>> patterns;
 	
 	public TriangleBoard() {
@@ -125,6 +128,7 @@ public class TriangleBoard extends AbstractBoard {
 					return res;
 				}
 			}
+			patternNumber++;
 		}
 		return null;
 	//	throw new Exception();
@@ -254,12 +258,34 @@ public class TriangleBoard extends AbstractBoard {
 
 		for (int j = maxOrdinate; j >= minOrdinate; j--)
 		{
-			switch (spaceNumber)
-			{
-				case 0, 4 -> space = SPACE_FIRST_LAST_ROW;
-				case 1, 3 -> space = SPACE_SECOND_FOURTH_ROW;
-				case 2 -> space = SPACE_MIDDLE_ROW;
+			if (patternNumber==1 || patternNumber==3) {
+				
+				switch (spaceNumber) {
+					case 0,1,2,3,4 -> space = "";
+				}				
+				
+			} else if (patternNumber==2) {
+				
+				switch (spaceNumber) {
+					case 0 -> space = "";
+					case 1 -> space = SPACE_ONE;
+					case 2 -> space = SPACE_TWO;
+					case 3 -> space = SPACE_THREE;
+					case 4 -> space = SPACE_FOUR;
+				}
+				
+			} else if (patternNumber==4) {
+				
+				switch (spaceNumber) {
+					case 4 -> space = "";
+					case 3 -> space = SPACE_ONE;
+					case 2 -> space = SPACE_TWO;
+					case 1 -> space = SPACE_THREE;
+					case 0 -> space = SPACE_FOUR;
+				}
+				
 			}
+			
 			spaceNumber++;
 			abscissaCoordinates = new HashSet<>();
 			for (Coordinates coord :map.keySet())
@@ -271,7 +297,7 @@ public class TriangleBoard extends AbstractBoard {
 			maxAbscissa = Collections.max(abscissaCoordinates);
 			minAbscissa = Collections.min(abscissaCoordinates);
 
-			for (int i = minAbscissa; i <= maxAbscissa; i++)
+			/*for (int i = minAbscissa; i <= maxAbscissa; i++)
 			{
 				if (i == minAbscissa)
 					System.out.print(space);
@@ -285,7 +311,7 @@ public class TriangleBoard extends AbstractBoard {
 					printNullCard();
 
 			}
-			System.out.println();
+			System.out.println();*/
 
 			for (int i = minAbscissa; i <= maxAbscissa; i++)
 			{
@@ -296,7 +322,7 @@ public class TriangleBoard extends AbstractBoard {
 				if (card != null)
 				{
 					Card.printMiddle(card);
-					System.out.print(SPACE_BETWEEN_CARDS);
+					//System.out.print(SPACE_BETWEEN_CARDS);
 
 				}
 				else
@@ -307,7 +333,7 @@ public class TriangleBoard extends AbstractBoard {
 			System.out.println();
 
 
-			for (int i = minAbscissa; i <= maxAbscissa; i++)
+			/*for (int i = minAbscissa; i <= maxAbscissa; i++)
 			{
 				if (i == minAbscissa)
 					System.out.print(space);
@@ -325,12 +351,12 @@ public class TriangleBoard extends AbstractBoard {
 					printNullCard();
 			}
 
-			System.out.println();
+			System.out.println();*/
 		}
 	}
 
 	private void printNullCard()
 	{
-		System.out.print("       ");
+		System.out.print("  ");
 	}
 }
