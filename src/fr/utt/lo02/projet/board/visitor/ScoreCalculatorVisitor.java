@@ -5,10 +5,7 @@ import fr.utt.lo02.projet.board.Card.Color;
 import fr.utt.lo02.projet.board.Card.Filling;
 import fr.utt.lo02.projet.board.Card.Shape;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Represent one of the different variants to calculate the score for the game.
@@ -98,8 +95,25 @@ public class ScoreCalculatorVisitor implements IBoardVisitor
 		boolean isARow;
 
 		// We recover coordinates of the placed Cards.
-		Set<Coordinates> listKeys = board.getPlacedCards().keySet();
-		Iterator<Coordinates> iterator = listKeys.iterator();
+
+		Map<Coordinates, Card> placedCardsWithNull = new HashMap<>(board.getPlacedCards());
+		final int smallestAbscissa = Coordinates.smallestAbscissa(new ArrayList<>(placedCardsWithNull.keySet()));
+		final int biggestAbscissa = Coordinates.biggestAbscissa(new ArrayList<>(placedCardsWithNull.keySet()));
+		final int biggestOrdinate = Coordinates.biggestOrdinate(new ArrayList<>(placedCardsWithNull.keySet()));
+		final int smallestOrdinate = Coordinates.smallestOrdinate(new ArrayList<>(placedCardsWithNull.keySet()));
+
+		for (int i = smallestAbscissa; i <= biggestAbscissa; i++)
+		{
+			for (int j = biggestOrdinate; j >= smallestOrdinate; j--)
+			{
+				if (!placedCardsWithNull.containsKey(new Coordinates(i,j)))
+				{
+					placedCardsWithNull.put(new Coordinates(i,j), null);
+				}
+			}
+		}
+
+		Iterator<Coordinates> iterator = placedCardsWithNull.keySet().iterator();
 		Coordinates topLeftCard = iterator.next();
 		//We recover the card which is in the top left corner of the rectangle.
 		while (iterator.hasNext())
@@ -115,11 +129,11 @@ public class ScoreCalculatorVisitor implements IBoardVisitor
 		{
 			isARow = true;
 			Coordinates nextCard = new Coordinates(topLeftCard.getX(), topLeftCard.getY() - i);
-			ArrayList<Card.Color> colorList = colorListOfOneRow(board.getPlacedCards(), width, nextCard, isARow);
+			ArrayList<Card.Color> colorList = colorListOfOneRow(placedCardsWithNull, width, nextCard, isARow);
 			final_score += calculateScoreOfColorRow(colorList, width, victoryColor);
-			ArrayList<Card.Shape> shapeList = shapeListOfOneRow(board.getPlacedCards(), width, nextCard, isARow);
+			ArrayList<Card.Shape> shapeList = shapeListOfOneRow(placedCardsWithNull, width, nextCard, isARow);
 			final_score += calculateScoreOfShapeRow(shapeList, width, victoryShape);
-			ArrayList<Card.Filling> fillingList = fillingListOfOneRow(board.getPlacedCards(), width, nextCard, isARow);
+			ArrayList<Card.Filling> fillingList = fillingListOfOneRow(placedCardsWithNull, width, nextCard, isARow);
 			final_score += calculateScoreOfFillingRow(fillingList, width, victoryFilling);
 		}
 		//We browse each column and add the row score in the final score each time, for each card's attribute.
@@ -127,11 +141,11 @@ public class ScoreCalculatorVisitor implements IBoardVisitor
 		{
 			isARow = false;
 			Coordinates nextCard = new Coordinates(topLeftCard.getX() + j, topLeftCard.getY());
-			ArrayList<Card.Color> colorList = colorListOfOneRow(board.getPlacedCards(), height, nextCard, isARow);
+			ArrayList<Card.Color> colorList = colorListOfOneRow(placedCardsWithNull, height, nextCard, isARow);
 			final_score += calculateScoreOfColorRow(colorList, height, victoryColor);
-			ArrayList<Card.Shape> shapeList = shapeListOfOneRow(board.getPlacedCards(), height, nextCard, isARow);
+			ArrayList<Card.Shape> shapeList = shapeListOfOneRow(placedCardsWithNull, height, nextCard, isARow);
 			final_score += calculateScoreOfShapeRow(shapeList, height, victoryShape);
-			ArrayList<Card.Filling> fillingList = fillingListOfOneRow(board.getPlacedCards(), height, nextCard, isARow);
+			ArrayList<Card.Filling> fillingList = fillingListOfOneRow(placedCardsWithNull, height, nextCard, isARow);
 			final_score += calculateScoreOfFillingRow(fillingList, height, victoryFilling);
 		}
 		return final_score;

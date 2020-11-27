@@ -14,8 +14,6 @@ import java.util.*;
 public class TriangleBoard extends AbstractBoard
 {
 
-	//private static final String SPACE_BETWEEN_CARDS = "    ";
-
 	private static final String SPACE_ONE = "   ";
 
 	private static final String SPACE_TWO = "       ";
@@ -25,8 +23,6 @@ public class TriangleBoard extends AbstractBoard
 	private static final String SPACE_FOUR = "             ";
 
 	private int patternNumber = 1;
-	private int currentPattern;
-
 
 	private final List<List<Coordinates>> patterns;
 
@@ -35,7 +31,6 @@ public class TriangleBoard extends AbstractBoard
 		super();
 		patterns = new ArrayList<>();
 		initPattern();
-		currentPattern = 0;
 	}
 
 
@@ -145,7 +140,6 @@ public class TriangleBoard extends AbstractBoard
 	public void addMissingEmptyCase(Map<Coordinates, Card> coordinates)
 	{
 		List<Coordinates> pattern = patterns.get(patternNumber);
-		System.out.println("Pattern number"+patternNumber);
 		for (Coordinates coord : pattern)
 		{
 			if (!coordinates.containsKey(coord))

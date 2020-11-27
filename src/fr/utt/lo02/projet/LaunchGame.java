@@ -150,7 +150,7 @@ public class LaunchGame {
 	{
 		int choice;
 		try {
-			choice= scanner.nextInt();
+			choice = scanner.nextInt();
 		} catch (Exception exception)
 		{
 			choice= -1;
