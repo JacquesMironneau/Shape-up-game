@@ -6,7 +6,7 @@ import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 import fr.utt.lo02.projet.strategy.MoveRequest;
 import fr.utt.lo02.projet.strategy.PlaceRequest;
-import fr.utt.lo02.projet.strategy.PlayerStrategy;
+import fr.utt.lo02.projet.strategy.Player;
 import fr.utt.lo02.projet.strategy.RealPlayer;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 public class ShapeUpGameWithoutAdjacencyRule extends ShapeUpGame
 {
 
-	public ShapeUpGameWithoutAdjacencyRule(IBoardVisitor visitor, List<PlayerStrategy> players, AbstractBoard board)
+	public ShapeUpGameWithoutAdjacencyRule(IBoardVisitor visitor, List<Player> players, AbstractBoard board)
 	{
 		super(visitor, players, board);
 	}
@@ -27,7 +27,7 @@ public class ShapeUpGameWithoutAdjacencyRule extends ShapeUpGame
 	 * @return if the request is matching the game rules
 	 */
 	@Override
-	public boolean placeCardRequest(PlaceRequest placeRequest, PlayerStrategy player)
+	public boolean placeCardRequest(PlaceRequest placeRequest, Player player)
 	{
 		Card aCard = placeRequest.getCard();
 		Coordinates coord = placeRequest.getCoordinates();
@@ -54,7 +54,7 @@ public class ShapeUpGameWithoutAdjacencyRule extends ShapeUpGame
 	 * @return if the card has been moved or not
 	 */
 	@Override
-	public boolean moveCardRequest(MoveRequest moveRequest, PlayerStrategy player)
+	public boolean moveCardRequest(MoveRequest moveRequest, Player player)
 	{
 		Coordinates origin = moveRequest.getOrigin();
 		Coordinates destination = moveRequest.getDestination();

@@ -10,7 +10,7 @@ import java.util.*;
  *
  * @author Baptiste, Jacques
  */
-public class RectangleBoard extends AbstractBoard
+public class  RectangleBoard extends AbstractBoard
 {
 
 	/**
@@ -165,9 +165,14 @@ public class RectangleBoard extends AbstractBoard
 		int minAbscissa = Collections.min(abscissaCoordinates);
 		int minOrdinate = Collections.min(ordinateCoordinates);
 		int maxOrdinate = Collections.max(ordinateCoordinates);
+		final int sizeOfChar = Math.max(String.valueOf(maxAbscissa).length(), String.valueOf(minAbscissa).length());
 
 		for (int j = maxOrdinate; j >= minOrdinate; j--)
 		{
+			for (int k = 0; k <= sizeOfChar; k++)
+			{
+				System.out.print(' ');
+			}
 			for (int i = minAbscissa; i <= maxAbscissa; i++)
 			{
 				Card card = placedCards.get(new Coordinates(i, j));
@@ -180,6 +185,14 @@ public class RectangleBoard extends AbstractBoard
 			}
 			System.out.println();
 
+			int sizeOfCurrentChar = String.valueOf(j).length();
+			System.out.print(j);
+
+			for (int k = 0; k <= sizeOfChar - sizeOfCurrentChar; k++)
+			{
+				System.out.print(' ');
+
+			}
 			for (int i = minAbscissa; i <= maxAbscissa; i++)
 			{
 				Card card = placedCards.get(new Coordinates(i, j));
@@ -192,7 +205,10 @@ public class RectangleBoard extends AbstractBoard
 			}
 			System.out.println();
 
-
+			for (int k = 0; k <= sizeOfChar; k++)
+			{
+				System.out.print(' ');
+			}
 			for (int i = minAbscissa; i <= maxAbscissa; i++)
 			{
 				Card card = placedCards.get(new Coordinates(i, j));
@@ -209,7 +225,33 @@ public class RectangleBoard extends AbstractBoard
 
 		}
 
+		System.out.print("  ");
+		for (int n = minAbscissa; n <= maxAbscissa; n++)
+		{
+			int nbChar = String.valueOf(n).length();
 
+			switch (nbChar)
+			{
+				case 1 -> {
+					System.out.print(' ');
+					System.out.print(n);
+					System.out.print(' ');
+					System.out.print(' ');
+				}
+				case 2 -> {
+					System.out.print(' ');
+					System.out.print(n);
+					System.out.print(' ');
+				}
+				case 3 -> {
+					System.out.print(n);
+					System.out.print(' ');
+				}
+				case 4 -> System.out.print(n);
+			}
+		}
+		System.out.println();
+		System.out.println();
 	}
 
 }

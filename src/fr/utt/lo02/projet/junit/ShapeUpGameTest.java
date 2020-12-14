@@ -4,10 +4,7 @@ import fr.utt.lo02.projet.board.*;
 import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.game.AbstractShapeUpGame;
 import fr.utt.lo02.projet.game.ShapeUpGame;
-import fr.utt.lo02.projet.strategy.MoveRequest;
-import fr.utt.lo02.projet.strategy.PlaceRequest;
-import fr.utt.lo02.projet.strategy.PlayerStrategy;
-import fr.utt.lo02.projet.strategy.VirtualPlayer;
+import fr.utt.lo02.projet.strategy.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -35,7 +32,7 @@ class ShapeUpGameTest
 	private AbstractBoard board;
 
 
-	private List<PlayerStrategy> list;
+	private List<Player> list;
 	@Mock
 	private VirtualPlayer playerVirtual1;
 
@@ -51,8 +48,8 @@ class ShapeUpGameTest
 		list = new ArrayList<>();
 		board = new RectangleBoard();
 
-		playerVirtual1 = new VirtualPlayer("a",board);
-		playerVirtual2 = new VirtualPlayer("b",board);
+		playerVirtual1 = new VirtualPlayer("a",board, new RandomStrategy());
+		playerVirtual2 = new VirtualPlayer("b",board, new RandomStrategy());
 
 		playerVirtual1 = spy(playerVirtual1);
 //		playerVirtual1 = Mockito.mock(VirtualPlayer.class);
@@ -169,7 +166,7 @@ class ShapeUpGameTest
 	}
 
 	@RepeatedTest(20)
-	void TestPlaceCardDuringGame() throws boardEmptyException
+	void TestPlaceCardDuringGame()
 	{
 		board.getPlacedCards().put(new Coordinates(0, 0), new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
 		board.getPlacedCards().put(new Coordinates(1, 0), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
@@ -207,7 +204,7 @@ class ShapeUpGameTest
 	}
 
 	@Test
-	void TestMoveCardDuringGame() throws boardEmptyException
+	void TestMoveCardDuringGame()
 	{
 		board.getPlacedCards().put(new Coordinates(0, 0), new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
 		board.getPlacedCards().put(new Coordinates(1, 0), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
@@ -251,7 +248,7 @@ class ShapeUpGameTest
 
 	// Hypothetical case
 	@Test
-	void TestLastTurnAfterSecondPlayerPlays() throws boardEmptyException
+	void TestLastTurnAfterSecondPlayerPlays()
 	{
 		board.getPlacedCards().put(new Coordinates(0, 0), new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
 		board.getPlacedCards().put(new Coordinates(1, 0), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
@@ -314,7 +311,7 @@ class ShapeUpGameTest
 
 	// Common case for 2 player
 	@Test
-	void TestLastTurnFirstPlayerEndIt() throws boardEmptyException
+	void TestLastTurnFirstPlayerEndIt()
 	{
 		board.getPlacedCards().put(new Coordinates(0, 0), new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
 		board.getPlacedCards().put(new Coordinates(1, 0), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));

@@ -30,7 +30,7 @@ class VirtualPlayerTest
 		Card victoryCard = new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.HOLLOW);
 		Card handCard = new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.FILLED);
 
-		VirtualPlayer joueur1 = new VirtualPlayer("ord1",board);
+		VirtualPlayer joueur1 = new VirtualPlayer("ord1",board, new RandomStrategy());
 		joueur1.drawCard(handCard);
 		joueur1.addRoundScore(15);
 		joueur1.addRoundScore(25);
@@ -64,7 +64,7 @@ class VirtualPlayerTest
 		board.getPlacedCards().put(new Coordinates(2, -2), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
 		Card victoryCard = new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.HOLLOW);
 		Card handCard = new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.FILLED);
-		VirtualPlayer joueur1 = new VirtualPlayer("ord1",board);
+		VirtualPlayer joueur1 = new VirtualPlayer("ord1",board, new RandomStrategy());
 		joueur1.drawCard(handCard);
 		joueur1.drawCard(handCard);
 		joueur1.drawCard(handCard);

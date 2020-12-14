@@ -30,7 +30,7 @@ public abstract class AbstractShapeUpGame
 	/**
 	 * Players of the game
 	 */
-	protected List<PlayerStrategy> players;
+	protected List<Player> players;
 
 	/**
 	 * Game board of the game
@@ -43,7 +43,7 @@ public abstract class AbstractShapeUpGame
 	private final IBoardVisitor visitor;
 
 
-	public AbstractShapeUpGame(IBoardVisitor visitor, List<PlayerStrategy> players, AbstractBoard board)
+	public AbstractShapeUpGame(IBoardVisitor visitor, List<Player> players, AbstractBoard board)
 	{
 		this.visitor = visitor;
 		this.players = players;
@@ -78,7 +78,7 @@ public abstract class AbstractShapeUpGame
 		initDeck();
 		Collections.shuffle((LinkedList<Card>) this.deck);
 
-		for (PlayerStrategy player : players)
+		for (Player player : players)
 		{
 			player.getPlayerHand().clear();
 		}
@@ -102,7 +102,7 @@ public abstract class AbstractShapeUpGame
 	/**
 	 * Turns loop for one player
 	 */
-	protected abstract void playTurn(PlayerStrategy player) throws PlayerHandEmptyException, boardEmptyException;
+	protected abstract void playTurn(Player player) throws PlayerHandEmptyException, boardEmptyException;
 
 	/**
 	 * Request to place a card from the player hand to a position on the board
@@ -111,7 +111,7 @@ public abstract class AbstractShapeUpGame
 	 * @param player       the player that is making the request
 	 * @return if the request is matching the game rules
 	 */
-	public boolean placeCardRequest(PlaceRequest placeRequest, PlayerStrategy player)
+	public boolean placeCardRequest(PlaceRequest placeRequest, Player player)
 	{
 
 		Card aCard = placeRequest.getCard();
@@ -154,7 +154,7 @@ public abstract class AbstractShapeUpGame
 	 * @param moveRequest player request
 	 * @return if the card has been moved or not
 	 */
-	public boolean moveCardRequest(MoveRequest moveRequest, PlayerStrategy player)
+	public boolean moveCardRequest(MoveRequest moveRequest, Player player)
 	{
 
 		Coordinates origin = moveRequest.getOrigin();
@@ -211,7 +211,7 @@ public abstract class AbstractShapeUpGame
 	 *
 	 * @param player The player which will be given a card.
 	 */
-	public void drawCard(PlayerStrategy player)
+	public void drawCard(Player player)
 	{
 		if (!this.deck.isEmpty())
 			player.drawCard(this.deck.poll());
@@ -223,7 +223,7 @@ public abstract class AbstractShapeUpGame
 	 */
 	protected void calculateGameScore()
 	{
-		for (PlayerStrategy player: players)
+		for (Player player: players)
 		{
 			player.displayFinalScore();
 		}
@@ -231,7 +231,7 @@ public abstract class AbstractShapeUpGame
 
 	protected void calculateRoundScore()
 	{
-		for (PlayerStrategy p : players)
+		for (Player p : players)
 		{
 			p.addRoundScore(this.board.accept(visitor, p.getVictoryCard()));
 			p.displayRoundScore();
@@ -239,7 +239,7 @@ public abstract class AbstractShapeUpGame
 
 	}
 
-	protected PlayerStrategy nextPlayer(PlayerStrategy player)
+	protected Player nextPlayer(Player player)
 	{
 		return players.get((players.indexOf(player) + 1) % this.players.size());
 	}

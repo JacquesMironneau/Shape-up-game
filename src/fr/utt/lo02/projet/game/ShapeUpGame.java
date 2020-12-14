@@ -12,7 +12,7 @@ import java.util.List;
 public class ShapeUpGame extends AbstractShapeUpGame
 {
 
-	public ShapeUpGame(IBoardVisitor visitor, List<PlayerStrategy> players, AbstractBoard board)
+	public ShapeUpGame(IBoardVisitor visitor, List<Player> players, AbstractBoard board)
 	{
 		super(visitor, players, board);
 	}
@@ -26,7 +26,7 @@ public class ShapeUpGame extends AbstractShapeUpGame
 		super.initRound();
 
 		// Draw victory cards to players
-		for (PlayerStrategy player : players)
+		for (Player player : players)
 		{
 			player.setVictoryCard(this.deck.poll());
 		}
@@ -35,7 +35,7 @@ public class ShapeUpGame extends AbstractShapeUpGame
 	@Override
 	protected void playRound() throws PlayerHandEmptyException, boardEmptyException
 	{
-		PlayerStrategy player = players.get(0);
+		Player player = players.get(0);
 
 		while (!isRoundFinished())
 		{
@@ -45,7 +45,7 @@ public class ShapeUpGame extends AbstractShapeUpGame
 	}
 
 	@Override
-	protected void playTurn(PlayerStrategy player) throws PlayerHandEmptyException, boardEmptyException
+	protected void playTurn(Player player) throws PlayerHandEmptyException, boardEmptyException
 	{
 		System.out.println(player.getName() +"'s turn !");
 
@@ -128,7 +128,7 @@ public class ShapeUpGame extends AbstractShapeUpGame
 	@Override
 	protected  boolean isRoundFinished()
 	{
-		for (PlayerStrategy player : players)
+		for (Player player : players)
 		{
 			if (!player.getPlayerHand().isEmpty()) return false;
 		}

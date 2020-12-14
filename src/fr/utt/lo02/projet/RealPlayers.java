@@ -5,7 +5,7 @@ import fr.utt.lo02.projet.board.boardEmptyException;
 import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.game.ShapeUpGame;
 import fr.utt.lo02.projet.strategy.PlayerHandEmptyException;
-import fr.utt.lo02.projet.strategy.PlayerStrategy;
+import fr.utt.lo02.projet.strategy.Player;
 import fr.utt.lo02.projet.strategy.RealPlayer;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class RealPlayers
 	{
 		// TODO Auto-generated method stub
 		RectangleBoard rb = new RectangleBoard();
-		List<PlayerStrategy> ps = new ArrayList<>();
+		List<Player> ps = new ArrayList<>();
 		ps.add(new RealPlayer("Vrai1",rb));
 		ps.add(new RealPlayer("Vrai2",rb));
 

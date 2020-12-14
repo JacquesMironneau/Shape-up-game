@@ -17,8 +17,7 @@ import static com.diogonunes.jcolor.Attribute.GREEN_TEXT;
  * @author Baptiste, Jacques
  */
 
-
-public class RealPlayer extends PlayerStrategy
+public class RealPlayer extends Player
 {
 
 	private final Scanner scan;

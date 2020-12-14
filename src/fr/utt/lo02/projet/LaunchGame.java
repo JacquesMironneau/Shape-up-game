@@ -6,10 +6,7 @@ import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.game.ShapeUpGame;
 import fr.utt.lo02.projet.game.ShapeUpGameAdvanced;
 import fr.utt.lo02.projet.game.ShapeUpGameWithoutAdjacencyRule;
-import fr.utt.lo02.projet.strategy.PlayerHandEmptyException;
-import fr.utt.lo02.projet.strategy.PlayerStrategy;
-import fr.utt.lo02.projet.strategy.RealPlayer;
-import fr.utt.lo02.projet.strategy.VirtualPlayer;
+import fr.utt.lo02.projet.strategy.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +69,7 @@ public class LaunchGame {
 						System.out.println("1. 2 Players");
 						System.out.println("2. 3 Players");
 						int choiceNumberPlayers = readInt(2);
-						List<PlayerStrategy> players = new ArrayList<PlayerStrategy>();
+						List<Player> players = new ArrayList<Player>();
 						int virtualNumber=1;
 						for (int i=1; i<=choiceNumberPlayers+1; i++) {
 							System.out.println("Is Player " + i + " a real or a virtual player ? ");
@@ -87,7 +84,7 @@ public class LaunchGame {
 									players.add(new RealPlayer(name, board));
 									break;
 								case 2:
-									players.add(new VirtualPlayer("User" + virtualNumber, board));
+									players.add(new VirtualPlayer("User" + virtualNumber, board, new RandomStrategy()));
 									virtualNumber++;
 									break;
 								default:	

@@ -10,7 +10,7 @@ import java.util.List;
 public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 {
 
-	public ShapeUpGameAdvanced(IBoardVisitor visitor, List<PlayerStrategy> players, AbstractBoard board)
+	public ShapeUpGameAdvanced(IBoardVisitor visitor, List<Player> players, AbstractBoard board)
 	{
 		super(visitor, players, board);
 	}
@@ -24,7 +24,7 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 		super.initRound();
 
 		// Draw cards to players
-		for (PlayerStrategy player : players)
+		for (Player player : players)
 		{
 			player.getPlayerHand().add(this.deck.poll());
 			player.getPlayerHand().add(this.deck.poll());
@@ -36,7 +36,7 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 	@Override
 	protected void playRound() throws PlayerHandEmptyException, boardEmptyException
 	{
-		PlayerStrategy player = players.get(0);
+		Player player = players.get(0);
 
 		while (!isRoundFinished())
 		{
@@ -46,7 +46,7 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 	}
 
 	@Override
-	protected void playTurn(PlayerStrategy player) throws PlayerHandEmptyException, boardEmptyException
+	protected void playTurn(Player player) throws PlayerHandEmptyException, boardEmptyException
 	{
 
 		System.out.println(player.getName() +"'s turn !");
@@ -127,7 +127,7 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 	{
 		if (!deck.isEmpty()) return false;
 		
-		for (PlayerStrategy player : players)
+		for (Player player : players)
 		{
 			if ((player.getPlayerHand().size() > 1))
 			{
@@ -135,7 +135,7 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 			}
 		}
 
-		for (PlayerStrategy player : players)
+		for (Player player : players)
 		{
 			player.setVictoryCard(player.getPlayerHand().get(0));
 		}
