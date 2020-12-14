@@ -47,6 +47,11 @@ class ScoreCalculatorVisitorTest {
 		assertEquals(test.visit((RectangleBoard)board, victoryCardA), 13);
 		assertEquals(test.visit((RectangleBoard)board, victoryCardB), 10);
 		assertEquals(test.visit((RectangleBoard)board, victoryCardC), 12);
+		board.removeCard(new Coordinates(0,0), new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
+		board.display();
+
+		assertEquals(test.visit((RectangleBoard)board, victoryCardA), 10);
+
 	}
 	
 	@Test
