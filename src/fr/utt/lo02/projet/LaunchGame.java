@@ -1,18 +1,28 @@
 package fr.utt.lo02.projet;
 
-import com.diogonunes.jcolor.Attribute;
-import fr.utt.lo02.projet.board.*;
-import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
-import fr.utt.lo02.projet.game.ShapeUpGame;
-import fr.utt.lo02.projet.game.ShapeUpGameAdvanced;
-import fr.utt.lo02.projet.game.ShapeUpGameWithoutAdjacencyRule;
-import fr.utt.lo02.projet.strategy.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import static com.diogonunes.jcolor.Ansi.colorize;
+//import com.diogonunes.jcolor.Attribute;
+
+import fr.utt.lo02.projet.board.AbstractBoard;
+import fr.utt.lo02.projet.board.CircleBoard;
+import fr.utt.lo02.projet.board.RectangleBoard;
+import fr.utt.lo02.projet.board.TriangleBoard;
+import fr.utt.lo02.projet.board.boardEmptyException;
+import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
+import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
+import fr.utt.lo02.projet.board.visitor.ScoreCalculatorWithBonusVisitor;
+import fr.utt.lo02.projet.game.ShapeUpGame;
+import fr.utt.lo02.projet.game.ShapeUpGameAdvanced;
+import fr.utt.lo02.projet.game.ShapeUpGameWithoutAdjacencyRule;
+import fr.utt.lo02.projet.strategy.DifficultStrategy;
+import fr.utt.lo02.projet.strategy.Player;
+import fr.utt.lo02.projet.strategy.PlayerHandEmptyException;
+import fr.utt.lo02.projet.strategy.RandomStrategy;
+import fr.utt.lo02.projet.strategy.RealPlayer;
+import fr.utt.lo02.projet.strategy.VirtualPlayer;
 
 public class LaunchGame {
 
@@ -22,12 +32,12 @@ public class LaunchGame {
 	{
 			boolean quit = false;
 			while (!quit) {
-				System.out.println(colorize(" ____    _                                _   _         ", Attribute.BLUE_TEXT()));
-				System.out.println(colorize("/ ___|  | |__     __ _   _ __     ___    | | | |  _ __  ", Attribute.BLUE_TEXT()));
-				System.out.println(colorize("\\___ \\  | '_ \\   / _` | | '_ \\   / _ \\   | | | | | '_ \\ ", Attribute.GREEN_TEXT()));
-				System.out.println(colorize(" ___) | | | | | | (_| | | |_) | |  __/   | |_| | | |_) |", Attribute.GREEN_TEXT()));
-				System.out.println(colorize("|____/  |_| |_|  \\__,_| | .__/   \\___|    \\___/  | .__/ ",Attribute.RED_TEXT()));
-				System.out.println(colorize("                        |_|                      |_|    ", Attribute.RED_TEXT()));
+				//System.out.println(colorize(" ____    _                                _   _         ", Attribute.BLUE_TEXT()));
+				//System.out.println(colorize("/ ___|  | |__     __ _   _ __     ___    | | | |  _ __  ", Attribute.BLUE_TEXT()));
+				//System.out.println(colorize("\\___ \\  | '_ \\   / _` | | '_ \\   / _ \\   | | | | | '_ \\ ", Attribute.GREEN_TEXT()));
+				//System.out.println(colorize(" ___) | | | | | | (_| | | |_) | |  __/   | |_| | | |_) |", Attribute.GREEN_TEXT()));
+				//System.out.println(colorize("|____/  |_| |_|  \\__,_| | .__/   \\___|    \\___/  | .__/ ",Attribute.RED_TEXT()));
+				//System.out.println(colorize("                        |_|                      |_|    ", Attribute.RED_TEXT()));
 
 				System.out.println("1. Play");
 				System.out.println("2. Rules");
@@ -40,9 +50,16 @@ public class LaunchGame {
 						System.out.println("1. Normal");
 						System.out.println("2. Advanced");
 						System.out.println("3. NoAdjacency");
+						System.out.println("4. Special Bonus Calculator");
 						int choiceMode = readInt(3);
+						IBoardVisitor visitor = null;
 						switch (choiceMode) {
-							case 1, 2, 3: break;
+							case 1, 2, 3: 
+								visitor = new ScoreCalculatorVisitor();
+								break;
+							case 4:
+								visitor = new ScoreCalculatorWithBonusVisitor();
+								break;
 							default: 
 								System.exit(0);
 						}
@@ -84,7 +101,21 @@ public class LaunchGame {
 									players.add(new RealPlayer(name, board));
 									break;
 								case 2:
-									players.add(new VirtualPlayer("User" + virtualNumber, board, new RandomStrategy()));
+									System.out.println("Please choose the level of the Virtual Player");
+									System.out.println("1. Easy");
+									System.out.println("2. Difficult");
+									int choiceEasyOrDifficult = readInt(2);
+									switch (choiceEasyOrDifficult) {
+										case 1:
+											VirtualPlayer vP = new VirtualPlayer("User" + virtualNumber, board, new RandomStrategy());
+											System.out.println("opopos");
+											players.add(vP);
+											break;
+										case 2:
+											VirtualPlayer vP2 = new VirtualPlayer("User" + virtualNumber, board, new DifficultStrategy(visitor));
+											players.add(vP2);
+											break;
+									}
 									virtualNumber++;
 									break;
 								default:	
@@ -92,19 +123,19 @@ public class LaunchGame {
 							}
 						}
 						switch (choiceMode) {
-							case 1: 
-								new ShapeUpGame(new ScoreCalculatorVisitor(), players, board).playGame();
+							case 1, 4: 
+								new ShapeUpGame(visitor, players, board).playGame();
 								break;
 							case 2: 
-								new ShapeUpGameAdvanced(new ScoreCalculatorVisitor(), players, board).playGame();
+								new ShapeUpGameAdvanced(visitor, players, board).playGame();
 								break;
 							case 3: 
-								new ShapeUpGameWithoutAdjacencyRule(new ScoreCalculatorVisitor(), players, board).playGame();
+								new ShapeUpGameWithoutAdjacencyRule(visitor, players, board).playGame();
 								break;
 						}
 						break;
 					case 2:
-						System.out.println("For the rules\n \t"+ colorize("See2 http://goodlittlegames.co.uk/packages/glg06a-ShapeUp.zip\n",Attribute.YELLOW_TEXT()));
+						System.out.println("For the rules\n \t"+ /*colorize*/("See2 http://goodlittlegames.co.uk/packages/glg06a-ShapeUp.zip\n"/*,/*Attribute.YELLOW_TEXT()*/));
 						System.out.println("\n\n");
 						break;
 					case 3:

@@ -3,13 +3,20 @@ package fr.utt.lo02.projet.strategy;
 import fr.utt.lo02.projet.board.AbstractBoard;
 import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.Coordinates;
+import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RandomStrategy implements PlayerStrategy
 {
-	public Choice makeChoice()
+	
+	public RandomStrategy() {
+	
+	}
+	
+	@Override
+	public Choice makeChoice(AbstractBoard board, Card victoryCard, List<Card> playerHand)
 	{
 		int randomNumber = 1 + (int) (Math.random() * ((3 - 1) + 1));
 		if (randomNumber == 1) {
@@ -22,7 +29,7 @@ public class RandomStrategy implements PlayerStrategy
 	}
 
 	@Override
-	public PlaceRequest makePlaceRequest(AbstractBoard board, List<Card> playerHand)
+	public PlaceRequest makePlaceRequest(AbstractBoard board, Card victoryCard, List<Card> playerHand)
 	{
 		Card card;
 		if (playerHand.size() == 1)
@@ -46,7 +53,7 @@ public class RandomStrategy implements PlayerStrategy
 	}
 
 	@Override
-	public MoveRequest makeMoveRequest(AbstractBoard board)
+	public MoveRequest makeMoveRequest(AbstractBoard board, Card victoryCard)
 	{
 		List<Coordinates> coordsMap = new ArrayList<Coordinates>(board.getPlacedCards().keySet());
 

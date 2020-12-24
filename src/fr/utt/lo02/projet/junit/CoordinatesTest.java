@@ -1,12 +1,16 @@
 package fr.utt.lo02.projet.junit;
 
 import fr.utt.lo02.projet.board.Coordinates;
-import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.Test;
+
+
+
 
 
 class CoordinatesTest

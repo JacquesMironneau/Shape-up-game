@@ -32,21 +32,21 @@ public class VirtualPlayer extends Player
 	@Override
 	public Choice askChoice(ChoiceOrder choiceNumber)
 	{
-		return strategy.makeChoice();
+		return strategy.makeChoice(super.board, super.getVictoryCard(), super.getPlayerHand()) ;
 	}
 
 	@Override
 	public PlaceRequest askPlaceCard() throws PlayerHandEmptyException
 	{
 		if (playerHand.isEmpty()) throw new PlayerHandEmptyException();
-		return this.strategy.makePlaceRequest(super.board, super.playerHand);
+		return this.strategy.makePlaceRequest(super.board, super.getVictoryCard(), super.getPlayerHand());
 	}
 
 	@Override
 	public MoveRequest askMoveCard() throws boardEmptyException
 	{
 		if (board.getPlacedCards().isEmpty()) throw new boardEmptyException();
-		return this.strategy.makeMoveRequest(board);
+		return this.strategy.makeMoveRequest(board, super.getVictoryCard());
 	}
 
 	@Override
