@@ -12,5 +12,5 @@ public interface PlayerStrategy
 
 	PlaceRequest makePlaceRequest(AbstractBoard board, Card victoryCard, List<Card> playerHand);
 
-	MoveRequest makeMoveRequest(AbstractBoard board, Card victoryCard);
+	MoveRequest makeMoveRequest(AbstractBoard board, Card victoryCard, List<Card> playerHand);
 }

@@ -8,8 +8,6 @@ import fr.utt.lo02.projet.strategy.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -20,7 +18,6 @@ import java.util.Queue;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.spy;
 
 class ShapeUpGameTest
 {
@@ -33,17 +30,16 @@ class ShapeUpGameTest
 
 
 	private List<Player> list;
-	@Mock
+
 	private VirtualPlayer playerVirtual1;
 
-	@Mock
 	private VirtualPlayer playerVirtual2;
 
 
 	@BeforeEach
 	void setUp()
 	{
-		v = Mockito.mock(ScoreCalculatorVisitor.class);
+		v = new ScoreCalculatorVisitor();
 
 		list = new ArrayList<>();
 		board = new RectangleBoard();
@@ -51,9 +47,9 @@ class ShapeUpGameTest
 		playerVirtual1 = new VirtualPlayer("a",board, new RandomStrategy());
 		playerVirtual2 = new VirtualPlayer("b",board, new RandomStrategy());
 
-		playerVirtual1 = spy(playerVirtual1);
+		
 //		playerVirtual1 = Mockito.mock(VirtualPlayer.class);
-		playerVirtual2 = spy(playerVirtual2);
+		
 		list.add(playerVirtual1);
 		list.add(playerVirtual2);
 
