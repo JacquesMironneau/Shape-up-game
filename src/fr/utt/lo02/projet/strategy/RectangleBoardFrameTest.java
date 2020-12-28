@@ -1,18 +1,24 @@
 package fr.utt.lo02.projet.strategy;
 
 import fr.utt.lo02.projet.GameView;
-import fr.utt.lo02.projet.board.*;
+import fr.utt.lo02.projet.board.AbstractBoard;
+import fr.utt.lo02.projet.board.Card;
+import fr.utt.lo02.projet.board.Coordinates;
+import fr.utt.lo02.projet.board.TriangleBoard;
 import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.game.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -39,6 +45,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
     int currX;
     int currY;
     int cardIndex;
+    boolean shouldDrawText;
 
     private GameController controller;
 
@@ -52,7 +59,9 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
     private CardImage cardImage;
     private boolean placementTime;
     private GameState gs;
+    private GameState prevGs;
     List<Coordinates> goodRequestsScreen = new CopyOnWriteArrayList<>();
+    private boolean displayScores;
 
     public RectangleBoardFrameTest(AbstractBoard modelboard, AbstractShapeUpGame game)
     {
@@ -77,7 +86,9 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
 
         placementTime = false;
-
+        shouldDrawText = false;
+        gs = null;
+        displayScores = false;
     }
 
 
@@ -86,6 +97,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
     {
         System.out.println("notified" + evt.getNewValue() + " " + evt.getPropertyName());
 
+        prevGs = gs;
         gs = (GameState) evt.getNewValue();
         System.out.println(gs);
 
@@ -95,10 +107,15 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
             case MOVE -> {
 
-               goodRequestsScreen.clear();
+                if (prevGs != GameState.MOVE) //TODO or failed
+                    shouldDrawText = true;
+                placementTime = true;
+
                 System.out.println("move");
+                generateFreeLocation();
                 updateDisplayBoard();
                 placementTime = false;
+
                 removeMouseMotionListener(this);
                 removeMouseListener(this);
                 addMouseListener(this);
@@ -106,6 +123,10 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
             }
             case PLACE -> {
+                if (prevGs != GameState.PLACE)
+                    shouldDrawText = true;
+                placementTime = true;
+
                 generateFreeLocation();
                 System.out.println("place");
                 removeMouseMotionListener(this);
@@ -114,36 +135,77 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
                 addMouseMotionListener(this);
                 updateDisplayBoard();
                 updateDisplayHand();
-                placementTime = true;
 
 
             }
             case PLACE_DONE -> {
 
 
+                if (model.getCurrentPlayer() instanceof VirtualPlayer && !SwingUtilities.isEventDispatchThread())
+                {
+                    System.out.println("aaaaaaaaaaaaaaaaaajkezajekazjkejazlekj");
+                    try
+                    {
+                        SwingUtilities.invokeAndWait(new Runnable()
+                        {
+                            public void run()
+                            {
+                                updateDisplayBoard();
+                                try
+                                {
+                                    Thread.sleep(500);
+                                } catch (InterruptedException e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    } catch (InterruptedException | InvocationTargetException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
 
-                updateDisplayBoard();
 
                 System.out.println("placed");
                 removeMouseListener(this);
                 removeMouseMotionListener(this);
 
 
-
-
-
             }
             case MOVE_DONE -> {
 
-
-                updateDisplayBoard();
+                // Runs inside of the Swing UI thread
+                if (model.getCurrentPlayer() instanceof VirtualPlayer && !SwingUtilities.isEventDispatchThread())
+                {
+                    try
+                    {
+                        SwingUtilities.invokeAndWait(new Runnable()
+                        {
+                            public void run()
+                            {
+                                updateDisplayBoard();
+                                try
+                                {
+                                    Thread.sleep(500);
+                                } catch (InterruptedException e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    } catch (InterruptedException | InvocationTargetException e)
+                    {
+                        e.printStackTrace();
+                    }
+                } else
+                {
+                    updateDisplayHand();
+                }
 
                 System.out.println("moved");
                 removeMouseListener(this);
                 removeMouseMotionListener(this);
-
-
-
 
 
             }
@@ -158,41 +220,93 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
                 repaint();
 
 
-                this.controller.play();
+//                this.controller.play();
+                new Thread(() -> controller.play()).start();
+
             }
             case FIRST_CHOICE -> {
+                displayScores = false;
+
                 removeMouseListener(this);
                 removeMouseMotionListener(this);
-                addMouseListener(this);
-                addMouseMotionListener(this);
                 goodRequestsScreen.clear();
                 goodRequestsScreen.add(new Coordinates(LEFT_BOARD_OFFSET, TOP_BOARD_OFFSET));
+                updateDisplayBoard();
+                updateDisplayHand();
                 repaint();
 
 
+                JButton placeButton = new JButton("Place");
+                JButton moveButton = new JButton("Move");
+                placeButton.addActionListener(actionEvent -> {
 
-                placementTime = true;
-                this.controller.askChoice(1, 2);
+                    remove(moveButton);
+                    remove(placeButton);
+                    new Thread(() -> controller.askChoice(1, 2)).start();
+
+                });
+
+                moveButton.addActionListener(actionEvent -> {
+
+                    remove(moveButton);
+                    remove(placeButton);
+                    new Thread(() -> controller.askChoice(1, 1)).start();
+
+                });
+                placeButton.setBounds(1000, PLAYER_HAND_Y - 50, 200, 60);
+                moveButton.setBounds(1000, PLAYER_HAND_Y + 20, 200, 60);
+
+                add(placeButton);
+                add(moveButton);
                 // Allow place and move listener ?
                 // If user click on hand => place case
                 // if click on board => move case
 
             }
             case SECOND_CHOICE -> {
-                this.controller.askChoice(2, 1);
+                removeMouseListener(this);
+                removeMouseMotionListener(this);
+
+                JButton endTurnButton = new JButton("End the turn");
+                JButton moveButton = new JButton("Move");
+                //repaint();
+                endTurnButton.addActionListener(actionEvent -> {
+
+                    remove(moveButton);
+                    remove(endTurnButton);
+                    new Thread(() -> controller.askChoice(2, 2)).start();
+
+                });
+
+                moveButton.addActionListener(actionEvent -> {
+                    remove(moveButton);
+                    remove(endTurnButton);
+                    new Thread(() -> controller.askChoice(2, 1)).start();
+
+
+                });
+                endTurnButton.setBounds(1000, PLAYER_HAND_Y + 20, 200, 60);
+                moveButton.setBounds(1000, PLAYER_HAND_Y - 50, 200, 60);
+
+                add(endTurnButton);
+                add(moveButton);
+                //
 
                 // Allow display end turn button and ?
             }
             case END_TURN -> {
+
                 removeMouseMotionListener(this);
                 removeMouseListener(this);
                 updateDisplayBoard();
-                this.controller.endTurn();
+//                this.controller.endTurn();
+                new Thread(() -> controller.endTurn()).start();
+
                 // Display end turn (next player animation I guess)
             }
             case CARD_DRAW, VICTORY_CARD -> {
 
-                //TODO add draw animation
+                //TODO add animation
                 repaint();
 
             }
@@ -202,13 +316,25 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
                 goodRequestsScreen.clear();
                 updateDisplayBoard();
-                boardView.clear();
-                handView.clear();
+
+
 //                validate();
 //                repaint();
+                JButton endTurnButton = new JButton("Next round");
+                //repaint();
+                endTurnButton.setBounds(1000, PLAYER_HAND_Y + 20, 200, 60);
 
-                System.out.println("The round is finished");
-                System.out.println();
+                endTurnButton.addActionListener(actionEvent -> {
+
+                    remove(endTurnButton);
+                    boardView.clear();
+                    handView.clear();
+                    //this.controller.endRound();
+                    new Thread(() -> controller.endRound()).start();
+
+
+                });
+                add(endTurnButton);
 
 //                JButton ok = new JButton("Ok");
 //                ok.setBounds(700,7000,50,50);
@@ -222,11 +348,14 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 //                    }
 //                });
 //                add(ok);
-                this.controller.endRound();
 
 
             }
             case END_GAME -> {
+                boardView.clear();
+                handView.clear();
+                repaint();
+                model.getPlayers().forEach(Player::displayFinalScore);
                 // Display end game (every scores, + main menu ?)
 
             }
@@ -236,7 +365,22 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
     public void mouseClicked(MouseEvent mouseEvent)
     {
-
+        // Deprecated system of picking choice with mere click => changed to jbuttons!!!
+//        if (choiceTime)
+//        {
+//            if (mouseEvent.getY() >= PLAYER_HAND_Y)
+//            {
+//                System.out.println("CHOOSE PLACE OR END");
+//                this.controller.askChoice(choiceIndex,2);
+//            }
+//            else
+//            {
+//                System.out.println("CHOOSE MOVE");
+//
+//                this.controller.askChoice(choiceIndex,1);
+//
+//            }
+//        }
     }
 
     public void mousePressed(MouseEvent mouseEvent)
@@ -291,6 +435,8 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
             if (cardImage == null)
                 return;
 
+            generateFreeLocation();
+            repaint();
 
             // boardView.set(boardView.indexOf(cardImage), new CardImage(cardImage.getX(), cardImage.getY(), null));
             boardView.remove(cardImage);
@@ -328,6 +474,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         repaint();
     }
 
+    //TODO refactor
     public void mouseReleased(MouseEvent mouseEvent)
     {
 
@@ -339,16 +486,28 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
         if (boardView.isEmpty())
         {
-            boardView.add(new CardImage(LEFT_BOARD_OFFSET, TOP_BOARD_OFFSET, cardImage.getCard()));
-            hasBeenPlaced = true;
-            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            if (mouseEvent.getX() >= LEFT_BOARD_OFFSET && mouseEvent.getX() <= this.getWidth())
+            {
+                if (mouseEvent.getY() >= TOP_BOARD_OFFSET && mouseEvent.getY() <= PLAYER_HAND_Y)
+                {
+                    boardView.add(new CardImage(LEFT_BOARD_OFFSET, TOP_BOARD_OFFSET, cardImage.getCard()));
+                    hasBeenPlaced = true;
+                    setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
-            CardImage ci = cardImage;
-            cardImage = null;
-            repaint();
-            this.controller.askPlace(0, 0, cardIndex);
+                    CardImage ci = cardImage;
+                    cardImage = null;
+                    repaint();
+//                    this.controller.askPlace(0, 0, cardIndex);
+                    new Thread(() -> controller.askPlace(0, 0, cardIndex)).start();
 
-            //TODO check
+
+                    //TODO check
+                }
+            }
+            if (!hasBeenPlaced)
+            {
+                handView.add(new CardImage(prevX, prevY, cardImage.getCard()));
+            }
             return;
 
         }
@@ -413,12 +572,16 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         Coordinates coordinates = screenToGameCoordinates(x, y, minAbscissa, maxOrdinate);
         if (placementTime)
         {
-            this.controller.askPlace(coordinates.getX(), coordinates.getY(), cardIndex);
+//            this.controller.askPlace(coordinates.getX(), coordinates.getY(), cardIndex);
+            new Thread(() -> controller.askPlace(coordinates.getX(), coordinates.getY(), cardIndex)).start();
+
 
         } else
         {
             Coordinates previous = screenToGameCoordinates(prevX, prevY, minAbscissa, maxOrdinate);
-            this.controller.askMove(previous.getX(), previous.getY(), coordinates.getX(), coordinates.getY());
+//            this.controller.askMove(previous.getX(), previous.getY(), coordinates.getX(), coordinates.getY());
+            new Thread(() -> controller.askMove(previous.getX(), previous.getY(), coordinates.getX(), coordinates.getY())).start();
+
         }
 
         repaint();
@@ -462,6 +625,30 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
     public void displayScoresEndRound()
     {
 
+        displayScores = true;
+        model.getPlayers().forEach(Player::displayRoundScore);
+
+//        SwingUtilities.invokeLater(new Thread(){
+//            @Override
+//            public void run()
+//            {
+//                for (Player player : model.getPlayers())
+//                {        int offset = 0;
+//
+//                    StringBuilder sb = new StringBuilder();
+//                    sb.append(player.getName());
+//                    sb.append(": ");
+//                    sb.append(player.getScoresRound().get(player.getScoresRound().size() - 1));
+//                    sb.append(" points");
+//
+//                    getGraphics().drawString(sb.toString(), getWidth()/2, getHeight()/2 + offset);
+//                    offset += 30;
+//
+//
+//                }
+//                validate();
+//            }
+//        });
     }
 
     @Override
@@ -535,21 +722,52 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
     // Draw the board + the dragged card
     public void draw(Graphics2D g2d)
     {
-        //TODO draw background here
+        // draw background
+        try
+        {
+            g2d.drawImage(ImageIO.read(new File("res/background.png")), 0, 0, 1280, 720, null);
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
 
         // Draw location
         if (gs == GameState.MOVE || gs == GameState.PLACE || gs == GameState.FIRST_TURN)
         {
-            g2d.setColor(Color.YELLOW);
+            if (placementTime)
+            {
+                g2d.setColor(Color.WHITE);
+
+            } else
+                g2d.setColor(Color.YELLOW);
             for (Coordinates coord : goodRequestsScreen)
             {
                 //TODO replace by image
 
-                g2d.fillRect(coord.getX(), coord.getY(), CARD_WIDTH, CARD_HEIGHT);
+                g2d.drawRect(coord.getX(), coord.getY(), CARD_WIDTH, CARD_HEIGHT);
+            }
+
+            if (shouldDrawText)
+            {
+                Font f = g2d.getFont().deriveFont(80.0f);
+                g2d.setFont(f);
+
+                String str = "";
+                if (gs == GameState.MOVE)
+                {
+                    str = "Time to move !";
+
+                } else if (gs == GameState.PLACE)
+                {
+                    str = "Time to place !";
+
+                }
+                g2d.setColor(Color.RED);
+                g2d.drawString(str, 100, 200);
             }
         }
 
-        System.out.println("BOARD VIEW + size"+ boardView.size());
+        System.out.println("BOARD VIEW + size" + boardView.size());
         for (CardImage cardImage : boardView)
         {
             Card card = cardImage.getCard();
@@ -587,6 +805,12 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         //Card victoryCard = new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.HOLLOW);
         if (victoryCard != null)
             g2d.drawImage(cardImageMatcher(victoryCard), 50, PLAYER_HAND_Y, null);
+
+    }
+
+    private void drawRoundScores(Graphics2D g2d)
+    {
+
 
     }
 
@@ -630,11 +854,68 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
     {
         super.paintComponent(g);
 
-        g.setColor(getBackground());
+        if (gs != GameState.END_GAME)
+        {
+            g.setColor(getBackground());
 
-        draw((Graphics2D) g);
-        drawHand((Graphics2D) g);
-        drawVictoryCard((Graphics2D) g);
+            draw((Graphics2D) g);
+            drawHand((Graphics2D) g);
+            drawVictoryCard((Graphics2D) g);
+
+            System.out.println("SHOULDA REPAINT :c");
+            if (displayScores)
+            {
+                drawRoundScores((Graphics2D) g);
+            }
+        } else
+        {
+            g.drawString("Thank you for playing :D\n todo end screen", getWidth() / 2, getHeight() / 2);
+            drawEndScores(g);
+        }
+
+
+    }
+
+    private void drawEndScores(Graphics g2d)
+    {
+        int nbRound = model.getCurrentPlayer().getScoresRound().size();
+
+        int x = 100;
+        int y = 170;
+
+
+        g2d.drawString("Rounds", x, y);
+        x += 50;
+        for (int i = 1; i <= nbRound; i++)
+        {
+            x += 30;
+
+            g2d.drawString(Integer.toString(i), x, 170);
+        }
+        g2d.drawString("Total", x + 30, 170);
+        y += 30;
+        x = 100;
+        int totalScore = 0;
+        for (Player player : model.getPlayers())
+        {
+            g2d.drawString(player.getName(), x, y);
+
+            totalScore = 0;
+            x += 80;
+            List<Integer> scoresRound = player.getScoresRound();
+            for (int j = 0; j < scoresRound.size(); j++)
+            {
+                int i = scoresRound.get(j);
+                g2d.drawString(Integer.toString(i), x, y);
+                totalScore += i;
+                x += 30;
+
+            }
+            g2d.drawString(Integer.toString(totalScore), x, y);
+            x = 100;
+            y += 30;
+
+        }
 
     }
 
@@ -660,7 +941,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         } else if (new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.FILLED).equals(card))
         {
             index = 5;
-        }else if (new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.HOLLOW).equals(card))
+        } else if (new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.HOLLOW).equals(card))
         {
             index = 6;
         } else if (new Card(Card.Color.BLUE, Card.Shape.SQUARE, Card.Filling.HOLLOW).equals(card))
@@ -678,7 +959,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         } else if (new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.FILLED).equals(card))
         {
             index = 11;
-        }else if (new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.HOLLOW).equals(card))
+        } else if (new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.HOLLOW).equals(card))
         {
             index = 12;
         } else if (new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.HOLLOW).equals(card))
@@ -688,7 +969,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         {
             index = 14;
 
-        }   else if (new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.FILLED).equals(card))
+        } else if (new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.FILLED).equals(card))
         {
             index = 15;
         } else if (new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED).equals(card))
@@ -745,7 +1026,6 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
     }
 
 
-
     private Coordinates gameToScreenCoordinates(int i, int j, int minAbscissa, int maxOrdinate)
     {
         int x = (i - minAbscissa) * (CARD_WIDTH + OFFSET_X);
@@ -778,31 +1058,48 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
     {
         if (!boardModel.getPlacedCards().isEmpty())
         {
-            AbstractBoard board =  boardModel;
-            List<Coordinates> coordsMap = new ArrayList<Coordinates>(board.getPlacedCards().keySet());
+            AbstractBoard board = null;
+            try
+            {
+                board = (AbstractBoard) boardModel.clone();
+            } catch (CloneNotSupportedException e)
+            {
+                e.printStackTrace();
+            }
             List<Coordinates> goodRequests = new ArrayList<Coordinates>();
+            //Set<Coordinates> coordinatesSet = board.getPlacedCards().keySet();
+//            board.getPlacedCards().clear();
+            List<Coordinates> coordsMap = new ArrayList<Coordinates>(board.getPlacedCards().keySet());
 
-//            if (!placementTime)
+//            for (Coordinates coord: board.getPlacedCards().keySet())
 //            {
-//                Map<Coordinates, Card> placedCards = this.boardModel.getPlacedCards();
-//
-//
-//                Set<Integer> abscissaCoordinates = new HashSet<>();
-//                Set<Integer> ordinateCoordinates = new HashSet<>();
-//
-//                for (Coordinates coord : placedCards.keySet())
-//                {
-//                    abscissaCoordinates.add(coord.getX());
-//                    ordinateCoordinates.add(coord.getY());
-//                }
-//
-//                int minAbscissa = Collections.min(abscissaCoordinates);
-//                int maxOrdinate = Collections.max(ordinateCoordinates);
-//                int x = cardImage.getX();
-//                int y = cardImage.getY();
-//                Coordinates coordinates = screenToGameCoordinates(x,y, minAbscissa, maxOrdinate);
-//                coordsMap.remove(coordinates);
+//                coordsMap.add(coord);
 //            }
+
+
+            // TODO WIP HERE
+            if (!placementTime)
+            {
+                Map<Coordinates, Card> placedCards = board.getPlacedCards();
+
+
+                Set<Integer> abscissaCoordinates = new HashSet<>();
+                Set<Integer> ordinateCoordinates = new HashSet<>();
+
+                for (Coordinates coord : placedCards.keySet())
+                {
+                    abscissaCoordinates.add(coord.getX());
+                    ordinateCoordinates.add(coord.getY());
+                }
+
+                int minAbscissa = Collections.min(abscissaCoordinates);
+                int maxOrdinate = Collections.max(ordinateCoordinates);
+                int x = cardImage.getX();
+                int y = cardImage.getY();
+                Coordinates coordinates = screenToGameCoordinates(x, y, minAbscissa, maxOrdinate);
+                coordsMap.remove(coordinates);
+                board.getPlacedCards().remove(coordinates);
+            }
 
 
             int testX = Coordinates.smallestAbscissa(coordsMap) - 1;
@@ -840,6 +1137,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         }
     }
 
+
     public static void main(String[] args)
     {
 
@@ -852,8 +1150,8 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 //		ps.add(new RealPlayer("Aaa", rb));
         ScoreCalculatorVisitor visitor = new ScoreCalculatorVisitor();
 
-        ps.add(new VirtualPlayer("ord1", rb, new RandomStrategy()));
-//        ps.add(new VirtualPlayer("ord2", rb, new RandomStrategy()));
+//        ps.add(new VirtualPlayer("ord1", rb, new RandomStrategy()));
+        ps.add(new VirtualPlayer("ord2", rb, new RandomStrategy()));
         AbstractShapeUpGame model = new ShapeUpGame(visitor, ps, rb);
         RectangleBoardFrameTest view = new RectangleBoardFrameTest(rb, model);
 

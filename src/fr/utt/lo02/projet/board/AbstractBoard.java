@@ -14,7 +14,7 @@ import java.util.Set;
  *
  * @author Baptiste, Jacques
  */
-public abstract class AbstractBoard
+public abstract class AbstractBoard implements Cloneable
 {
 	/**
 	 * Represent the placed card of the board
@@ -102,5 +102,15 @@ public abstract class AbstractBoard
 	public Map<Coordinates, Card> getPlacedCards()
 	{
 		return placedCards;
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException
+	{
+		AbstractBoard o;
+		o = (AbstractBoard) super.clone();
+		o.placedCards = (Map<Coordinates, Card>) ((HashMap) placedCards).clone();
+
+		return o;
 	}
 }

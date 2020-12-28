@@ -7,7 +7,7 @@ import java.util.List;
  * @author Jacques, Baptiste
  *
  */
-public class Coordinates 
+public class Coordinates
 {
 	/**
 	 * The abscissa
@@ -131,8 +131,4 @@ public class Coordinates
 				", y=" + y +
 				'}';
 	}
-
-
-
-
 }
