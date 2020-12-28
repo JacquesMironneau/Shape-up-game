@@ -2,7 +2,7 @@ package fr.utt.lo02.projet.strategy;
 
 import fr.utt.lo02.projet.board.AbstractBoard;
 import fr.utt.lo02.projet.board.Card;
-import fr.utt.lo02.projet.board.boardEmptyException;
+import fr.utt.lo02.projet.board.BoardEmptyException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +16,11 @@ import java.util.List;
 
 public abstract class Player
 {
-	private String name;
+	private final String name;
 	protected List<Card> playerHand;
-	private List<Integer> scoresRound;
+
+
+	private final List<Integer> scoresRound;
 	private Card victoryCard;
 	protected AbstractBoard board;
 
@@ -45,12 +47,8 @@ public abstract class Player
 	 * Ask a player to move a card
 	 * So pick one card and select where he wants to move it
 	 */
-	public abstract MoveRequest askMoveCard() throws boardEmptyException;
+	public abstract MoveRequest askMoveCard() throws BoardEmptyException;
 
-
-	public abstract void MoveResult(MoveRequestResult result);
-
-	public abstract void PlaceResult(PlaceRequestResult result);
 	/**
 	 * Display the scores to player
 	 */
@@ -78,9 +76,12 @@ public abstract class Player
 
 	public void drawCard(Card card)
 	{
-		System.out.println("You have draw :");
-		Card.printSingleCard(card);
 		this.playerHand.add(card);
+	}
+
+	public Card getDrawCard()
+	{
+		return this.playerHand.get(getPlayerHand().size()-1);
 	}
 
 	public void addRoundScore(int scoreOfCurrentRound)
@@ -101,6 +102,12 @@ public abstract class Player
 	public String getName()
 	{
 		return name;
+	}
+
+
+	public List<Integer> getScoresRound()
+	{
+		return scoresRound;
 	}
 
 

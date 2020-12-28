@@ -4,6 +4,8 @@ import fr.utt.lo02.projet.board.*;
 import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 import fr.utt.lo02.projet.strategy.*;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.*;
 
 public abstract class AbstractShapeUpGame
@@ -21,7 +23,6 @@ public abstract class AbstractShapeUpGame
 	 */
 	protected boolean isFirstTurn;
 
-
 	/**
 	 * Deck of cards
 	 */
@@ -37,11 +38,22 @@ public abstract class AbstractShapeUpGame
 	 */
 	protected AbstractBoard board;
 
+
 	/**
 	 * Visitor used for score calculation at the end of each round
 	 */
 	private final IBoardVisitor visitor;
 
+	protected GameState state;
+
+	public Player getCurrentPlayer()
+	{
+		return currentPlayer;
+	}
+
+	protected Player currentPlayer;
+
+	private PropertyChangeSupport support;
 
 	public AbstractShapeUpGame(IBoardVisitor visitor, List<Player> players, AbstractBoard board)
 	{
@@ -51,21 +63,7 @@ public abstract class AbstractShapeUpGame
 
 
 		this.roundNumber = 0;
-	}
-
-	/**
-	 * Play several round for a game and calculate gameScore
-	 */
-	public void playGame() throws PlayerHandEmptyException, boardEmptyException
-	{
-
-		for (this.roundNumber = 0; this.roundNumber < MAX_ROUND_NUMBER; ++this.roundNumber)
-		{
-			initRound();
-			playRound();
-			calculateRoundScore();
-		}
-		calculateGameScore();
+		support = new PropertyChangeSupport(this);
 	}
 
 	/**
@@ -91,36 +89,28 @@ public abstract class AbstractShapeUpGame
 			this.deck.poll();
 		}
 		this.isFirstTurn = true;
+		currentPlayer = players.get(0);
 	}
 
 
-	/**
-	 * Plays one of the game round
-	 */
-	protected abstract void playRound() throws PlayerHandEmptyException, boardEmptyException;
-
-	/**
-	 * Turns loop for one player
-	 */
-	protected abstract void playTurn(Player player) throws PlayerHandEmptyException, boardEmptyException;
+	public abstract void playTurn() throws PlayerHandEmptyException, BoardEmptyException;
 
 	/**
 	 * Request to place a card from the player hand to a position on the board
 	 *
 	 * @param placeRequest Which card and where the player want to put it
-	 * @param player       the player that is making the request
 	 * @return if the request is matching the game rules
 	 */
-	public boolean placeCardRequest(PlaceRequest placeRequest, Player player)
+	public PlaceRequestResult placeCardRequest(PlaceRequest placeRequest)
 	{
 
 		Card aCard = placeRequest.getCard();
 		Coordinates coord = placeRequest.getCoordinates();
 
-		if (!player.getPlayerHand().contains(aCard))
+		if (!currentPlayer.getPlayerHand().contains(aCard))
 		{
-			player.PlaceResult(PlaceRequestResult.PLAYER_DOESNT_OWN_CARD);
-			return false;
+
+			return PlaceRequestResult.PLAYER_DOESNT_OWN_CARD;
 		}
 
 		boolean cardInTheLayout = board.isCardInTheLayout(coord);
@@ -133,19 +123,20 @@ public abstract class AbstractShapeUpGame
 		if (cardAdjacentToAnExistingCard && cardInTheLayout)
 		{
 			board.addCard(coord, aCard);
-			player.getPlayerHand().remove(aCard);
-			player.PlaceResult(PlaceRequestResult.CORRECT_PLACEMENT);
+			currentPlayer.getPlayerHand().remove(aCard);
+			System.out.println("CARD SIZE" + currentPlayer.getPlayerHand().size());
 			//System.out.println("[LOG] "+ aCard + " has been placed at " + coord);
-			return true;
+			this.isFirstTurn = false;
+			return PlaceRequestResult.CORRECT_PLACEMENT;
 		}
 
 		if (!cardAdjacentToAnExistingCard)
 		{
-			player.PlaceResult(PlaceRequestResult.CARD_NOT_ADJACENT);
-			return false;
+//			player.PlaceResult(PlaceRequestResult.CARD_NOT_ADJACENT);
+			return PlaceRequestResult.CARD_NOT_ADJACENT;
 		}
-		player.PlaceResult(PlaceRequestResult.CARD_NOT_IN_THE_LAYOUT);
-		return false;
+//		player.PlaceResult(PlaceRequestResult.CARD_NOT_IN_THE_LAYOUT);
+		return PlaceRequestResult.CARD_NOT_IN_THE_LAYOUT;
 	}
 
 	/**
@@ -154,7 +145,7 @@ public abstract class AbstractShapeUpGame
 	 * @param moveRequest player request
 	 * @return if the card has been moved or not
 	 */
-	public boolean moveCardRequest(MoveRequest moveRequest, Player player)
+	public MoveRequestResult moveCardRequest(MoveRequest moveRequest)
 	{
 
 		Coordinates origin = moveRequest.getOrigin();
@@ -162,16 +153,14 @@ public abstract class AbstractShapeUpGame
 
 		if (origin.equals(destination))
 		{
-			player.MoveResult(MoveRequestResult.ORIGIN_AND_DESTINATION_ARE_EQUAL);
-			return false;
+			return MoveRequestResult.ORIGIN_AND_DESTINATION_ARE_EQUAL;
 		}
 
 		Card card = this.board.getPlacedCards().get(origin);
 
 		if (card == null)
 		{
-			player.MoveResult(MoveRequestResult.NO_CARD_IN_THE_ORIGIN_COORDINATE);
-			return false;
+			return MoveRequestResult.NO_CARD_IN_THE_ORIGIN_COORDINATE;
 		}
 
 		board.removeCard(origin, card);
@@ -179,9 +168,7 @@ public abstract class AbstractShapeUpGame
 		if (board.getPlacedCards().isEmpty())
 		{
 			board.addCard(destination, card);
-			player.MoveResult(MoveRequestResult.MOVE_VALID);
-			//System.out.println("[LOG] " + card + " has been moved from" + origin + "to "+ destination);
-			return true;
+			return MoveRequestResult.MOVE_VALID;
 		}
 		boolean cardAdjacentToAnExistingCard = board.isCardAdjacent(destination);
 		boolean cardInTheLayout = board.isCardInTheLayout(destination);
@@ -189,59 +176,42 @@ public abstract class AbstractShapeUpGame
 		if (cardAdjacentToAnExistingCard && cardInTheLayout)
 		{
 			board.addCard(destination, card);
-			player.MoveResult(MoveRequestResult.MOVE_VALID);
-			//System.out.println("[LOG] " + card + " has been moved from" + origin + "to "+ destination);
-			return true;
+			return MoveRequestResult.MOVE_VALID;
 		}
-		board.addCard(origin,card);
+		board.addCard(origin, card);
 
 		if (!cardAdjacentToAnExistingCard)
 		{
-			player.MoveResult(MoveRequestResult.CARD_NOT_ADJACENT);
-			return false;
+			return MoveRequestResult.CARD_NOT_ADJACENT;
 		}
-		player.MoveResult(MoveRequestResult.CARD_NOT_IN_THE_LAYOUT);
-		return false;
+		return MoveRequestResult.CARD_NOT_IN_THE_LAYOUT;
 
 	}
 
 	/**
 	 * Add a card from the deck to a given player based on its index
 	 * If the deck is empty, it doesn't add anything to the player.
-	 *
-	 * @param player The player which will be given a card.
 	 */
-	public void drawCard(Player player)
+	public void drawCard()
 	{
 		if (!this.deck.isEmpty())
-			player.drawCard(this.deck.poll());
-	}
-
-	/**
-	 * This method calculate the game score, so at the end of the game (after every round)
-	 * It adds score of each player, and display it.
-	 */
-	protected void calculateGameScore()
-	{
-		for (Player player: players)
 		{
-			player.displayFinalScore();
+			currentPlayer.drawCard(this.deck.poll());
+//			setState(GameState.CARD_DRAW);
 		}
 	}
 
-	protected void calculateRoundScore()
+	public void setState(GameState state)
 	{
-		for (Player p : players)
-		{
-			p.addRoundScore(this.board.accept(visitor, p.getVictoryCard()));
-			p.displayRoundScore();
-		}
 
+		support.firePropertyChange("state", this.state, state);
+
+		this.state = state;
 	}
 
-	protected Player nextPlayer(Player player)
+	public void nextPlayer()
 	{
-		return players.get((players.indexOf(player) + 1) % this.players.size());
+		currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % this.players.size());
 	}
 
 	protected void initDeck()
@@ -281,4 +251,27 @@ public abstract class AbstractShapeUpGame
 
 	protected abstract boolean isRoundFinished();
 
+	public void endRound()
+	{
+		for (Player player : players)
+		{
+			player.addRoundScore(board.accept(visitor, player.getVictoryCard()));
+		}
+		roundNumber++;
+	}
+
+	public List<Player> getPlayers()
+	{
+		return players;
+	}
+
+	public void addPropertyChangeListener(PropertyChangeListener pcl)
+	{
+		support.addPropertyChangeListener(pcl);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener pcl)
+	{
+		support.removePropertyChangeListener(pcl);
+	}
 }
