@@ -48,7 +48,7 @@ class VirtualPlayerTest
 	}
 
 	@Test
-	void move() throws boardEmptyException
+	void move() throws BoardEmptyException
 	{
 
 		AbstractBoard board = new RectangleBoard();

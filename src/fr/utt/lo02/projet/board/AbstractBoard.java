@@ -1,9 +1,12 @@
 package fr.utt.lo02.projet.board;
 
+import fr.utt.lo02.projet.GameView;
 import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Represent the game board in which card can be added to a given position (Cf Coordinates class)
@@ -19,12 +22,24 @@ public abstract class AbstractBoard
 	protected Map<Coordinates, Card> placedCards;
 
 
+	protected Set<GameView> gameViews;
 	/**
 	 * Initialize the placed card to an empty hashmap.
 	 */
 	public AbstractBoard()
 	{
 		this.placedCards = new HashMap<Coordinates, Card>();
+		gameViews = new HashSet<GameView>();
+	}
+
+	public void addObserver(GameView view)
+	{
+		this.gameViews.add(view);
+	}
+
+	public void removeObserver(GameView view)
+	{
+		this.gameViews.remove(view);
 	}
 
 	/**

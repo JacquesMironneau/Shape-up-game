@@ -2,8 +2,7 @@ package fr.utt.lo02.projet.game;
 
 
 import fr.utt.lo02.projet.board.AbstractBoard;
-import fr.utt.lo02.projet.board.Card;
-import fr.utt.lo02.projet.board.boardEmptyException;
+import fr.utt.lo02.projet.board.BoardEmptyException;
 import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 import fr.utt.lo02.projet.strategy.*;
 
@@ -33,44 +32,26 @@ public class ShapeUpGame extends AbstractShapeUpGame
 	}
 
 	@Override
-	protected void playRound() throws PlayerHandEmptyException, boardEmptyException
+	public void playTurn() throws PlayerHandEmptyException, BoardEmptyException
 	{
-		Player player = players.get(0);
-
-		while (!isRoundFinished())
-		{
-			playTurn(player);
-			player = nextPlayer(player);
-		}
-	}
-
-	@Override
-	protected void playTurn(Player player) throws PlayerHandEmptyException, boardEmptyException
-	{
-		System.out.println(player.getName() +"'s turn !");
-
-		System.out.println("Your victory card is:");
-		Card.printSingleCard(player.getVictoryCard());
-
-		drawCard(player);
 
 		if (this.isFirstTurn)
 		{
 			PlaceRequest placeRequest;
 			do
 			{
-				placeRequest = player.askPlaceCard();
-			} while (!placeCardRequest(placeRequest, player));
+				placeRequest = currentPlayer.askPlaceCard();
+			} while (PlaceRequestResult.CORRECT_PLACEMENT != placeCardRequest(placeRequest));
 
 			// The first turn is finished
-			this.isFirstTurn = false;
-			board.display();
+
+			setState(GameState.PLACE_DONE);
 		} else
 		{
 			Choice choice;
 			do
 			{
-				choice = player.askChoice(ChoiceOrder.FIRST_CHOICE);
+				choice = currentPlayer.askChoice(ChoiceOrder.FIRST_CHOICE);
 			}
 			while (choice == Choice.END_THE_TURN);
 
@@ -80,23 +61,29 @@ public class ShapeUpGame extends AbstractShapeUpGame
 					PlaceRequest placeRequest;
 					do
 					{
-						placeRequest = player.askPlaceCard();
-					} while (!placeCardRequest(placeRequest, player));
+						placeRequest = currentPlayer.askPlaceCard();
+					} while (PlaceRequestResult.CORRECT_PLACEMENT != placeCardRequest(placeRequest));
 
-					board.display();
+					setState(GameState.PLACE_DONE);
 
-					if (isRoundFinished()) return;
+					if (isRoundFinished())
+					{
+						setState(GameState.END_ROUND);
+						return;
+					}
 
-					Choice secondChoice = player.askChoice(ChoiceOrder.SECOND_CHOICE);
+					Choice secondChoice = currentPlayer.askChoice(ChoiceOrder.SECOND_CHOICE);
 
 					if (secondChoice == Choice.MOVE_A_CARD)
 					{
 						MoveRequest request;
 						do
 						{
-							request = player.askMoveCard();
-						} while (!moveCardRequest(request, player));
-						board.display();
+							request = currentPlayer.askMoveCard();
+						} while (moveCardRequest(request) != MoveRequestResult.MOVE_VALID);
+
+						setState(GameState.MOVE_DONE);
+
 
 					}
 				}
@@ -104,29 +91,32 @@ public class ShapeUpGame extends AbstractShapeUpGame
 					MoveRequest request;
 					do
 					{
-						request = player.askMoveCard();
-					} while (!moveCardRequest(request, player));
+						request = currentPlayer.askMoveCard();
+					} while (moveCardRequest(request) != MoveRequestResult.MOVE_VALID);
 
-					board.display();
+					setState(GameState.MOVE_DONE);
+
 
 					PlaceRequest placeRequest;
 					do
 					{
-						placeRequest = player.askPlaceCard();
-					} while (!placeCardRequest(placeRequest, player));
-					board.display();
+						placeRequest = currentPlayer.askPlaceCard();
+					} while (PlaceRequestResult.CORRECT_PLACEMENT != placeCardRequest(placeRequest));
+					setState(GameState.PLACE_DONE);
 
 				}
 				default -> System.out.println("Error: end choice have been selected !");
 			}
 
 		}
+		setState(GameState.END_TURN);
+
 
 	}
 
 
 	@Override
-	protected  boolean isRoundFinished()
+	protected boolean isRoundFinished()
 	{
 		for (Player player : players)
 		{
@@ -134,4 +124,6 @@ public class ShapeUpGame extends AbstractShapeUpGame
 		}
 		return deck.isEmpty();
 	}
+
+
 }

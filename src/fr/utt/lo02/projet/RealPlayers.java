@@ -1,7 +1,7 @@
 package fr.utt.lo02.projet;
 
 import fr.utt.lo02.projet.board.RectangleBoard;
-import fr.utt.lo02.projet.board.boardEmptyException;
+import fr.utt.lo02.projet.board.BoardEmptyException;
 import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.game.ShapeUpGame;
 import fr.utt.lo02.projet.strategy.PlayerHandEmptyException;
@@ -23,12 +23,6 @@ public class RealPlayers
 		ps.add(new RealPlayer("Vrai2",rb));
 
 
-		try
-		{
-			new ShapeUpGame(new ScoreCalculatorVisitor(), ps, rb).playGame();
-		} catch (PlayerHandEmptyException | boardEmptyException e)
-		{
-			e.printStackTrace();
-		}
+		new ShapeUpGame(new ScoreCalculatorVisitor(), ps, rb);
 	}
 }
