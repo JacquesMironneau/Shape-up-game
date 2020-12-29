@@ -15,7 +15,7 @@ public class DifficultStrategy implements PlayerStrategy {
 	Card victoryCard = null;
 	
 	public DifficultStrategy(IBoardVisitor v) {
-		visitor = v;
+		visitor = v; 
 	}
 
 
@@ -58,7 +58,6 @@ public class DifficultStrategy implements PlayerStrategy {
 			board.getPlacedCards().put(bestMoveCoords.getOrigin(), bestMoveCard);
 		}
 		board.getPlacedCards().remove(bestPlaceCoord.getCoordinates(), bestPlaceCoord.getCard());
-		
 		if(board.getPlacedCards().isEmpty()) System.out.println("dds");
 		bestMoveCoords = this.makeMoveRequest(board, victoryCard, playerHand);
 		bestMoveCard = board.getPlacedCards().get(bestMoveCoords.getOrigin());
@@ -161,7 +160,7 @@ public class DifficultStrategy implements PlayerStrategy {
 	public MoveRequest makeMoveRequest(AbstractBoard board, Card vC, List<Card> playerHand)
 	{
 		victoryCard=vC;
-		int score;
+		int score; 
 		Coordinates bestCoordToMove = new Coordinates(0,0);
 		Coordinates bestNewCoord = new Coordinates(0,0);
 		List<Coordinates> goodRequests = new ArrayList<Coordinates>();

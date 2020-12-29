@@ -43,7 +43,7 @@ public class EndGameScorePanel extends JPanel
 		int x = 100;
 		int y = 170;
 
-
+		g2d.setColor(Color.BLUE);
 		g2d.drawString("Rounds", x, y);
 		x+=50;
 		for (int i = 0; i < nbRound; i++)
