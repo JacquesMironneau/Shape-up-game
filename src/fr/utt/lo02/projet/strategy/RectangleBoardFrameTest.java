@@ -29,14 +29,20 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 {
 
     private static final int CARD_WIDTH = 64;
-    private static final int OFFSET_X = 32;
-    private static final int OFFSET_Y = 32;
     private static final int CARD_HEIGHT = 64;
+
+    private static final int OFFSET_X = 40;
+    private static final int OFFSET_Y = 70;
+
+    private static final int HOLOGRAM_WIDTH = 96;
+    private static final int HOLOGRAM_HEIGHT = 128;
+
     private static final int LEFT_BOARD_OFFSET = 450;
     private static final int TOP_BOARD_OFFSET = 150;
-    private static final int PLAYER_HAND_Y = 600;
+    private static final int PLAYER_HAND_Y = 700;
 
     private final List<Image> sprite;
+    private final Image[][] spriteGlitchAnimations;
 
     int xadj;
     int yadj;
@@ -63,16 +69,24 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
     List<Coordinates> goodRequestsScreen = new CopyOnWriteArrayList<>();
     private boolean displayScores;
 
+    private List<Image> spriteHologram;
+    private CardImage cardImageToAnimate;
+    private int numberOfFrame;
+    private boolean animate;
+
+
     public RectangleBoardFrameTest(AbstractBoard modelboard, AbstractShapeUpGame game)
     {
         this.model = game;
         this.boardModel = modelboard;
-        Dimension preferredSize = new Dimension(1280, 720);
+        Dimension preferredSize = new Dimension(1408, 864);
 
 
         setPreferredSize(preferredSize);
-        setBounds(0, 0, 1280, 720);
+        setBounds(0, 0, preferredSize.width, preferredSize.height);
         sprite = splitSprite();
+        spriteHologram = splitSpriteHologram();
+        spriteGlitchAnimations = splitSpriteGlitchAnimations();
 
         UIManager.put("Slider.onlyLeftMouseButtonDrag", Boolean.TRUE);
         //TODO remove those (in prop change)
@@ -89,6 +103,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         shouldDrawText = false;
         gs = null;
         displayScores = false;
+        animate = false;
     }
 
 
@@ -139,11 +154,11 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
             }
             case PLACE_DONE -> {
+                animate = true;
 
 
                 if (model.getCurrentPlayer() instanceof VirtualPlayer && !SwingUtilities.isEventDispatchThread())
                 {
-                    System.out.println("aaaaaaaaaaaaaaaaaajkezajekazjkejazlekj");
                     try
                     {
                         SwingUtilities.invokeAndWait(new Runnable()
@@ -174,6 +189,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
             }
             case MOVE_DONE -> {
+                animate = true;
 
                 // Runs inside of the Swing UI thread
                 if (model.getCurrentPlayer() instanceof VirtualPlayer && !SwingUtilities.isEventDispatchThread())
@@ -253,8 +269,8 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
                     new Thread(() -> controller.askChoice(1, 1)).start();
 
                 });
-                placeButton.setBounds(1000, PLAYER_HAND_Y - 50, 200, 60);
-                moveButton.setBounds(1000, PLAYER_HAND_Y + 20, 200, 60);
+                placeButton.setBounds(1000, PLAYER_HAND_Y - 60, 250, 80);
+                moveButton.setBounds(1000, PLAYER_HAND_Y + 30, 250, 80);
 
                 add(placeButton);
                 add(moveButton);
@@ -285,8 +301,8 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
 
                 });
-                endTurnButton.setBounds(1000, PLAYER_HAND_Y + 20, 200, 60);
-                moveButton.setBounds(1000, PLAYER_HAND_Y - 50, 200, 60);
+                endTurnButton.setBounds(1000, PLAYER_HAND_Y + 30, 250, 80);
+                moveButton.setBounds(1000, PLAYER_HAND_Y - 60, 250, 80);
 
                 add(endTurnButton);
                 add(moveButton);
@@ -302,6 +318,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 //                this.controller.endTurn();
                 new Thread(() -> controller.endTurn()).start();
 
+
                 // Display end turn (next player animation I guess)
             }
             case CARD_DRAW, VICTORY_CARD -> {
@@ -316,19 +333,19 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
                 goodRequestsScreen.clear();
                 updateDisplayBoard();
-
+                boardView.clear();
+                handView.clear();
+                repaint();
 
 //                validate();
 //                repaint();
                 JButton endTurnButton = new JButton("Next round");
                 //repaint();
-                endTurnButton.setBounds(1000, PLAYER_HAND_Y + 20, 200, 60);
+                endTurnButton.setBounds(1000, PLAYER_HAND_Y + 30, 250, 80);
 
                 endTurnButton.addActionListener(actionEvent -> {
 
                     remove(endTurnButton);
-                    boardView.clear();
-                    handView.clear();
                     //this.controller.endRound();
                     new Thread(() -> controller.endRound()).start();
 
@@ -545,7 +562,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         }
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
-        CardImage ci = cardImage;
+        cardImageToAnimate = cardImage;
         cardImage = null;
         repaint();
 
@@ -675,7 +692,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
         for (int j = 0; j < playerHand.size(); j++)
         {
-            int x = j * (CARD_WIDTH + OFFSET_X) + LEFT_BOARD_OFFSET;
+            int x = j * (CARD_WIDTH + OFFSET_X) + 100;
             handView.add(new CardImage(x, PLAYER_HAND_Y, playerHand.get(j)));
         }
         repaint();
@@ -716,7 +733,25 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
             }
         }
         System.out.println("REPAINT");
-        repaint();
+//        if (gs == GameState.MOVE_DONE || gs == GameState.PLACE_DONE)
+//        {
+//
+//            for (numberOfFrame = 0; numberOfFrame < 8; numberOfFrame++)
+//            {
+//                repaint();
+//                try
+//                {
+//                    Thread.sleep(500);
+//                } catch (InterruptedException e)
+//                {
+//                    e.printStackTrace();
+//                }
+//            }
+//            numberOfFrame = 0;
+//        } else
+//        {
+            repaint();
+//        }
     }
 
     // Draw the board + the dragged card
@@ -725,7 +760,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         // draw background
         try
         {
-            g2d.drawImage(ImageIO.read(new File("res/background.png")), 0, 0, 1280, 720, null);
+            g2d.drawImage(ImageIO.read(new File("res/background_light.png")), 0, 0, getWidth(), getHeight(), null);
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -749,7 +784,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
             if (shouldDrawText)
             {
-                Font f = g2d.getFont().deriveFont(80.0f);
+                Font f = g2d.getFont().deriveFont(30.0f);
                 g2d.setFont(f);
 
                 String str = "";
@@ -776,15 +811,33 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
             if (card != null)
             {
-                g2d.drawImage(cardImageMatcher(card), x, y, null);
+                Image[] images = cardImageMatcher(card);
+                g2d.drawImage(images[0], x, y, null);
+//                if (gs == GameState.MOVE_DONE || gs == GameState.PLACE_DONE)
+//                {
+//
+//
+//                    Image[] anim = glitchAnimationMatcher(card);
+//                    System.out.println("REPAINTING ANIMATION" + numberOfFrame);
+//                    g2d.drawImage(anim[numberOfFrame], x + (CARD_WIDTH - HOLOGRAM_WIDTH) / 2, y + (CARD_HEIGHT - HOLOGRAM_HEIGHT) / 2, null);
+//
+//
+//                }
+//                else
+//                {
+                g2d.drawImage(images[1], x + (CARD_WIDTH - HOLOGRAM_WIDTH) / 2, y + (CARD_HEIGHT - HOLOGRAM_HEIGHT) / 2, null);
+
+//            }
+
             }
         }
 
 
         if (cardImage != null)
+
         {
             System.out.println("card above!!!!!");
-            g2d.drawImage(cardImageMatcher(cardImage.getCard()), cardImage.getX(), cardImage.getY(), null);
+            g2d.drawImage(cardImageMatcher(cardImage.getCard())[0], cardImage.getX(), cardImage.getY(), null);
         }
 
     }
@@ -794,7 +847,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
         for (CardImage cardImage : handView)
         {
-            g2d.drawImage(cardImageMatcher(cardImage.getCard()), cardImage.getX(), cardImage.getY(), null);
+            g2d.drawImage(cardImageMatcher(cardImage.getCard())[0], cardImage.getX(), cardImage.getY(), null);
         }
 
     }
@@ -804,7 +857,12 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         Card victoryCard = this.model.getCurrentPlayer().getVictoryCard();
         //Card victoryCard = new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.HOLLOW);
         if (victoryCard != null)
-            g2d.drawImage(cardImageMatcher(victoryCard), 50, PLAYER_HAND_Y, null);
+        {
+            Image[] images = cardImageMatcher(victoryCard);
+
+            g2d.drawImage(images[0], 50, 100, null);
+            g2d.drawImage(images[1], 50 + (CARD_WIDTH - HOLOGRAM_WIDTH) / 2, 100 + (CARD_HEIGHT - HOLOGRAM_HEIGHT) / 2, null);
+        }
 
     }
 
@@ -849,12 +907,116 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         return imgArray;
     }
 
+    public List<Image> splitSpriteHologram()
+    {
+        int[][] spriteSheetCoords = {
+                {0, 0, 48, 64}, {48, 0, 48, 64}, {96, 0, 48, 64},
+                {0, 64, 48, 64}, {48, 64, 48, 64}, {96, 64, 48, 64},
+                {0, 128, 48, 64}, {48, 128, 48, 64}, {96, 128, 48, 64},
+
+                {0, 192, 48, 64}, {48, 192, 48, 64}, {96, 192, 48, 64},
+                {0, 256, 48, 64}, {48, 256, 48, 64}, {96, 256, 48, 64},
+                {0, 320, 48, 64}, {48, 320, 48, 64}, {96, 320, 48, 64},
+
+        };
+
+        BufferedImage img = null;
+        try
+        {
+            img = ImageIO.read(new File("res/holo_card_final.png"));
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+
+        List<Image> imgArray = new ArrayList<>();
+        for (int[] a : spriteSheetCoords)
+        {
+
+            Image img2 = img.getSubimage(a[0], a[1], a[2], a[3]);
+            img2 = img2.getScaledInstance(HOLOGRAM_WIDTH, HOLOGRAM_HEIGHT, Image.SCALE_SMOOTH);
+            imgArray.add(img2);
+        }
+
+        return imgArray;
+    }
+
+    public Image[][] splitSpriteGlitchAnimations()
+    {
+        int[][] spriteSheetCoords = {
+                {0, 0, 48, 64}, {48, 0, 48, 64}, {96, 0, 48, 64}, {144, 0, 48, 64}, {192, 0, 48, 64}, {240, 0, 48, 64}, {288, 0, 48, 64}, {336, 0, 48, 64},
+                {0, 64, 48, 64}, {48, 64, 48, 64}, {96, 64, 48, 64}, {144, 64, 48, 64}, {192, 64, 48, 64}, {240, 64, 48, 64}, {288, 64, 48, 64}, {336, 64, 48, 64},
+                {0, 128, 48, 64}, {48, 128, 48, 64}, {96, 128, 48, 64}, {144, 128, 48, 64}, {192, 128, 48, 64}, {240, 128, 48, 64}, {288, 128, 48, 64}, {336, 128, 48, 64},
+
+                {0, 192, 48, 64}, {48, 192, 48, 64}, {96, 192, 48, 64}, {144, 192, 48, 64}, {192, 192, 48, 64}, {240, 192, 48, 64}, {288, 192, 48, 64}, {336, 192, 48, 64},
+                {0, 256, 48, 64}, {48, 256, 48, 64}, {96, 256, 48, 64}, {144, 256, 48, 64}, {192, 256, 48, 64}, {240, 256, 48, 64}, {288, 256, 48, 64}, {336, 256, 48, 64},
+                {0, 320, 48, 64}, {48, 320, 48, 64}, {96, 320, 48, 64}, {144, 320, 48, 64}, {192, 320, 48, 64}, {240, 320, 48, 64}, {288, 320, 48, 64}, {336, 320, 48, 64},
+
+                {0, 384, 48, 64}, {48, 384, 48, 64}, {96, 384, 48, 64}, {144, 384, 48, 64}, {192, 384, 48, 64}, {240, 384, 48, 64}, {288, 384, 48, 64}, {336, 384, 48, 64},
+                {0, 448, 48, 64}, {48, 448, 48, 64}, {96, 448, 48, 64}, {144, 448, 48, 64}, {192, 448, 48, 64}, {240, 448, 48, 64}, {288, 448, 48, 64}, {336, 448, 48, 64},
+                {0, 512, 48, 64}, {48, 512, 48, 64}, {96, 512, 48, 64}, {144, 512, 48, 64}, {192, 512, 48, 64}, {240, 512, 48, 64}, {288, 512, 48, 64}, {336, 512, 48, 64},
+
+        };
+        BufferedImage img = null;
+        try
+        {
+            img = ImageIO.read(new File("res/anims/holo_card_anims.png"));
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        Image[][] res = new Image[9][8];
+        for (int indexRow = 0; indexRow < 9; indexRow++)
+        {
+            for (int indexCol = 0; indexCol < 8; indexCol++)
+            {
+                int[] sheetCoord = spriteSheetCoords[indexRow * indexCol];
+                Image subimg = img.getSubimage(sheetCoord[0], sheetCoord[1], sheetCoord[2], sheetCoord[3]);
+                subimg = subimg.getScaledInstance(HOLOGRAM_WIDTH, HOLOGRAM_HEIGHT, Image.SCALE_SMOOTH);
+
+                res[indexRow][indexCol] = subimg;
+            }
+        }
+        return res;
+    }
+
     @Override
     protected void paintComponent(Graphics g)
     {
         super.paintComponent(g);
 
-        if (gs != GameState.END_GAME)
+
+//        if (gs == GameState.MOVE_DONE || gs == GameState.PLACE_DONE)
+//        {
+//
+//            numberOfFrame = 0;
+//
+//            draw((Graphics2D) g);
+//            drawHand((Graphics2D) g);
+//            drawVictoryCard((Graphics2D) g);
+//
+//            while (numberOfFrame < 8)
+//            {
+//                numberOfFrame++;
+//
+//                try
+//                {
+//                    Thread.sleep(500);
+//                } catch (InterruptedException e)
+//                {
+//                    e.printStackTrace();
+//                }
+//                g.fillRect(0,0,getWidth(), getHeight());
+//                draw((Graphics2D) g);
+//                validate();
+//            }
+//
+//        }
+        if (gs == GameState.END_ROUND)
+        {
+            drawEndRoundScores((Graphics2D) g);
+        } else if (gs != GameState.END_GAME)
         {
             g.setColor(getBackground());
 
@@ -876,155 +1038,193 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
     }
 
+    //TODO baptiste (méthode de fin de round)
+    private void drawEndRoundScores(Graphics2D g2d)
+    {
+        // g2d.setFont(...)
+        // g2d.setColor(...)
+        // g2d.drawString("string", x ,y)
+    }
+
+    //TODO baptiste (méthode de fin de partie)
     private void drawEndScores(Graphics g2d)
     {
-        int nbRound = model.getCurrentPlayer().getScoresRound().size();
 
-        int x = 100;
-        int y = 170;
-
-
-        g2d.drawString("Rounds", x, y);
-        x += 50;
-        for (int i = 1; i <= nbRound; i++)
-        {
-            x += 30;
-
-            g2d.drawString(Integer.toString(i), x, 170);
-        }
-        g2d.drawString("Total", x + 30, 170);
-        y += 30;
-        x = 100;
-        int totalScore = 0;
-        for (Player player : model.getPlayers())
-        {
-            g2d.drawString(player.getName(), x, y);
-
-            totalScore = 0;
-            x += 80;
-            List<Integer> scoresRound = player.getScoresRound();
-            for (int j = 0; j < scoresRound.size(); j++)
-            {
-                int i = scoresRound.get(j);
-                g2d.drawString(Integer.toString(i), x, y);
-                totalScore += i;
-                x += 30;
-
-            }
-            g2d.drawString(Integer.toString(totalScore), x, y);
-            x = 100;
-            y += 30;
-
-        }
 
     }
 
 
-    private Image cardImageMatcher(Card card)
+    private Image[] cardImageMatcher(Card card)
     {
         int index;
-        if (new Card(Card.Color.GREEN, Card.Shape.TRIANGLE, Card.Filling.HOLLOW).equals(card))
+
+        // Row 1 (triangle filled)
+        if (new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.FILLED).equals(card))
         {
             index = 0;
-        } else if (new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.HOLLOW).equals(card))
-        {
-            index = 1;
-        } else if (new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.HOLLOW).equals(card))
-        {
-            index = 2;
         } else if (new Card(Card.Color.GREEN, Card.Shape.TRIANGLE, Card.Filling.FILLED).equals(card))
         {
-            index = 4;
-        } else if (new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.FILLED).equals(card))
-        {
-            index = 3;
+            index = 1;
         } else if (new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.FILLED).equals(card))
         {
+            index = 2;
+        }
+
+        // Row 2 (triangle hollow)
+        else if (new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.HOLLOW).equals(card))
+        {
+            index = 3;
+        } else if (new Card(Card.Color.GREEN, Card.Shape.TRIANGLE, Card.Filling.HOLLOW).equals(card))
+        {
+            index = 4;
+        } else if (new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.HOLLOW).equals(card))
+        {
             index = 5;
-        } else if (new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.HOLLOW).equals(card))
+        }
+
+        // Row 3 (square filled)
+        else if (new Card(Card.Color.BLUE, Card.Shape.SQUARE, Card.Filling.FILLED).equals(card))
         {
             index = 6;
-        } else if (new Card(Card.Color.BLUE, Card.Shape.SQUARE, Card.Filling.HOLLOW).equals(card))
-        {
-            index = 7;
-        } else if (new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.HOLLOW).equals(card))
-        {
-            index = 8;
         } else if (new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.FILLED).equals(card))
         {
-            index = 9;
-        } else if (new Card(Card.Color.BLUE, Card.Shape.SQUARE, Card.Filling.FILLED).equals(card))
-        {
-            index = 10;
+            index = 7;
         } else if (new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.FILLED).equals(card))
         {
+            index = 8;
+        }
+        // Row 4 (square hollow)
+        else if (new Card(Card.Color.BLUE, Card.Shape.SQUARE, Card.Filling.HOLLOW).equals(card))
+        {
+            index = 9;
+        } else if (new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.HOLLOW).equals(card))
+        {
+            index = 10;
+        } else if (new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.HOLLOW).equals(card))
+        {
             index = 11;
-        } else if (new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.HOLLOW).equals(card))
+        }
+
+        // Row 5 (circle filled)
+        else if (new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED).equals(card))
         {
             index = 12;
-        } else if (new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.HOLLOW).equals(card))
-        {
-            index = 13;
-        } else if (new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW).equals(card))
-        {
-            index = 14;
-
         } else if (new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.FILLED).equals(card))
         {
-            index = 15;
-        } else if (new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED).equals(card))
-        {
-            index = 16;
+            index = 13;
         } else if (new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.FILLED).equals(card))
         {
+            index = 14;
+        }
+
+
+        // Row 6 (circle hollow)
+        else if (new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.HOLLOW).equals(card))
+        {
+            index = 15;
+        } else if (new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.HOLLOW).equals(card))
+        {
+            index = 16;
+        } else if (new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW).equals(card))
+        {
             index = 17;
+
         } else
         {
             System.out.println(card);
             System.out.println("ERROR, card unavailable");
             index = 0;
         }
-        return sprite.get(index);
-    }
-
-
-    // TODO: remove (test purpose only)
-    private void fakeUpdate()
-    {
-        this.boardModel.addCard(new Coordinates(0, 0), new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
-        this.boardModel.addCard(new Coordinates(1, 0), new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.HOLLOW));
-        this.boardModel.addCard(new Coordinates(1, 1), new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
-        this.boardModel.addCard(new Coordinates(0, 1), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
-        this.boardModel.addCard(new Coordinates(3, 1), new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
-        this.boardModel.addCard(new Coordinates(2, 1), new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
-
-        // redraw the layout
-        updateDisplayHand();
-        updateDisplayBoard();
+        return new Image[]{sprite.get(index), spriteHologram.get(index)};
 
     }
 
-    // TODO: remove (test purpose only)
-    private void fakeUpdate2()
+    private Image[] glitchAnimationMatcher(Card card)
     {
-        try
+        int rowIndex;
+
+        // Row 1 (triangle filled)
+//        if (new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.FILLED).equals(card))
+//        {
+//            rowIndex = 0;
+//        } else if (new Card(Card.Color.GREEN, Card.Shape.TRIANGLE, Card.Filling.FILLED).equals(card))
+//        {
+//            rowIndex = 1;
+//        } else if (new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.FILLED).equals(card))
+//        {
+//            rowIndex = 2;
+//        }
+//
+//        // Row 2 (triangle hollow)
+//        else if (new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.HOLLOW).equals(card))
+//        {
+//            rowIndex = 3;
+//        } else if (new Card(Card.Color.GREEN, Card.Shape.TRIANGLE, Card.Filling.HOLLOW).equals(card))
+//        {
+//            rowIndex = 4;
+//        } else if (new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.HOLLOW).equals(card))
+//        {
+//            rowIndex = 5;
+//        }
+//
+//        // Row 3 (square filled)
+//        else if (new Card(Card.Color.BLUE, Card.Shape.SQUARE, Card.Filling.FILLED).equals(card))
+//        {
+//            rowIndex = 6;
+//        } else if (new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.FILLED).equals(card))
+//        {
+//            rowIndex = 7;
+//        } else if (new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.FILLED).equals(card))
+//        {
+//            rowIndex = 8;
+//        }
+        // Row 4 (square hollow)
+        if (new Card(Card.Color.BLUE, Card.Shape.SQUARE, Card.Filling.HOLLOW).equals(card))
         {
-            Thread.sleep(2000);
-        } catch (InterruptedException e)
+            rowIndex = 0;
+        } else if (new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.HOLLOW).equals(card))
         {
-            e.printStackTrace();
+            rowIndex = 1;
+        } else if (new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.HOLLOW).equals(card))
+        {
+            rowIndex = 2;
         }
-        this.boardModel.removeCard(new Coordinates(0, 0), new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
 
-        this.boardModel.addCard(new Coordinates(3, 2), new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.FILLED));
-        this.boardModel.addCard(new Coordinates(2, 2), new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.FILLED));
-        System.out.println(this.boardModel.getPlacedCards().size());
+        // Row 5 (circle filled)
+        else if (new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED).equals(card))
+        {
+            rowIndex = 3;
+        } else if (new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.FILLED).equals(card))
+        {
+            rowIndex = 4;
+        } else if (new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.FILLED).equals(card))
+        {
+            rowIndex = 5;
+        }
 
-        updateDisplayBoard();
-        updateDisplayHand();
-        // redraw the layout
+
+        // Row 6 (circle hollow)
+        else if (new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.HOLLOW).equals(card))
+        {
+            rowIndex = 6;
+        } else if (new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.HOLLOW).equals(card))
+        {
+            rowIndex = 7;
+        } else if (new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW).equals(card))
+        {
+            rowIndex = 8;
+
+        } else
+        {
+            System.out.println(card);
+            System.out.println("ERROR, animation unavailable");
+            rowIndex = 0;
+        }
+
+        return spriteGlitchAnimations[rowIndex];
+
+
     }
-
 
     private Coordinates gameToScreenCoordinates(int i, int j, int minAbscissa, int maxOrdinate)
     {
@@ -1150,9 +1350,9 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 //		ps.add(new RealPlayer("Aaa", rb));
         ScoreCalculatorVisitor visitor = new ScoreCalculatorVisitor();
 
-//        ps.add(new VirtualPlayer("ord1", rb, new RandomStrategy()));
-        ps.add(new VirtualPlayer("ord2", rb, new RandomStrategy()));
-        AbstractShapeUpGame model = new ShapeUpGame(visitor, ps, rb);
+        ps.add(new VirtualPlayer("ord1", rb, new RandomStrategy()));
+//        ps.add(new VirtualPlayer("ord2", rb, new RandomStrategy()));
+        AbstractShapeUpGame model = new ShapeUpGameAdvanced(visitor, ps, rb);
         RectangleBoardFrameTest view = new RectangleBoardFrameTest(rb, model);
 
 
@@ -1165,7 +1365,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         frame.setLocationRelativeTo(null);
 //        comp.fakeUpdate();
 
-        GameController sugc = new ShapeUpGameController(model, view);
+        GameController sugc = new AdvancedShapeUpGameController(model, view);
 
         view.setController(sugc);
         model.addPropertyChangeListener(view);
