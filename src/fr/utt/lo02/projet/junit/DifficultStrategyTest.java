@@ -1,6 +1,6 @@
 package fr.utt.lo02.projet.junit;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,18 +11,12 @@ import fr.utt.lo02.projet.board.AbstractBoard;
 import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.board.RectangleBoard;
-import fr.utt.lo02.projet.board.BoardEmptyException;
 import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
 import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
-import fr.utt.lo02.projet.game.ShapeUpGame;
 import fr.utt.lo02.projet.strategy.Choice;
 import fr.utt.lo02.projet.strategy.DifficultStrategy;
 import fr.utt.lo02.projet.strategy.MoveRequest;
 import fr.utt.lo02.projet.strategy.PlaceRequest;
-import fr.utt.lo02.projet.strategy.Player;
-import fr.utt.lo02.projet.strategy.PlayerHandEmptyException;
-import fr.utt.lo02.projet.strategy.RandomStrategy;
-import fr.utt.lo02.projet.strategy.VirtualPlayer;
 
 class DifficultStrategyTest {
 
@@ -53,7 +47,7 @@ class DifficultStrategyTest {
         System.out.println(choice);
         PlaceRequest request = strategy.makePlaceRequest(board, victoryCard, handCards);
         System.out.println(request);
-        MoveRequest request2 = strategy.makeMoveRequest(board, victoryCard);
+        MoveRequest request2 = strategy.makeMoveRequest(board, victoryCard, handCards);
         assertNotNull(choice);
         assertNotNull(request);
         assertNotNull(request2);
@@ -86,7 +80,7 @@ class DifficultStrategyTest {
         System.out.println(choice);
         PlaceRequest request = strategy.makePlaceRequest(board, victoryCard, handCards);
         System.out.println(request);
-        MoveRequest request2 = strategy.makeMoveRequest(board, victoryCard);
+        MoveRequest request2 = strategy.makeMoveRequest(board, victoryCard, handCards);
         assertNotNull(choice);
         assertNotNull(request);
         assertNotNull(request2);
@@ -125,7 +119,7 @@ class DifficultStrategyTest {
         System.out.println(choice);
         PlaceRequest request = strategy.makePlaceRequest(board, victoryCard, handCards);
         System.out.println(request);
-        MoveRequest request2 = strategy.makeMoveRequest(board, victoryCard);
+        MoveRequest request2 = strategy.makeMoveRequest(board, victoryCard, handCards);
         assertNotNull(choice);
         assertNotNull(request);
         assertNotNull(request2);
@@ -146,7 +140,7 @@ class DifficultStrategyTest {
         System.out.println(choice);
         PlaceRequest request = strategy.makePlaceRequest(board, victoryCard, handCards);
         System.out.println(request);
-        MoveRequest request2 = strategy.makeMoveRequest(board, victoryCard);
+        MoveRequest request2 = strategy.makeMoveRequest(board, victoryCard, handCards);
         assertNotNull(choice);
         assertNotNull(request);
         assertNotNull(request2);
@@ -178,7 +172,7 @@ class DifficultStrategyTest {
         System.out.println(choice);
         PlaceRequest request = strategy.makePlaceRequest(board, victoryCard, handCards);
         System.out.println(request);
-        MoveRequest request2 = strategy.makeMoveRequest(board, victoryCard);
+        MoveRequest request2 = strategy.makeMoveRequest(board, victoryCard, handCards);
         assertNotNull(choice);
         assertNotNull(request);
         assertNotNull(request2);
@@ -211,7 +205,7 @@ class DifficultStrategyTest {
         System.out.println(choice);
         PlaceRequest request = strategy.makePlaceRequest(board, victoryCard, handCards);
         System.out.println(request);
-        MoveRequest request2 = strategy.makeMoveRequest(board, victoryCard);
+        MoveRequest request2 = strategy.makeMoveRequest(board, victoryCard, handCards);
         assertNotNull(choice);
         assertNotNull(request);
         assertNotNull(request2);

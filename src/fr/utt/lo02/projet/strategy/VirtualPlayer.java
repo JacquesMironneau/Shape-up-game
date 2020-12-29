@@ -39,7 +39,7 @@ public class VirtualPlayer extends Player
 	@Override
 	public MoveRequest askMoveCard() throws BoardEmptyException
 	{
-		if (board.getPlacedCards().isEmpty()) throw new boardEmptyException();
+		if (board.getPlacedCards().isEmpty()) throw new BoardEmptyException();
 		return this.strategy.makeMoveRequest(board, super.getVictoryCard(), super.getPlayerHand());
 
 	}
