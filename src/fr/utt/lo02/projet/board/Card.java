@@ -72,9 +72,9 @@ public class Card
 	{
 		switch (color)
 		{
-			case RED -> System.out.print(colorize("└─┘ ", RED_TEXT()));
-			case BLUE -> System.out.print(colorize("└─┘ ", BLUE_TEXT()));
-			case GREEN -> System.out.print(colorize("└─┘ ", GREEN_TEXT()));
+			//case RED -> System.out.print(colorize("└─┘ ", RED_TEXT()));
+			//case BLUE -> System.out.print(colorize("└─┘ ", BLUE_TEXT()));
+			//case GREEN -> System.out.print(colorize("└─┘ ", GREEN_TEXT()));
 		}
 	}
 
@@ -82,9 +82,9 @@ public class Card
 	{
 		switch (color)
 		{
-			case RED -> System.out.print(colorize("┌─┐ ", RED_TEXT()));
-			case BLUE -> System.out.print(colorize("┌─┐ ", BLUE_TEXT()));
-			case GREEN -> System.out.print(colorize("┌─┐ ", GREEN_TEXT()));
+			//case RED -> System.out.print(colorize("┌─┐ ", RED_TEXT()));
+			//case BLUE -> System.out.print(colorize("┌─┐ ", BLUE_TEXT()));
+			//case GREEN -> System.out.print(colorize("┌─┐ ", GREEN_TEXT()));
 		}
 
 	}
@@ -92,44 +92,45 @@ public class Card
 	public static void printMiddle(Card card)
 	{
 		StringBuilder buf = new StringBuilder();
-		buf.append("│");
+		//buf.append("│");
 		switch (card.getShape())
 		{
 			case CIRCLE -> {
 				if (card.getFilling() == Card.Filling.HOLLOW)
 				{
-					buf.append("○");
+					buf.append("o");
 				} else
 				{
-					buf.append("●");
+					buf.append("o");
 				}
 			}
 			case TRIANGLE -> {
 				if (card.getFilling() == Card.Filling.HOLLOW)
 				{
-					buf.append("▵");
+					buf.append("t");
 				} else
 				{
-					buf.append("▲");
+					buf.append("t");
 				}
 			}
 			case SQUARE -> {
 				if (card.getFilling() == Card.Filling.HOLLOW)
 				{
-					buf.append("▫");
+					buf.append("h");
 				} else
 				{
-					buf.append("▪");
+					buf.append("h");
 				}
 			}
 		}
-		buf.append("│ ");
+		//buf.append("│ ");
 		switch (card.getColor())
 		{
-			case BLUE -> System.out.print(colorize(buf.toString(), BLUE_TEXT()));
-			case GREEN -> System.out.print(colorize(buf.toString(), GREEN_TEXT()));
-			case RED -> System.out.print(colorize(buf.toString(), RED_TEXT()));
+			//case BLUE -> System.out.print(colorize(buf.toString(), BLUE_TEXT()));
+			//case GREEN -> System.out.print(colorize(buf.toString(), GREEN_TEXT()));
+			//case RED -> System.out.print(colorize(buf.toString(), RED_TEXT()));
 		}
+		System.out.print(buf+" ");
 
 	}
 	@Override

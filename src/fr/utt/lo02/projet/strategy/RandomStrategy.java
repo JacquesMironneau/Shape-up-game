@@ -53,7 +53,7 @@ public class RandomStrategy implements PlayerStrategy
 	}
 
 	@Override
-	public MoveRequest makeMoveRequest(AbstractBoard board, Card victoryCard)
+	public MoveRequest makeMoveRequest(AbstractBoard board, Card victoryCard, List<Card> playerHand)
 	{
 		List<Coordinates> coordsMap = new ArrayList<Coordinates>(board.getPlacedCards().keySet());
 
