@@ -79,6 +79,7 @@ public abstract class AbstractShapeUpGame
 		for (Player player : players)
 		{
 			player.getPlayerHand().clear();
+			player.setVictoryCard(null);
 		}
 
 		// Remove hidden card

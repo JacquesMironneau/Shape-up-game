@@ -40,6 +40,8 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
     private static final int LEFT_BOARD_OFFSET = 450;
     private static final int TOP_BOARD_OFFSET = 150;
     private static final int PLAYER_HAND_Y = 700;
+    public static final int ANIMATION_REFRESH_RATE = 100;
+    public static final String BACKGROUND_PATH = "res/background.png";
 
     private final List<Image> sprite;
     private final Image[][] spriteGlitchAnimations;
@@ -75,10 +77,10 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
     private boolean animate;
 
 
-    public RectangleBoardFrameTest(AbstractBoard modelboard, AbstractShapeUpGame game)
+    public RectangleBoardFrameTest(AbstractBoard modelBoard, AbstractShapeUpGame game)
     {
         this.model = game;
-        this.boardModel = modelboard;
+        this.boardModel = modelBoard;
         Dimension preferredSize = new Dimension(1408, 864);
 
 
@@ -89,11 +91,6 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         spriteGlitchAnimations = splitSpriteGlitchAnimations();
 
         UIManager.put("Slider.onlyLeftMouseButtonDrag", Boolean.TRUE);
-        //TODO remove those (in prop change)
-//        addMouseListener(this);
-//        addMouseMotionListener(this);
-        setBackground(Color.getColor("brown"));
-
 
         boardView = new CopyOnWriteArrayList<>();
         handView = Collections.synchronizedList(new ArrayList<>());
@@ -154,31 +151,61 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
             }
             case PLACE_DONE -> {
-                animate = true;
 
 
                 if (model.getCurrentPlayer() instanceof VirtualPlayer && !SwingUtilities.isEventDispatchThread())
                 {
                     try
                     {
-                        SwingUtilities.invokeAndWait(new Runnable()
-                        {
-                            public void run()
+                        SwingUtilities.invokeAndWait(() -> {
+                            updateDisplayBoard();
+                            animate = true;
+
+                            for (int i = 0; i < 8; i++)
                             {
-                                updateDisplayBoard();
+                                repaint();
+                                validate();
                                 try
                                 {
-                                    Thread.sleep(500);
+                                    Thread.sleep(ANIMATION_REFRESH_RATE);
                                 } catch (InterruptedException e)
                                 {
                                     e.printStackTrace();
                                 }
                             }
+                            animate = false;
+                            repaint();
+//                                try
+//                                {
+//                                    Thread.sleep(500);
+//                                } catch (InterruptedException e)
+//                                {
+//                                    e.printStackTrace();
+//                                }
                         });
                     } catch (InterruptedException | InvocationTargetException e)
                     {
                         e.printStackTrace();
                     }
+                } else
+                {
+                    updateDisplayBoard();
+                    animate = true;
+
+                    for (int i = 0; i < 8; i++)
+                    {
+                        repaint();
+                        try
+                        {
+                            Thread.sleep(ANIMATION_REFRESH_RATE);
+                        } catch (InterruptedException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                    animate = false;
+                    repaint();
+
                 }
 
 
@@ -190,6 +217,8 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
             }
             case MOVE_DONE -> {
                 animate = true;
+                removeMouseListener(this);
+                removeMouseMotionListener(this);
 
                 // Runs inside of the Swing UI thread
                 if (model.getCurrentPlayer() instanceof VirtualPlayer && !SwingUtilities.isEventDispatchThread())
@@ -201,13 +230,28 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
                             public void run()
                             {
                                 updateDisplayBoard();
-                                try
+                                animate = true;
+
+                                for (int i = 0; i < 8; i++)
                                 {
-                                    Thread.sleep(500);
-                                } catch (InterruptedException e)
-                                {
-                                    e.printStackTrace();
+                                    repaint();
+                                    try
+                                    {
+                                        Thread.sleep(ANIMATION_REFRESH_RATE);
+                                    } catch (InterruptedException e)
+                                    {
+                                        e.printStackTrace();
+                                    }
                                 }
+                                animate = false;
+                                repaint();
+//                                try
+//                                {
+//                                    Thread.sleep(500);
+//                                } catch (InterruptedException e)
+//                                {
+//                                    e.printStackTrace();
+//                                }
                             }
                         });
                     } catch (InterruptedException | InvocationTargetException e)
@@ -216,12 +260,26 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
                     }
                 } else
                 {
-                    updateDisplayHand();
+                    updateDisplayBoard();
+                    animate = true;
+
+                    for (int i = 0; i < 8; i++)
+                    {
+                        repaint();
+                        try
+                        {
+                            Thread.sleep(ANIMATION_REFRESH_RATE);
+                        } catch (InterruptedException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                    animate = false;
+                    repaint();
+
                 }
 
                 System.out.println("moved");
-                removeMouseListener(this);
-                removeMouseMotionListener(this);
 
 
             }
@@ -336,22 +394,12 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
                 boardView.clear();
                 handView.clear();
                 repaint();
+                new Thread(() -> controller.endRound()).start();
+
 
 //                validate();
 //                repaint();
-                JButton endTurnButton = new JButton("Next round");
-                //repaint();
-                endTurnButton.setBounds(1000, PLAYER_HAND_Y + 30, 250, 80);
 
-                endTurnButton.addActionListener(actionEvent -> {
-
-                    remove(endTurnButton);
-                    //this.controller.endRound();
-                    new Thread(() -> controller.endRound()).start();
-
-
-                });
-                add(endTurnButton);
 
 //                JButton ok = new JButton("Ok");
 //                ok.setBounds(700,7000,50,50);
@@ -643,7 +691,22 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
     {
 
         displayScores = true;
-        model.getPlayers().forEach(Player::displayRoundScore);
+
+        repaint();
+        JButton endTurnButton = new JButton("Next round");
+        //repaint();
+        endTurnButton.setBounds(1000, PLAYER_HAND_Y + 30, 250, 80);
+
+        endTurnButton.addActionListener(actionEvent -> {
+
+            remove(endTurnButton);
+            displayScores = false;
+            repaint();
+            new Thread(() -> controller.play()).start();
+
+        });
+        add(endTurnButton);
+        //model.getPlayers().forEach(Player::displayRoundScore);
 
 //        SwingUtilities.invokeLater(new Thread(){
 //            @Override
@@ -732,7 +795,18 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
             }
         }
-        System.out.println("REPAINT");
+//        System.out.println("REPAINT");
+//        for (int i = 0; i < 8; i++)
+//        {
+//            repaint();
+//            try
+//            {
+//                Thread.sleep(400);
+//            } catch (InterruptedException e)
+//            {
+//                e.printStackTrace();
+//            }
+//        }
 //        if (gs == GameState.MOVE_DONE || gs == GameState.PLACE_DONE)
 //        {
 //
@@ -750,7 +824,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 //            numberOfFrame = 0;
 //        } else
 //        {
-            repaint();
+        repaint();
 //        }
     }
 
@@ -760,7 +834,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         // draw background
         try
         {
-            g2d.drawImage(ImageIO.read(new File("res/background_light.png")), 0, 0, getWidth(), getHeight(), null);
+            g2d.drawImage(ImageIO.read(new File(BACKGROUND_PATH)), 0, 0, getWidth(), getHeight(), null);
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -813,23 +887,31 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
             {
                 Image[] images = cardImageMatcher(card);
                 g2d.drawImage(images[0], x, y, null);
-//                if (gs == GameState.MOVE_DONE || gs == GameState.PLACE_DONE)
-//                {
-//
-//
-//                    Image[] anim = glitchAnimationMatcher(card);
-//                    System.out.println("REPAINTING ANIMATION" + numberOfFrame);
-//                    g2d.drawImage(anim[numberOfFrame], x + (CARD_WIDTH - HOLOGRAM_WIDTH) / 2, y + (CARD_HEIGHT - HOLOGRAM_HEIGHT) / 2, null);
-//
-//
-//                }
-//                else
-//                {
-                g2d.drawImage(images[1], x + (CARD_WIDTH - HOLOGRAM_WIDTH) / 2, y + (CARD_HEIGHT - HOLOGRAM_HEIGHT) / 2, null);
+                if ((gs == GameState.MOVE_DONE || gs == GameState.PLACE_DONE) && animate)
+                {
 
-//            }
+                    if (numberOfFrame > 7)
+                    {
+                        numberOfFrame = 0;
+                    }
+
+                    Image[] anim = glitchAnimationMatcher(card);
+                    System.out.println(card);
+
+                    System.out.println("REPAINTING ANIMATION" + numberOfFrame);
+                    g2d.drawImage(anim[numberOfFrame], x + (CARD_WIDTH - HOLOGRAM_WIDTH) / 2, y + (CARD_HEIGHT - HOLOGRAM_HEIGHT) / 2, null);
+
+
+                } else
+                {
+                    numberOfFrame = 0;
+                    g2d.drawImage(images[1], x + (CARD_WIDTH - HOLOGRAM_WIDTH) / 2, y + (CARD_HEIGHT - HOLOGRAM_HEIGHT) / 2, null);
+
+                }
 
             }
+            numberOfFrame++;
+
         }
 
 
@@ -865,13 +947,6 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         }
 
     }
-
-    private void drawRoundScores(Graphics2D g2d)
-    {
-
-
-    }
-
 
     public List<Image> splitSprite()
     {
@@ -945,33 +1020,54 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
     public Image[][] splitSpriteGlitchAnimations()
     {
         int[][] spriteSheetCoords = {
+                // Triangle filled
                 {0, 0, 48, 64}, {48, 0, 48, 64}, {96, 0, 48, 64}, {144, 0, 48, 64}, {192, 0, 48, 64}, {240, 0, 48, 64}, {288, 0, 48, 64}, {336, 0, 48, 64},
                 {0, 64, 48, 64}, {48, 64, 48, 64}, {96, 64, 48, 64}, {144, 64, 48, 64}, {192, 64, 48, 64}, {240, 64, 48, 64}, {288, 64, 48, 64}, {336, 64, 48, 64},
                 {0, 128, 48, 64}, {48, 128, 48, 64}, {96, 128, 48, 64}, {144, 128, 48, 64}, {192, 128, 48, 64}, {240, 128, 48, 64}, {288, 128, 48, 64}, {336, 128, 48, 64},
 
+                // Triangle hollow
                 {0, 192, 48, 64}, {48, 192, 48, 64}, {96, 192, 48, 64}, {144, 192, 48, 64}, {192, 192, 48, 64}, {240, 192, 48, 64}, {288, 192, 48, 64}, {336, 192, 48, 64},
                 {0, 256, 48, 64}, {48, 256, 48, 64}, {96, 256, 48, 64}, {144, 256, 48, 64}, {192, 256, 48, 64}, {240, 256, 48, 64}, {288, 256, 48, 64}, {336, 256, 48, 64},
                 {0, 320, 48, 64}, {48, 320, 48, 64}, {96, 320, 48, 64}, {144, 320, 48, 64}, {192, 320, 48, 64}, {240, 320, 48, 64}, {288, 320, 48, 64}, {336, 320, 48, 64},
 
+                // Square filled
                 {0, 384, 48, 64}, {48, 384, 48, 64}, {96, 384, 48, 64}, {144, 384, 48, 64}, {192, 384, 48, 64}, {240, 384, 48, 64}, {288, 384, 48, 64}, {336, 384, 48, 64},
                 {0, 448, 48, 64}, {48, 448, 48, 64}, {96, 448, 48, 64}, {144, 448, 48, 64}, {192, 448, 48, 64}, {240, 448, 48, 64}, {288, 448, 48, 64}, {336, 448, 48, 64},
                 {0, 512, 48, 64}, {48, 512, 48, 64}, {96, 512, 48, 64}, {144, 512, 48, 64}, {192, 512, 48, 64}, {240, 512, 48, 64}, {288, 512, 48, 64}, {336, 512, 48, 64},
+
+                // Square hollow
+                {0, 576, 48, 64}, {48, 576, 48, 64}, {96, 576, 48, 64}, {144, 576, 48, 64}, {192, 576, 48, 64}, {240, 576, 48, 64}, {288, 576, 48, 64}, {336, 576, 48, 64},
+
+                {0, 640, 48, 64}, {48, 640, 48, 64}, {96, 640, 48, 64}, {144, 640, 48, 64}, {192, 640, 48, 64}, {240, 640, 48, 64}, {288, 640, 48, 64}, {336, 640, 48, 64},
+
+                {0, 704, 48, 64}, {48, 704, 48, 64}, {96, 704, 48, 64}, {144, 704, 48, 64}, {192, 704, 48, 64}, {240, 704, 48, 64}, {288, 704, 48, 64}, {336, 704, 48, 64},
+
+                // Circle filled
+                {0, 768, 48, 64}, {48, 768, 48, 64}, {96, 768, 48, 64}, {144, 768, 48, 64}, {192, 768, 48, 64}, {240, 768, 48, 64}, {288, 768, 48, 64}, {336, 768, 48, 64},
+                {0, 832, 48, 64}, {48, 832, 48, 64}, {96, 832, 48, 64}, {144, 832, 48, 64}, {192, 832, 48, 64}, {240, 832, 48, 64}, {288, 832, 48, 64}, {336, 832, 48, 64},
+                {0, 896, 48, 64}, {48, 896, 48, 64}, {96, 896, 48, 64}, {144, 896, 48, 64}, {192, 896, 48, 64}, {240, 896, 48, 64}, {288, 896, 48, 64}, {336, 896, 48, 64},
+
+                // Circle hollow
+                {0, 960, 48, 64}, {48, 960, 48, 64}, {96, 960, 48, 64}, {144, 960, 48, 64}, {192, 960, 48, 64}, {240, 960, 48, 64}, {288, 960, 48, 64}, {336, 960, 48, 64},
+                {0, 1024, 48, 64}, {48, 1024, 48, 64}, {96, 1024, 48, 64}, {144, 1024, 48, 64}, {192, 1024, 48, 64}, {240, 1024, 48, 64}, {288, 1024, 48, 64}, {336, 1024, 48, 64},
+                {0, 1088, 48, 64}, {48, 1088, 48, 64}, {96, 1088, 48, 64}, {144, 1088, 48, 64}, {192, 1088, 48, 64}, {240, 1088, 48, 64}, {288, 1088, 48, 64}, {336, 1088, 48, 64},
+
 
         };
         BufferedImage img = null;
         try
         {
-            img = ImageIO.read(new File("res/anims/holo_card_anims.png"));
+            img = ImageIO.read(new File("res/anims/holo_card_anims_final.png"));
         } catch (IOException e)
         {
             e.printStackTrace();
         }
-        Image[][] res = new Image[9][8];
-        for (int indexRow = 0; indexRow < 9; indexRow++)
+        Image[][] res = new Image[18][8];
+        for (int indexRow = 0; indexRow < 18; indexRow++)
         {
             for (int indexCol = 0; indexCol < 8; indexCol++)
             {
-                int[] sheetCoord = spriteSheetCoords[indexRow * indexCol];
+                int[] sheetCoord = spriteSheetCoords[indexRow * 8 + indexCol];
                 Image subimg = img.getSubimage(sheetCoord[0], sheetCoord[1], sheetCoord[2], sheetCoord[3]);
                 subimg = subimg.getScaledInstance(HOLOGRAM_WIDTH, HOLOGRAM_HEIGHT, Image.SCALE_SMOOTH);
 
@@ -1013,10 +1109,11 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 //            }
 //
 //        }
-        if (gs == GameState.END_ROUND)
-        {
-            drawEndRoundScores((Graphics2D) g);
-        } else if (gs != GameState.END_GAME)
+//        if (gs == GameState.END_ROUND)
+//        {
+//            drawEndRoundScores((Graphics2D) g);
+//        } else
+        if (gs != GameState.END_GAME)
         {
             g.setColor(getBackground());
 
@@ -1027,7 +1124,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
             System.out.println("SHOULDA REPAINT :c");
             if (displayScores)
             {
-                drawRoundScores((Graphics2D) g);
+                drawEndRoundScores((Graphics2D) g);
             }
         } else
         {
@@ -1041,10 +1138,102 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
     //TODO baptiste (méthode de fin de round)
     private void drawEndRoundScores(Graphics2D g2d)
     {
+
+        try
+        {
+            g2d.drawImage(ImageIO.read(new File(BACKGROUND_PATH)), 0, 0, getWidth(), getHeight(), null);
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        Font font = null;
+        try
+        {
+            font = AddFont.createFont();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        Color blue = new Color(102, 153, 255);
+        Color green = new Color(102, 204, 102);
+        Color red = new Color(204, 51, 51);
+        Color yellow = new Color(204, 204, 153);
+
+
+        List<Color> colors = new ArrayList<>();
+        colors.add(blue);
+        colors.add(green);
+        colors.add(red);
+
+
+        int offsetX = 300;
+        // Title "Scores"
+        g2d.setFont(new Font(font.getName(), Font.PLAIN, 140));
+        g2d.setColor(blue);
+        g2d.drawString("S", 100 + offsetX, 200);
+        g2d.setColor(green);
+        g2d.drawString("C", 220 + offsetX, 200);
+        g2d.setColor(red);
+        g2d.drawString("O", 340 + offsetX, 200);
+        g2d.setColor(blue);
+        g2d.drawString("R", 460 + offsetX, 200);
+        g2d.setColor(green);
+        g2d.drawString("E", 580 + offsetX, 200);
+        g2d.setColor(red);
+        g2d.drawString("S", 700 + offsetX, 200);
+
+        // Draw player name and their scores
+        g2d.setFont(new Font(font.getName(), Font.PLAIN, 70));
+
+        Color curr = colors.get(0);
+        g2d.setColor(curr);
+        int y = 300;
+        int space = 20;
+        for (Player player : model.getPlayers())
+        {
+
+            int realSpaces = space - player.getName().length();
+            StringBuilder bs = new StringBuilder();
+            bs.append(player.getName());
+            for (int i = 0; i < realSpaces; i++)
+            {
+                bs.append(" ");
+            }
+            bs.append(player.getScoresRound().get(player.getScoresRound().size() - 1));
+            g2d.drawString(bs.toString(), 200, y);
+            curr = colors.get((colors.indexOf(curr) + 1) % colors.size());
+            g2d.setColor(curr);
+
+            y += 150;
+        }
+
+        int scoresRound = -1;
+        Player winner = null;
+        List<Player> players = model.getPlayers();
+        for (int i = 0; i < players.size(); i++)
+        {
+            Player player = players.get(i);
+            int playerScore = player.getScoresRound().get(player.getScoresRound().size() - 1);
+
+            if (playerScore > scoresRound)
+            {
+                scoresRound = playerScore;
+                curr = colors.get(i);
+                winner = players.get(i);
+            }
+
+        }
+        g2d.setColor(curr);
+        g2d.drawString(winner.getName(), 200, 700);
+        g2d.setColor(yellow);
+        g2d.drawString("won this round", 100 + winner.getName().length() * 50 + 10, 700);
+
+
         // g2d.setFont(...)
         // g2d.setColor(...)
         // g2d.drawString("string", x ,y)
     }
+
 
     //TODO baptiste (méthode de fin de partie)
     private void drawEndScores(Graphics g2d)
@@ -1144,75 +1333,75 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         int rowIndex;
 
         // Row 1 (triangle filled)
-//        if (new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.FILLED).equals(card))
-//        {
-//            rowIndex = 0;
-//        } else if (new Card(Card.Color.GREEN, Card.Shape.TRIANGLE, Card.Filling.FILLED).equals(card))
-//        {
-//            rowIndex = 1;
-//        } else if (new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.FILLED).equals(card))
-//        {
-//            rowIndex = 2;
-//        }
-//
-//        // Row 2 (triangle hollow)
-//        else if (new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.HOLLOW).equals(card))
-//        {
-//            rowIndex = 3;
-//        } else if (new Card(Card.Color.GREEN, Card.Shape.TRIANGLE, Card.Filling.HOLLOW).equals(card))
-//        {
-//            rowIndex = 4;
-//        } else if (new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.HOLLOW).equals(card))
-//        {
-//            rowIndex = 5;
-//        }
-//
-//        // Row 3 (square filled)
-//        else if (new Card(Card.Color.BLUE, Card.Shape.SQUARE, Card.Filling.FILLED).equals(card))
-//        {
-//            rowIndex = 6;
-//        } else if (new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.FILLED).equals(card))
-//        {
-//            rowIndex = 7;
-//        } else if (new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.FILLED).equals(card))
-//        {
-//            rowIndex = 8;
-//        }
-        // Row 4 (square hollow)
-        if (new Card(Card.Color.BLUE, Card.Shape.SQUARE, Card.Filling.HOLLOW).equals(card))
+        if (new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.FILLED).equals(card))
         {
             rowIndex = 0;
-        } else if (new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.HOLLOW).equals(card))
+        } else if (new Card(Card.Color.GREEN, Card.Shape.TRIANGLE, Card.Filling.FILLED).equals(card))
         {
             rowIndex = 1;
-        } else if (new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.HOLLOW).equals(card))
+        } else if (new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.FILLED).equals(card))
         {
             rowIndex = 2;
+        }
+
+        // Row 2 (triangle hollow)
+        else if (new Card(Card.Color.BLUE, Card.Shape.TRIANGLE, Card.Filling.HOLLOW).equals(card))
+        {
+            rowIndex = 3;
+        } else if (new Card(Card.Color.GREEN, Card.Shape.TRIANGLE, Card.Filling.HOLLOW).equals(card))
+        {
+            rowIndex = 4;
+        } else if (new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.HOLLOW).equals(card))
+        {
+            rowIndex = 5;
+        }
+
+        // Row 3 (square filled)
+        else if (new Card(Card.Color.BLUE, Card.Shape.SQUARE, Card.Filling.FILLED).equals(card))
+        {
+            rowIndex = 6;
+        } else if (new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.FILLED).equals(card))
+        {
+            rowIndex = 7;
+        } else if (new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.FILLED).equals(card))
+        {
+            rowIndex = 8;
+        }
+        // Row 4 (square hollow)
+        else if (new Card(Card.Color.BLUE, Card.Shape.SQUARE, Card.Filling.HOLLOW).equals(card))
+        {
+            rowIndex = 9;
+        } else if (new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.HOLLOW).equals(card))
+        {
+            rowIndex = 10;
+        } else if (new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.HOLLOW).equals(card))
+        {
+            rowIndex = 11;
         }
 
         // Row 5 (circle filled)
         else if (new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.FILLED).equals(card))
         {
-            rowIndex = 3;
+            rowIndex = 12;
         } else if (new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.FILLED).equals(card))
         {
-            rowIndex = 4;
+            rowIndex = 13;
         } else if (new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.FILLED).equals(card))
         {
-            rowIndex = 5;
+            rowIndex = 14;
         }
 
 
         // Row 6 (circle hollow)
         else if (new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.HOLLOW).equals(card))
         {
-            rowIndex = 6;
+            rowIndex = 15;
         } else if (new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.HOLLOW).equals(card))
         {
-            rowIndex = 7;
+            rowIndex = 16;
         } else if (new Card(Card.Color.RED, Card.Shape.CIRCLE, Card.Filling.HOLLOW).equals(card))
         {
-            rowIndex = 8;
+            rowIndex = 17;
 
         } else
         {
@@ -1220,6 +1409,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
             System.out.println("ERROR, animation unavailable");
             rowIndex = 0;
         }
+
 
         return spriteGlitchAnimations[rowIndex];
 
@@ -1344,17 +1534,22 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
         List<Player> ps = new ArrayList<>();
         AbstractBoard rb = new TriangleBoard();
-        ps.add(new RealPlayer("Jacques", rb));
+//        ps.add(new RealPlayer("Jacques", rb));
 //        ps.add(new RealPlayer("Baptiste", rb));
 //		ps.add(new RealPlayer("Th1", rb));
 //		ps.add(new RealPlayer("Aaa", rb));
         ScoreCalculatorVisitor visitor = new ScoreCalculatorVisitor();
 
         ps.add(new VirtualPlayer("ord1", rb, new RandomStrategy()));
-//        ps.add(new VirtualPlayer("ord2", rb, new RandomStrategy()));
+        ps.add(new VirtualPlayer("ord2", rb, new RandomStrategy()));
+        ps.add(new VirtualPlayer("ord3", rb, new RandomStrategy()));
         AbstractShapeUpGame model = new ShapeUpGameAdvanced(visitor, ps, rb);
+        Set<GameView> gameViewSet = new HashSet<>();
         RectangleBoardFrameTest view = new RectangleBoardFrameTest(rb, model);
+        GameConsoleView v = new GameConsoleView(model, rb);
 
+        gameViewSet.add(view);
+        //gameViewSet.add(v);
 
         JFrame frame = new JFrame();
 
@@ -1365,10 +1560,12 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         frame.setLocationRelativeTo(null);
 //        comp.fakeUpdate();
 
-        GameController sugc = new AdvancedShapeUpGameController(model, view);
+        GameController sugc = new AdvancedShapeUpGameController(model, gameViewSet);
 
         view.setController(sugc);
+        //v.setController(sugc);
         model.addPropertyChangeListener(view);
+        //model.addPropertyChangeListener(v);
 
 
         frame.setVisible(true);

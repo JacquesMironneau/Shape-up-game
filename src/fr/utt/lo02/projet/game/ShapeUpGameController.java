@@ -6,17 +6,20 @@ import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.strategy.*;
 
+import java.util.Set;
+
 public class ShapeUpGameController implements GameController
 {
 
 	protected final AbstractShapeUpGame gameModel;
-	protected final GameView view;
+	protected Set<GameView> view;
 	protected GameState lastAction;
 
 
-	public ShapeUpGameController(AbstractShapeUpGame gameModel, GameView view)
+	public ShapeUpGameController(AbstractShapeUpGame gameModel, Set<GameView> viewSet)
 	{
-		this.view = view;
+
+		this.view = viewSet;
 		this.gameModel = gameModel;
 		this.gameModel.initRound();
 		lastAction = GameState.FIRST_TURN;
@@ -65,7 +68,11 @@ public class ShapeUpGameController implements GameController
 			}
 		} else
 		{
-			view.displayPlaceFailed(mrr);
+			for (GameView view: view)
+			{
+				view.displayPlaceFailed(mrr);
+
+			}
 			gameModel.setState(GameState.ACTION_FAILED);
 			if (lastAction == GameState.PLACE_DONE)
 			{
@@ -116,7 +123,11 @@ public class ShapeUpGameController implements GameController
 			}
 		} else
 		{
-			view.displayMoveFailed(prr);
+			for (GameView view: view)
+			{
+				view.displayMoveFailed(prr);
+
+			}
 			gameModel.setState(GameState.ACTION_FAILED);
 
 			if (lastAction == GameState.FIRST_TURN)
@@ -188,15 +199,25 @@ public class ShapeUpGameController implements GameController
 		} else
 		{
 			lastAction = GameState.FIRST_TURN;
-			view.displayScoresEndRound();
+
+			for (GameView view: view)
+			{
+				view.displayScoresEndRound();
+
+			}
 			gameModel.initRound();
-			play();
+			// TODO add play call in gameconsoleview
+			//play();
 		}
 	}
 
 	public void endGame()
 	{
-		view.displayBoard();
+		for (GameView view: view)
+		{
+			view.displayBoard();
+
+		}
 		gameModel.setState(GameState.VICTORY_CARD);
 
 		gameModel.setState(GameState.END_GAME);

@@ -6,9 +6,7 @@ import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.game.*;
 
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class GameConsoleView implements GameView
 {
@@ -165,6 +163,7 @@ public class GameConsoleView implements GameView
 		{
 			e.printStackTrace();
 		}
+		this.controller.play();
 	}
 
 	// TODO: move the display in the View
@@ -288,7 +287,9 @@ public class GameConsoleView implements GameView
 		GameView view = new GameConsoleView(model, rb);
 
 
-		GameController sugc = new ShapeUpGameController(model, view);
+		Set<GameView> gvs = new HashSet<>();
+		gvs.add(view);
+		GameController sugc = new ShapeUpGameController(model, gvs);
 		view.setController(sugc);
 		model.addPropertyChangeListener(view);
 

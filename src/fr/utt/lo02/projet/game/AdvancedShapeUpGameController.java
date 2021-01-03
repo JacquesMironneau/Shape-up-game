@@ -6,9 +6,11 @@ import fr.utt.lo02.projet.strategy.GameConsoleView;
 import fr.utt.lo02.projet.strategy.PlayerHandEmptyException;
 import fr.utt.lo02.projet.strategy.RealPlayer;
 
+import java.util.Set;
+
 public class AdvancedShapeUpGameController extends ShapeUpGameController
 {
-	public AdvancedShapeUpGameController(AbstractShapeUpGame gameModel, GameView view)
+	public AdvancedShapeUpGameController(AbstractShapeUpGame gameModel, Set<GameView> view)
 	{
 		super(gameModel, view);
 	}
