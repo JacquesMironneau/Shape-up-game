@@ -42,6 +42,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
     private static final int PLAYER_HAND_Y = 700;
     public static final int ANIMATION_REFRESH_RATE = 100;
     public static final String BACKGROUND_PATH = "res/background.png";
+    public static final int IA_SLEEP_TIME = 50;
 
     private final List<Image> sprite;
     private final Image[][] spriteGlitchAnimations;
@@ -159,29 +160,29 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
                     {
                         SwingUtilities.invokeAndWait(() -> {
                             updateDisplayBoard();
-                            animate = true;
-
-                            for (int i = 0; i < 8; i++)
-                            {
-                                repaint();
-                                validate();
-                                try
-                                {
-                                    Thread.sleep(ANIMATION_REFRESH_RATE);
-                                } catch (InterruptedException e)
-                                {
-                                    e.printStackTrace();
-                                }
-                            }
-                            animate = false;
-                            repaint();
+//                            animate = true;
+//
+//                            for (int i = 0; i < 8; i++)
+//                            {
+//                                repaint();
+//                                validate();
 //                                try
 //                                {
-//                                    Thread.sleep(500);
+//                                    Thread.sleep(ANIMATION_REFRESH_RATE);
 //                                } catch (InterruptedException e)
 //                                {
 //                                    e.printStackTrace();
 //                                }
+//                            }
+//                            animate = false;
+//                            repaint();
+                                try
+                                {
+                                    Thread.sleep(IA_SLEEP_TIME);
+                                } catch (InterruptedException e)
+                                {
+                                    e.printStackTrace();
+                                }
                         });
                     } catch (InterruptedException | InvocationTargetException e)
                     {
@@ -223,6 +224,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
                 // Runs inside of the Swing UI thread
                 if (model.getCurrentPlayer() instanceof VirtualPlayer && !SwingUtilities.isEventDispatchThread())
                 {
+                    animate = false;
                     try
                     {
                         SwingUtilities.invokeAndWait(new Runnable()
@@ -230,28 +232,28 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
                             public void run()
                             {
                                 updateDisplayBoard();
-                                animate = true;
-
-                                for (int i = 0; i < 8; i++)
-                                {
-                                    repaint();
-                                    try
-                                    {
-                                        Thread.sleep(ANIMATION_REFRESH_RATE);
-                                    } catch (InterruptedException e)
-                                    {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                animate = false;
-                                repaint();
-//                                try
+//                                animate = true;
+//
+//                                for (int i = 0; i < 8; i++)
 //                                {
-//                                    Thread.sleep(500);
-//                                } catch (InterruptedException e)
-//                                {
-//                                    e.printStackTrace();
+//                                    repaint();
+//                                    try
+//                                    {
+//                                        Thread.sleep(ANIMATION_REFRESH_RATE);
+//                                    } catch (InterruptedException e)
+//                                    {
+//                                        e.printStackTrace();
+//                                    }
 //                                }
+//                                animate = false;
+//                                repaint();
+                                try
+                                {
+                                    Thread.sleep(IA_SLEEP_TIME);
+                                } catch (InterruptedException e)
+                                {
+                                    e.printStackTrace();
+                                }
                             }
                         });
                     } catch (InterruptedException | InvocationTargetException e)
@@ -430,22 +432,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
     public void mouseClicked(MouseEvent mouseEvent)
     {
-        // Deprecated system of picking choice with mere click => changed to jbuttons!!!
-//        if (choiceTime)
-//        {
-//            if (mouseEvent.getY() >= PLAYER_HAND_Y)
-//            {
-//                System.out.println("CHOOSE PLACE OR END");
-//                this.controller.askChoice(choiceIndex,2);
-//            }
-//            else
-//            {
-//                System.out.println("CHOOSE MOVE");
-//
-//                this.controller.askChoice(choiceIndex,1);
-//
-//            }
-//        }
+
     }
 
     public void mousePressed(MouseEvent mouseEvent)
@@ -695,7 +682,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         repaint();
         JButton endTurnButton = new JButton("Next round");
         //repaint();
-        endTurnButton.setBounds(1000, PLAYER_HAND_Y + 30, 250, 80);
+        endTurnButton.setBounds(1100, PLAYER_HAND_Y + 30, 250, 80);
 
         endTurnButton.addActionListener(actionEvent -> {
 
@@ -1081,7 +1068,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
     protected void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-
+        Graphics2D g2d = (Graphics2D)g;
 
 //        if (gs == GameState.MOVE_DONE || gs == GameState.PLACE_DONE)
 //        {
@@ -1117,19 +1104,20 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         {
             g.setColor(getBackground());
 
-            draw((Graphics2D) g);
-            drawHand((Graphics2D) g);
-            drawVictoryCard((Graphics2D) g);
+
+            draw(g2d);
+            drawHand(g2d);
+            drawVictoryCard(g2d);
 
             System.out.println("SHOULDA REPAINT :c");
             if (displayScores)
             {
-                drawEndRoundScores((Graphics2D) g);
+                drawEndRoundScores(g2d);
             }
         } else
         {
-            g.drawString("Thank you for playing :D\n todo end screen", getWidth() / 2, getHeight() / 2);
-            drawEndScores(g);
+//            g.drawString("Thank you for playing :D\n todo end screen", getWidth() / 2, getHeight() / 2);
+            drawEndScores(g2d);
         }
 
 
@@ -1165,30 +1153,19 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         colors.add(green);
         colors.add(red);
 
-
-        int offsetX = 300;
         // Title "Scores"
-        g2d.setFont(new Font(font.getName(), Font.PLAIN, 140));
-        g2d.setColor(blue);
-        g2d.drawString("S", 100 + offsetX, 200);
-        g2d.setColor(green);
-        g2d.drawString("C", 220 + offsetX, 200);
-        g2d.setColor(red);
-        g2d.drawString("O", 340 + offsetX, 200);
-        g2d.setColor(blue);
-        g2d.drawString("R", 460 + offsetX, 200);
-        g2d.setColor(green);
-        g2d.drawString("E", 580 + offsetX, 200);
-        g2d.setColor(red);
-        g2d.drawString("S", 700 + offsetX, 200);
+        int offsetX = 450;
+        drawRainbowTitle(g2d, font, colors, offsetX, "SCORES");
+        Color curr;
+
 
         // Draw player name and their scores
         g2d.setFont(new Font(font.getName(), Font.PLAIN, 70));
 
-        Color curr = colors.get(0);
+        curr = colors.get(0);
         g2d.setColor(curr);
         int y = 300;
-        int space = 20;
+        int space = 12;
         for (Player player : model.getPlayers())
         {
 
@@ -1200,7 +1177,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
                 bs.append(" ");
             }
             bs.append(player.getScoresRound().get(player.getScoresRound().size() - 1));
-            g2d.drawString(bs.toString(), 200, y);
+            g2d.drawString(bs.toString().toUpperCase(), 450, y);
             curr = colors.get((colors.indexOf(curr) + 1) % colors.size());
             g2d.setColor(curr);
 
@@ -1224,9 +1201,9 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
         }
         g2d.setColor(curr);
-        g2d.drawString(winner.getName(), 200, 700);
+        g2d.drawString(winner.getName().toUpperCase(), 350, PLAYER_HAND_Y + 30);
         g2d.setColor(yellow);
-        g2d.drawString("won this round", 100 + winner.getName().length() * 50 + 10, 700);
+        g2d.drawString("WON THIS ROUND", 350 + winner.getName().length() * 50 + 10, PLAYER_HAND_Y + 30);
 
 
         // g2d.setFont(...)
@@ -1234,11 +1211,106 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         // g2d.drawString("string", x ,y)
     }
 
+    private void drawRainbowTitle(Graphics2D g2d, Font font, List<Color> colors, int offsetX, String text)
+    {
+        g2d.setFont(new Font(font.getName(), Font.PLAIN, 140));
+        Color curr = colors.get(0);
+        g2d.setColor(curr);
+
+        for (int i = 0; i < text.length(); i++)
+        {
+            g2d.drawString(String.valueOf(text.charAt(i)), 80*i + offsetX, 200);
+
+            if (text.charAt(i) == ' ') continue;
+            curr = colors.get((colors.indexOf(curr) + 1) % colors.size());
+            g2d.setColor(curr);
+
+        }
+    }
+
 
     //TODO baptiste (méthode de fin de partie)
-    private void drawEndScores(Graphics g2d)
+    private void drawEndScores(Graphics2D g2d)
     {
 
+
+        try
+        {
+            g2d.drawImage(ImageIO.read(new File(BACKGROUND_PATH)), 0, 0, getWidth(), getHeight(), null);
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        Font font = null;
+        try
+        {
+            font = AddFont.createFont();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        Color blue = new Color(102, 153, 255);
+        Color green = new Color(102, 204, 102);
+        Color red = new Color(204, 51, 51);
+        Color yellow = new Color(204, 204, 153);
+
+
+        List<Color> colors = new ArrayList<>();
+        colors.add(blue);
+        colors.add(green);
+        colors.add(red);
+
+        // Title "Scores"
+        int offsetX = 200;
+        drawRainbowTitle(g2d, font, colors, offsetX, "FINAL SCORES");
+        Color curr;
+
+
+        // Draw player name and their scores
+        g2d.setFont(new Font(font.getName(), Font.PLAIN, 70));
+
+        curr = colors.get(0);
+        g2d.setColor(curr);
+        int y = 300;
+        int space = 10;
+        for (Player player : model.getPlayers())
+        {
+
+            int realSpaces = space - player.getName().length();
+            StringBuilder bs = new StringBuilder();
+            bs.append(player.getName());
+            for (int i = 0; i < realSpaces; i++)
+            {
+                bs.append(" ");
+            }
+            bs.append(player.getScoresRound().get(player.getScoresRound().size() - 1));
+            g2d.drawString(bs.toString(), 450, y);
+            curr = colors.get((colors.indexOf(curr) + 1) % colors.size());
+            g2d.setColor(curr);
+
+            y += 150;
+        }
+
+        int scoresRound = -1;
+        Player winner = null;
+        List<Player> players = model.getPlayers();
+        for (int i = 0; i < players.size(); i++)
+        {
+            Player player = players.get(i);
+            int playerScore = player.getScoresRound().get(player.getScoresRound().size() - 1);
+
+            if (playerScore > scoresRound)
+            {
+                scoresRound = playerScore;
+                curr = colors.get(i);
+                winner = players.get(i);
+            }
+
+        }
+        g2d.setColor(curr);
+        g2d.drawString(winner.getName(), 350, 700);
+        g2d.setColor(yellow);
+        g2d.drawString("won the game", 350 + winner.getName().length() * 50 + 10, 700);
 
     }
 
