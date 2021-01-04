@@ -132,7 +132,7 @@ public class InitController
             initModel.removePropertyChangeListener(view);
         }
 
-        Set<GameView> gameViewSet = new HashSet<>();
+      /*  Set<GameView> gameViewSet = new HashSet<>();
         RectangleBoardFrameTest hmiView = new RectangleBoardFrameTest(board, initModel);
         GameConsoleView consoleView = new GameConsoleView(initModel, board);
 
@@ -162,8 +162,20 @@ public class InitController
         frame.setVisible(true);
         //initModel.setState(GameState.FIRST_TURN);
 
-
+	*/
     }
+    public static void main(String[] args) {
+    	InitModel model = new InitModel();
+		InitConsoleView view = new InitConsoleView();
+		JFrame frame = new JFrame();
 
+		Set<InitView> icv = new HashSet<>();
+		icv.add(view);
+		InitController ic = new InitController(model, icv, frame);
+		view.setController(ic);
+		model.addPropertyChangeListener(view);
+
+		model.setState(InitState.START_MENU);
+    }
 
 }
