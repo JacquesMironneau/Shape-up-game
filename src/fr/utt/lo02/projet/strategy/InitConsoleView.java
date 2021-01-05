@@ -10,6 +10,8 @@ import fr.utt.lo02.projet.game.GameState;
 
 public class InitConsoleView implements InitView {
 
+	public static final String EASY = "easy";
+	public static final String MEDIUM = "medium";
 	private InitController controller;
 	
 	private final Scanner scan;
@@ -141,10 +143,10 @@ public class InitConsoleView implements InitView {
 							switch (choiceEasyOrMedium) 
 							{
 							case 1: 
-								strategy="easy";
+								strategy= EASY;
 								break;
 							case 2:
-								strategy="medium";
+								strategy= MEDIUM;
 								break;
 							}
 							virtualPlayers.put(i, strategy);

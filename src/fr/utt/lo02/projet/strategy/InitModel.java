@@ -1,11 +1,7 @@
 package fr.utt.lo02.projet.strategy;
 
-import fr.utt.lo02.projet.board.AbstractBoard;
-import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.List;
 
 public class InitModel
 {
@@ -22,7 +18,7 @@ public class InitModel
 
     public void setState(InitState shapeBoardChoice)
     {
-        support.firePropertyChange("init", this.state, state);
+        support.firePropertyChange("init", this.state, shapeBoardChoice);
 
         state = shapeBoardChoice;
 

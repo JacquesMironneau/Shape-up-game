@@ -11,10 +11,7 @@ import fr.utt.lo02.projet.board.visitor.ScoreCalculatorWithBonusVisitor;
 import fr.utt.lo02.projet.game.*;
 
 import javax.swing.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
@@ -36,6 +33,7 @@ public class InitController
         this.initModel = model;
         this.views = viewSet;
         this.frame = frame;
+        players = new ArrayList<>();
 
     }
 
@@ -110,13 +108,36 @@ public class InitController
         initModel.setState(InitState.PLAYER_CHOICE);
     }
 
-    public void setPlayer(Map<Integer, String> realPlayers, Map<Integer,String> virtualPlayers)
+    public void setPlayer(Map<Integer, String> realPlayers, Map<Integer, String> virtualPlayers)
     {
 
+
+        int playerNumber = realPlayers.size() + virtualPlayers.size();
+
+
+        for (int i = 1; i <= playerNumber; i++)
+        {
+            boolean real = realPlayers.containsKey(i);
+
+            if (real)
+            {
+                players.add(new RealPlayer(realPlayers.get(i), board));
+
+            } else
+            {
+
+                if (virtualPlayers.get(i).equals(InitConsoleView.EASY))
+                {
+                    players.add(new VirtualPlayer(virtualPlayers.get(i), board, new RandomStrategy()));
+
+                } else
+                {
+                    players.add(new VirtualPlayer(virtualPlayers.get(i), board, new DifficultStrategy(visitor)));
+                }
+            }
+
+        }
         initModel.setState(InitState.INIT_DONE);
-        // call launch if correct ?
-        //else
-        initModel.setState(InitState.PLAYER_CHOICE);
 
     }
 
@@ -132,50 +153,71 @@ public class InitController
             initModel.removePropertyChangeListener(view);
         }
 
-      /*  Set<GameView> gameViewSet = new HashSet<>();
-        RectangleBoardFrameTest hmiView = new RectangleBoardFrameTest(board, initModel);
-        GameConsoleView consoleView = new GameConsoleView(initModel, board);
+        System.out.println(board.getClass());
+        System.out.println(players);
+        System.out.println(visitor.getClass());
+        System.out.println(gm);
+
+        AbstractShapeUpGame game = null;
+        switch (gm)
+        {
+
+            case NORMAL -> {
+                game = new ShapeUpGame(visitor,players, board);
+            }
+            case ADVANCED -> {
+                game = new ShapeUpGameAdvanced(visitor,players, board);
+
+            }
+            case NO_ADJACENCY -> {
+                game = new ShapeUpGameWithoutAdjacencyRule(visitor,players, board);
+
+            }
+        }
+        Set<GameView> gameViewSet = new HashSet<>();
+        RectangleBoardFrameTest hmiView = new RectangleBoardFrameTest(board, game);
+//        GameConsoleView consoleView = new GameConsoleView(game, board);
 
         gameViewSet.add(hmiView);
-        gameViewSet.add(consoleView);
+//        gameViewSet.add(consoleView);
 
-//        JFrame frame = new JFrame();
 
-        frame.removeAll();
+        frame.getContentPane().removeAll();
+        frame.getContentPane().repaint();
         frame.add(hmiView);
         frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         frame.pack();
         frame.setLocationRelativeTo(null);
-//        comp.fakeUpdate();
 
 
-        GameController sugc = new AdvancedShapeUpGameController(initModel, gameViewSet);
+        GameController sugc = new AdvancedShapeUpGameController(game, gameViewSet);
 
         hmiView.setController(sugc);
-        consoleView.setController(sugc);
-        initModel.addPropertyChangeListener(hmiView);
-        initModel.addPropertyChangeListener(consoleView);
+//        consoleView.setController(sugc);
+        game.addPropertyChangeListener(hmiView);
+//        initModel.addPropertyChangeListener(consoleView);
 
-        //switch ()
 
         frame.setVisible(true);
-        //initModel.setState(GameState.FIRST_TURN);
+        game.setState(GameState.FIRST_TURN);
 
-	*/
+
     }
-    public static void main(String[] args) {
-    	InitModel model = new InitModel();
-		InitConsoleView view = new InitConsoleView();
-		JFrame frame = new JFrame();
 
-		Set<InitView> icv = new HashSet<>();
-		icv.add(view);
-		InitController ic = new InitController(model, icv, frame);
-		view.setController(ic);
-		model.addPropertyChangeListener(view);
+    public static void main(String[] args)
+    {
+        InitModel model = new InitModel();
+        InitConsoleView view = new InitConsoleView();
+        JFrame frame = new JFrame();
 
-		model.setState(InitState.START_MENU);
+        Set<InitView> icv = new HashSet<>();
+        icv.add(view);
+        InitController ic = new InitController(model, icv, frame);
+        view.setController(ic);
+        model.addPropertyChangeListener(view);
+
+        model.setState(InitState.START_MENU);
     }
 
 }
