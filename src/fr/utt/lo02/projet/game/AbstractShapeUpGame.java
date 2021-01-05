@@ -13,6 +13,11 @@ public abstract class AbstractShapeUpGame
 
 	public static final int MAX_ROUND_NUMBER = 4;
 
+	public int getRoundNumber()
+	{
+		return roundNumber;
+	}
+
 	/**
 	 * Round index
 	 */
@@ -125,7 +130,7 @@ public abstract class AbstractShapeUpGame
 		{
 			board.addCard(coord, aCard);
 			currentPlayer.getPlayerHand().remove(aCard);
-			System.out.println("CARD SIZE" + currentPlayer.getPlayerHand().size());
+//			System.out.println("CARD SIZE" + currentPlayer.getPlayerHand().size());
 			//System.out.println("[LOG] "+ aCard + " has been placed at " + coord);
 			this.isFirstTurn = false;
 			return PlaceRequestResult.CORRECT_PLACEMENT;
