@@ -102,6 +102,8 @@ public class ShapeUpGameController implements GameController
 		{
 			if (gameModel.isRoundFinished())
 			{
+				gameModel.setState(GameState.PLACE_DONE);
+
 				gameModel.setState(GameState.END_ROUND);
 			} else if (lastAction == GameState.MOVE_DONE)
 			{
@@ -216,6 +218,8 @@ public class ShapeUpGameController implements GameController
 		for (GameView view: view)
 		{
 			view.displayBoard();
+//			view.displayScoresEndRound();
+
 
 		}
 		gameModel.setState(GameState.VICTORY_CARD);

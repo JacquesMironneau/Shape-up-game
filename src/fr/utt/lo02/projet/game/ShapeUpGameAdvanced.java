@@ -43,6 +43,8 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 			{
 				placeRequest = currentPlayer.askPlaceCard();
 			} while (PlaceRequestResult.CORRECT_PLACEMENT != placeCardRequest(placeRequest));
+			setState(GameState.PLACE_DONE);
+
 
 		} else
 		{
@@ -53,7 +55,7 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 			}
 			while (choice == Choice.END_THE_TURN);
 
-			setState(GameState.PLACE_DONE);
+//			setState(GameState.PLACE_DONE);
 
 			switch (choice)
 			{
@@ -68,7 +70,7 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 
 					if (isRoundFinished())
 					{
-						System.out.println("might aleeeeeeeeeeeeed");
+//						System.out.println("might aleeeeeeeeeeeeed");
 						setState(GameState.END_ROUND);
 						return;
 					}
