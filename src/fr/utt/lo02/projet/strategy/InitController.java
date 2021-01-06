@@ -229,28 +229,28 @@ public class InitController
     public static void main(String[] args) throws IOException
     {
         InitModel model = new InitModel();
-       InitConsoleView v = new InitConsoleView();
-//       InitFrameView view = new InitFrameView();
-        JFrame frame = new JFrame("Shape Up");
+ //      InitConsoleView v = new InitConsoleView();
+       InitFrameView view = new InitFrameView();
+       JFrame frame = new JFrame("Shape Up");
 
         Set<InitView> icv = new HashSet<>();
-//        icv.add(view);
-        icv.add(v);
+        icv.add(view);
+//        icv.add(v);
         
-//        frame.add(view);
+        frame.add(view);
         frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         frame.pack();
         frame.setLocationRelativeTo(null);
         
         InitController ic = new InitController(model, icv, frame);
-//       view.setController(ic);
-       v.setController(ic);
-//       model.addPropertyChangeListener(view);
-       model.addPropertyChangeListener(v);
+        view.setController(ic);
+ //      v.setController(ic);
+       model.addPropertyChangeListener(view);
+//       model.addPropertyChangeListener(v);
 
         model.setState(InitState.START_MENU);
-//        frame.setVisible(true);
+        frame.setVisible(true);
     }
 
 }

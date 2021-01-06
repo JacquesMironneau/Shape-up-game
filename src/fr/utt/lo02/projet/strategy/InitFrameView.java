@@ -500,13 +500,19 @@ public class InitFrameView extends JPanel implements InitView {
         			enterDifficulties.setVisible(false);
         			comp1.setVisible(false);
         			comp1Easy.setVisible(false);
+        			comp1Easy.setSelected(false);
         			comp1Difficult.setVisible(false);
+        			comp1Difficult.setSelected(false);
         			comp2.setVisible(false);
         			comp2Easy.setVisible(false);
+        			comp2Easy.setSelected(false);
         			comp2Difficult.setVisible(false);
+        			comp2Difficult.setSelected(false);
         			comp3.setVisible(false);
         			comp3Easy.setVisible(false);
+        			comp3Easy.setSelected(false);
         			comp3Difficult.setVisible(false);
+        			comp3Difficult.setSelected(false);
         			break;
         		case 1:
         			enterDifficulties.setText("<html><font color = #FFFFFF>Please enter virtual player's difficulty.</font></html>");
@@ -516,10 +522,14 @@ public class InitFrameView extends JPanel implements InitView {
         			comp1Difficult.setVisible(true);
         			comp2.setVisible(false);
         			comp2Easy.setVisible(false);
+        			comp2Easy.setSelected(false);
         			comp2Difficult.setVisible(false);
+        			comp2Difficult.setSelected(false);
         			comp3.setVisible(false);
         			comp3Easy.setVisible(false);
+        			comp3Easy.setSelected(false);
         			comp3Difficult.setVisible(false);
+        			comp3Difficult.setSelected(false);
         			break;
         		case 2:
         			enterDifficulties.setText("<html><font color = #FFFFFF>Please enter virtual players' difficulties.</font></html>");
@@ -532,7 +542,9 @@ public class InitFrameView extends JPanel implements InitView {
         			comp2Difficult.setVisible(true);
         			comp3.setVisible(false);
         			comp3Easy.setVisible(false);
+        			comp3Easy.setSelected(false);
         			comp3Difficult.setVisible(false);
+        			comp3Difficult.setSelected(false);
         			break;
         		case 3: 
         			enterDifficulties.setText("<html><font color = #FFFFFF>Please enter virtual players' difficulties.</font></html>");
@@ -567,13 +579,19 @@ public class InitFrameView extends JPanel implements InitView {
         			enterDifficulties.setVisible(false);
         			comp1.setVisible(false);
         			comp1Easy.setVisible(false);
+        			comp1Easy.setSelected(false);
         			comp1Difficult.setVisible(false);
+        			comp1Difficult.setSelected(false);
         			comp2.setVisible(false);
         			comp2Easy.setVisible(false);
+        			comp2Easy.setSelected(false);
         			comp2Difficult.setVisible(false);
+        			comp2Difficult.setSelected(false);
         			comp3.setVisible(false);
         			comp3Easy.setVisible(false);
+        			comp3Easy.setSelected(false);
         			comp3Difficult.setVisible(false);
+        			comp3Difficult.setSelected(false);
         			break;
         		case 1:
         			enterDifficulties.setText("<html><font color = #FFFFFF>Please enter virtual player's difficulty.</font></html>");
@@ -583,10 +601,14 @@ public class InitFrameView extends JPanel implements InitView {
         			comp1Difficult.setVisible(true);
         			comp2.setVisible(false);
         			comp2Easy.setVisible(false);
+        			comp2Easy.setSelected(false);
         			comp2Difficult.setVisible(false);
+        			comp2Difficult.setSelected(false);
         			comp3.setVisible(false);
         			comp3Easy.setVisible(false);
+        			comp3Easy.setSelected(false);
         			comp3Difficult.setVisible(false);
+        			comp3Difficult.setSelected(false);
         			break;
         		case 2:
         			enterDifficulties.setText("<html><font color = #FFFFFF>Please enter virtual players' difficulties.</font></html>");
@@ -599,7 +621,9 @@ public class InitFrameView extends JPanel implements InitView {
         			comp2Difficult.setVisible(true);
         			comp3.setVisible(false);
         			comp3Easy.setVisible(false);
+        			comp3Easy.setSelected(false);
         			comp3Difficult.setVisible(false);
+        			comp3Difficult.setSelected(false);
         			break;
         		case 3: 
         			enterDifficulties.setText("<html><font color = #FFFFFF>Please enter virtual players' difficulties.</font></html>");
