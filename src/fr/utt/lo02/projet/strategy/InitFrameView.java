@@ -641,7 +641,8 @@ public class InitFrameView extends JPanel implements InitView {
         		}
         		Map<Integer, String> realPlayers = new HashMap<Integer, String>();
 				Map<Integer, String> virtualPlayers = new HashMap<Integer, String>();
-        		for(int incr=1; incr<=i; incr++) {
+        		int nbPReal=0;
+				for(int incr=1; incr<=i; incr++) {
         			switch (incr) {
         			case 1:
         				realPlayers.put(incr, name1.getText());
@@ -655,14 +656,15 @@ public class InitFrameView extends JPanel implements InitView {
         			default:
         				break;
         			}
+        			nbPReal=incr;
         		}
         		for (int incr2=1; incr2<=j; incr2++) {
         			switch(incr2) {
         			case 1:
         				if (comp1Easy.isSelected()&&!comp1Difficult.isSelected()) {
-        					virtualPlayers.put(incr2, EASY);
+        					virtualPlayers.put(incr2+nbPReal, EASY);
         				} else if (!comp1Easy.isSelected()&&comp1Difficult.isSelected()) {
-        					virtualPlayers.put(incr2, MEDIUM);
+        					virtualPlayers.put(incr2+nbPReal, MEDIUM);
         				} else {
         					i=0;
                 			j=0;
@@ -691,14 +693,16 @@ public class InitFrameView extends JPanel implements InitView {
                 			comp3Difficult.setSelected(false);
                 			nbReal.setText("<html><font color = #FFFFFF>"+i+"</font></html>");
                 			nbVirtual.setText("<html><font color = #FFFFFF>"+j+"</font></html>");
+                			realPlayers.clear();
+                			virtualPlayers.clear();
                 			return;
         				}
         				break;
         			case 2:
         				if (comp2Easy.isSelected()&&!comp2Difficult.isSelected()) {
-        					virtualPlayers.put(incr2, EASY);
+        					virtualPlayers.put(incr2+nbPReal, EASY);
         				} else if (!comp2Easy.isSelected()&&comp2Difficult.isSelected()) {
-        					virtualPlayers.put(incr2, MEDIUM);
+        					virtualPlayers.put(incr2+nbPReal, MEDIUM);
         				} else {
         					i=0;
                 			j=0;
@@ -727,13 +731,15 @@ public class InitFrameView extends JPanel implements InitView {
                 			comp3Difficult.setSelected(false);
                 			nbReal.setText("<html><font color = #FFFFFF>"+i+"</font></html>");
                 			nbVirtual.setText("<html><font color = #FFFFFF>"+j+"</font></html>");
+                			realPlayers.clear();
+                			virtualPlayers.clear();
                 			return;
         				}
         				break;
         			case 3:
-        				if (comp2Easy.isSelected()&&!comp2Difficult.isSelected()) {
+        				if (comp3Easy.isSelected()&&!comp3Difficult.isSelected()) {
         					virtualPlayers.put(incr2, EASY);
-        				} else if (!comp2Easy.isSelected()&&comp2Difficult.isSelected()) {
+        				} else if (!comp3Easy.isSelected()&&comp3Difficult.isSelected()) {
         					virtualPlayers.put(incr2, MEDIUM);
         				} else {
         					i=0;
@@ -763,6 +769,8 @@ public class InitFrameView extends JPanel implements InitView {
                 			comp3Difficult.setSelected(false);
                 			nbReal.setText("<html><font color = #FFFFFF>"+i+"</font></html>");
                 			nbVirtual.setText("<html><font color = #FFFFFF>"+j+"</font></html>");
+                			realPlayers.clear();
+                			virtualPlayers.clear();
                 			return;
         				}
         				break;
