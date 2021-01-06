@@ -67,7 +67,7 @@ public class InitConsoleView implements InitView {
 				int back;
 				System.out.println("Code: Jacques Mironneau and Baptiste Guichard.");
 				System.out.println("Graphics: Thomas Durand.");
-				//System.out.println("Music: Marceau Canu. \n");
+				System.out.println("Music: Marceau Canu. \n");
 				
 				back = getNumber("Enter 0 to go back to the main menu.", 0, 0);
 				
@@ -106,6 +106,7 @@ public class InitConsoleView implements InitView {
 				System.out.println("2. Triangle board ");
 				System.out.println("3. Circle board \n");
 				System.out.println("Enter 0 to go back to the score calculator choice. ");
+				
 				choice = getNumber("Please enter your choice: ", 0, 3);
 				
 				this.controller.shapeBoard(choice);
@@ -117,9 +118,9 @@ public class InitConsoleView implements InitView {
 				System.out.println("3 Players \n");
 				System.out.println("Enter 0 to go back to the shape board choice. ");
 				choice = getNumber("Please enter your choice: ", 0, 3);
+				this.controller.setNbPlayers(choice);
 				Map<Integer, String> realPlayers = new HashMap<Integer, String>();
 				Map<Integer, String> virtualPlayers = new HashMap<Integer, String>();
-				int virtualNumber = 1;
 				for (int i = 1; i <= choice; i++)
 				{
 					System.out.println("Is Player " + i + " a real or a virtual player ? ");
@@ -150,7 +151,6 @@ public class InitConsoleView implements InitView {
 								break;
 							}
 							virtualPlayers.put(i, strategy);
-							virtualNumber++;
 							break;
 						default:
 							System.exit(0);

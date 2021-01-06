@@ -1,6 +1,7 @@
 package fr.utt.lo02.projet.strategy;
 
 import java.awt.Color;
+import java.awt.Cursor;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -21,7 +22,7 @@ public class MyButton extends JButton {
 	         
 	        setHorizontalAlignment(SwingConstants.CENTER);
 	        setHorizontalTextPosition(SwingConstants.CENTER);
-	         
+	        this.setCursor(new Cursor(Cursor.HAND_CURSOR));
 	        ImageIcon imgIcon = new ImageIcon(icon);
 	        ImageIcon imgIconHover = new ImageIcon(iconHover);
 	        ImageIcon imgIconPressed = new ImageIcon(iconPressed);

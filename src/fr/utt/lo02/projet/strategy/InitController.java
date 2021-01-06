@@ -11,6 +11,8 @@ import fr.utt.lo02.projet.board.visitor.ScoreCalculatorWithBonusVisitor;
 import fr.utt.lo02.projet.game.*;
 
 import javax.swing.*;
+
+import java.io.IOException;
 import java.util.*;
 
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
@@ -108,6 +110,19 @@ public class InitController
         initModel.setState(InitState.PLAYER_CHOICE);
     }
 
+    public void setNbPlayers(int nb) {
+    	switch (nb) {
+    	case 0:
+    		initModel.setState(InitState.SHAPE_BOARD_CHOICE);
+    		return;
+    	case 2,3:
+    		return;
+    	case 1:
+    		initModel.setState(InitState.PLAYER_CHOICE);
+    		return;
+    	}
+    		
+    }
     public void setPlayer(Map<Integer, String> realPlayers, Map<Integer, String> virtualPlayers)
     {
 
@@ -152,11 +167,6 @@ public class InitController
         {
             initModel.removePropertyChangeListener(view);
         }
-
-        System.out.println(board.getClass());
-        System.out.println(players);
-        System.out.println(visitor.getClass());
-        System.out.println(gm);
 
         AbstractShapeUpGame game = null;
         switch (gm)
@@ -205,19 +215,31 @@ public class InitController
 
     }
 
-    public static void main(String[] args)
+    public static void main(String[] args) throws IOException
     {
         InitModel model = new InitModel();
-        InitConsoleView view = new InitConsoleView();
-        JFrame frame = new JFrame();
+ //      InitConsoleView v = new InitConsoleView();
+       InitFrameView view = new InitFrameView();
+        JFrame frame = new JFrame("Shape Up");
 
         Set<InitView> icv = new HashSet<>();
         icv.add(view);
+  //      icv.add(v);
+        
+        frame.add(view);
+        frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        frame.setResizable(false);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        
         InitController ic = new InitController(model, icv, frame);
-        view.setController(ic);
-        model.addPropertyChangeListener(view);
+       view.setController(ic);
+  //     v.setController(ic);
+       model.addPropertyChangeListener(view);
+ //      model.addPropertyChangeListener(v);
 
         model.setState(InitState.START_MENU);
+        frame.setVisible(true);
     }
 
 }
