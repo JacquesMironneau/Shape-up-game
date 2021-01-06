@@ -445,10 +445,13 @@ public class InitFrameView extends JPanel implements InitView {
         			enterNames.setVisible(false);
         			p1.setVisible(false);
         			name1.setVisible(false);
+        			name1.setText("");
         			p2.setVisible(false);
         			name2.setVisible(false);
+        			name2.setText("");
         			p3.setVisible(false);
         			name3.setVisible(false);
+        			name3.setText("");
         			break;
         		case 1:
         			enterNames.setText("<html><font color = #FFFFFF>Please enter real player's name.</font></html>");
@@ -457,8 +460,10 @@ public class InitFrameView extends JPanel implements InitView {
         			name1.setVisible(true);
         			p2.setVisible(false);
         			name2.setVisible(false);
+        			name2.setText("");
         			p3.setVisible(false);
         			name3.setVisible(false);
+        			name3.setText("");
         			break;
         		case 2:
         			enterNames.setText("<html><font color = #FFFFFF>Please enter real players' names.</font></html>");
@@ -469,6 +474,7 @@ public class InitFrameView extends JPanel implements InitView {
         			name2.setVisible(true);
         			p3.setVisible(false);
         			name3.setVisible(false);
+        			name3.setText("");
         			break;
         		case 3:
         			enterNames.setText("<html><font color = #FFFFFF>Please enter real players' names.</font></html>");
