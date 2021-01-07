@@ -143,11 +143,11 @@ public class InitController
 
                 if (virtualPlayers.get(i).equals(InitConsoleView.EASY))
                 {
-                    players.add(new VirtualPlayer(virtualPlayers.get(i), board, new RandomStrategy()));
+                    players.add(new VirtualPlayer("Player"+i, board, new RandomStrategy()));
 
                 } else
                 {
-                    players.add(new VirtualPlayer(virtualPlayers.get(i), board, new DifficultStrategy(visitor)));
+                    players.add(new VirtualPlayer("Player"+i, board, new DifficultStrategy(visitor)));
                 }
             }
 

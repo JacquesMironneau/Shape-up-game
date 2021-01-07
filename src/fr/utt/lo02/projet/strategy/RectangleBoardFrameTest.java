@@ -54,7 +54,8 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
     int currY;
     int cardIndex;
     boolean shouldDrawText;
-
+    private static Font font = null;
+    
     private GameController controller;
 
     private final AbstractShapeUpGame model;
@@ -310,8 +311,8 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
                 repaint();
 
 
-                JButton placeButton = new JButton("Place");
-                JButton moveButton = new JButton("Move");
+                MyButton placeButton = new MyButton("", "res/buttons/place.png", "res/buttons/place_hover.png", "res/buttons/place_hover.png");
+                MyButton moveButton = new MyButton("", "res/buttons/move.png", "res/buttons/move_hover.png", "res/buttons/move_hover.png");
                 placeButton.addActionListener(actionEvent -> {
 
                     remove(moveButton);
@@ -327,9 +328,9 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
                     new Thread(() -> controller.askChoice(1, 1)).start();
 
                 });
-                placeButton.setBounds(1000, PLAYER_HAND_Y - 60, 250, 80);
-                moveButton.setBounds(1000, PLAYER_HAND_Y + 30, 250, 80);
-
+                placeButton.setBounds(1000, PLAYER_HAND_Y - 60, 250, 125);
+                moveButton.setBounds(1000, PLAYER_HAND_Y + 30, 250, 125);
+            
                 add(placeButton);
                 add(moveButton);
                 // Allow place and move listener ?
@@ -341,8 +342,8 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
                 removeMouseListener(this);
                 removeMouseMotionListener(this);
 
-                JButton endTurnButton = new JButton("End the turn");
-                JButton moveButton = new JButton("Move");
+                MyButton endTurnButton = new MyButton("", "res/buttons/end_turn.png", "res/buttons/end_turn_hover.png", "res/buttons/end_turn_hover.png");
+                MyButton moveButton = new MyButton("", "res/buttons/move.png", "res/buttons/move_hover.png", "res/buttons/move_hover.png");
                 //repaint();
                 endTurnButton.addActionListener(actionEvent -> {
 
@@ -359,8 +360,8 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
 
                 });
-                endTurnButton.setBounds(1000, PLAYER_HAND_Y + 30, 250, 80);
-                moveButton.setBounds(1000, PLAYER_HAND_Y - 60, 250, 80);
+                endTurnButton.setBounds(1000, PLAYER_HAND_Y + 30, 250, 125);
+                moveButton.setBounds(1000, PLAYER_HAND_Y - 60, 250, 125);
 
                 add(endTurnButton);
                 add(moveButton);
@@ -679,7 +680,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
     public void mouseMoved(MouseEvent mouseEvent)
     {
-
+    	
     }
 
 
@@ -705,20 +706,20 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         displayScores = true;
 
         repaint();
-        JButton endTurnButton = new JButton("Next round");
+        MyButton endRoundButton = new MyButton("", "res/buttons/next_round.png", "res/buttons/next_round_hover.png", "res/buttons/next_round_hover.png");
         //repaint();
-        endTurnButton.setBounds(1100, PLAYER_HAND_Y -30, 250, 80);
+        endRoundButton.setBounds(1075, 730, 333, 125);
 
 //        endTurnButton.setLocation(0, 0);
-        endTurnButton.addActionListener(actionEvent -> {
+        endRoundButton.addActionListener(actionEvent -> {
 
-            remove(endTurnButton);
+            remove(endRoundButton);
             displayScores = false;
             repaint();
             new Thread(() -> controller.play()).start();
 
         });
-        add(endTurnButton);
+        add(endRoundButton);
         //model.getPlayers().forEach(Player::displayRoundScore);
 
 //        SwingUtilities.invokeLater(new Thread(){
@@ -871,21 +872,28 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
 
             if (shouldDrawText)
             {
-                Font f = g2d.getFont().deriveFont(30.0f);
+            	try {
+                    if (font == null) {
+                        font = AddFont.createFont();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            	Font f = new Font(font.getFontName(), Font.PLAIN, 40);
                 g2d.setFont(f);
 
                 String str = "";
                 if (gs == GameState.MOVE)
                 {
-                    str = "Time to move !";
+                    str = "Time to move";
 
                 } else if (gs == GameState.PLACE)
                 {
-                    str = "Time to place !";
+                    str = "Time to place";
 
                 }
-                g2d.setColor(Color.RED);
-                g2d.drawString(str, 100, 200);
+                g2d.setColor(Color.WHITE);
+                g2d.drawString(str, 42, 275);
             }
         }
 
@@ -1229,8 +1237,8 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         }
         g2d.setColor(curr);
         g2d.drawString(winner.getName().toUpperCase(), 350, PLAYER_HAND_Y + 30);
-        g2d.setColor(yellow);
-        g2d.drawString("WON THIS ROUND", 350 + winner.getName().length() * 50 + 10, PLAYER_HAND_Y + 30);
+        g2d.setColor(Color.white);
+        g2d.drawString("WON THIS ROUND", 350 + winner.getName().length() * 50 - 60, PLAYER_HAND_Y + 30);
 
 
         // g2d.setFont(...)
@@ -1330,7 +1338,7 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         for (int i = 0; i < 4; i++)
         {
             // draw round number
-            g2d.setColor(yellow);
+            g2d.setColor(Color.white);
             g2d.drawString("ROUND " + (i + 1), 50, 400 + 100*i);
 
             // draw scores for the round
@@ -1365,8 +1373,8 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
         // Win text (player won the game)
         g2d.setColor(curr);
         g2d.drawString(winner.getName(), 350, 800);
-        g2d.setColor(yellow);
-        g2d.drawString("WON THE GAME", 350 + winner.getName().length() * 50 + 10, 800);
+        g2d.setColor(Color.white);
+        g2d.drawString("WON THE GAME", 350 + winner.getName().length() * 50 - 60, 800);
 
     }
 
