@@ -6,6 +6,7 @@ import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.game.*;
 
 import java.beans.PropertyChangeEvent;
+import java.io.IOException;
 import java.util.*;
 
 public class GameConsoleView implements GameView
@@ -16,8 +17,9 @@ public class GameConsoleView implements GameView
 
     private final AbstractBoard boardModel;
 
-    private final Scanner scan;
+    public Scanner scan;
 
+    private Thread thread;
 
     public GameConsoleView(AbstractShapeUpGame model, AbstractBoard boardModel)
     {
@@ -29,11 +31,16 @@ public class GameConsoleView implements GameView
     @Override
     public void propertyChange(PropertyChangeEvent evt)
     {
-        System.out.println("notified" + evt.getNewValue() + " " + evt.getPropertyName());
+//        System.out.println("notified" + evt.getNewValue() + " " + evt.getPropertyName());
+        System.out.println("NEW STATE IN THE console " + evt.getNewValue());
 
         GameState gs = (GameState) evt.getNewValue();
-        System.out.println(gs);
+        thread = new Thread(() -> stateProcess(gs));
+        thread.start();
+    }
 
+    private void stateProcess(GameState gs)
+    {
         switch (gs)
         {
 
@@ -43,10 +50,26 @@ public class GameConsoleView implements GameView
                 int x, y, x2, y2;
                 System.out.println("You have to enter origin coordinates and destination coordinates.");
 
-                x = getNumber("Please enter X origin : ");
-                y = getNumber("Please enter Y origin : ");
-                x2 = getNumber("Please enter X dest : ");
-                y2 = getNumber("Please enter Y dest: ");
+                x = getNumberAdvanced("Please enter X origin : ");
+                if (x == Integer.MIN_VALUE)
+                {
+                    return;
+                }
+                y = getNumberAdvanced("Please enter Y origin : ");
+                if (y == Integer.MIN_VALUE)
+                {
+                    return;
+                }
+                x2 = getNumberAdvanced("Please enter X dest : ");
+                if (x2 == Integer.MIN_VALUE)
+                {
+                    return;
+                }
+                y2 = getNumberAdvanced("Please enter Y dest: ");
+                if (y2 == Integer.MIN_VALUE)
+                {
+                    return;
+                }
 
                 this.controller.askMove(x, y, x2, y2);
 
@@ -59,14 +82,27 @@ public class GameConsoleView implements GameView
                 cardIndex = 0;
                 System.out.println("You have to enter coordinates for where you want to place the card you draw. ");
 
-                x = getNumber("Please enter X pos : ");
-                y = getNumber("Please enter Y pos : ");
-
+                x = getNumberAdvanced("Please enter X pos : ");
+                if (x == Integer.MIN_VALUE)
+                {
+                    return;
+                }
+                y = getNumberAdvanced("Please enter Y pos : ");
+                if (y == Integer.MIN_VALUE)
+                {
+                    return;
+                }
                 if (this.model.getCurrentPlayer().getPlayerHand().size() > 1)
                 {
-                    cardIndex = getNumber("Please enter your card index: ");
+                    cardIndex = getNumberAdvanced("Please enter your card index: ");
+                    if (cardIndex == Integer.MIN_VALUE)
+                    {
+                        return;
+                    }
                     cardIndex--;
+
                 }
+
                 this.controller.askPlace(x, y, cardIndex);
             }
             case PLACE_DONE, MOVE_DONE -> {
@@ -89,14 +125,23 @@ public class GameConsoleView implements GameView
 
                 displayBoard();
                 displayHand();
-                int choice = getNumber("Please choose one action : \n 1. Move a card \n 2. Place a Card", 1, 2);
-                this.controller.askChoice(1, choice);
+                int choice = getNumberAdvanced("Please choose one action : \n 1. Move a card \n 2. Place a Card", 1, 2);
+
+                if (choice != Integer.MIN_VALUE)
+                {
+                    this.controller.askChoice(1, choice);
+                }
+
             }
             case SECOND_CHOICE -> {
-                int choice = getNumber("Do you want to move a card ?\n 1. Yes (move a card)\n 2. No (end the turn)", 1, 2);
+                int choice = getNumberAdvanced("Do you want to move a card ?\n 1. Yes (move a card)\n 2. No (end the turn)", 1, 2);
                 displayBoard();
                 displayHand();
-                this.controller.askChoice(2, choice);
+
+                if (choice != Integer.MIN_VALUE)
+                {
+                    this.controller.askChoice(2, choice);
+                }
             }
             case END_TURN -> {
                 System.out.println("end turn");
@@ -104,6 +149,7 @@ public class GameConsoleView implements GameView
             }
             case CARD_DRAW -> {
                 System.out.println(model.getCurrentPlayer().getName() + " you have draw");
+                // TODO: 1/7/21 add this (cause a strange bug)
 //				Card.printSingleCard(model.getCurrentPlayer().getDrawCard());
             }
             case END_ROUND -> {
@@ -115,10 +161,7 @@ public class GameConsoleView implements GameView
                 if (model.getRoundNumber() < 4)
                 {
                     this.controller.play();
-
                 }
-
-
 
 
             }
@@ -128,13 +171,16 @@ public class GameConsoleView implements GameView
                 {
                     p.displayFinalScore();
                 }
-                System.exit(0);
+//                System.exit(0);
             }
         }
-
-
     }
 
+
+    public Thread getThread()
+    {
+        return thread;
+    }
 
     private void displayAllVictoryCard()
     {
@@ -279,11 +325,49 @@ public class GameConsoleView implements GameView
 
     }
 
+    private int getNumberAdvanced(String msg, int min, int max)
+    {
+
+        ConsoleInputReadTask readTask = new ConsoleInputReadTask();
+        Integer input = null;
+        try
+        {
+            input = readTask.getInt(msg, min, max);
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        if (input == null)
+        {
+            input = Integer.MIN_VALUE;
+        }
+        return input;
+    }
+
+    private int getNumberAdvanced(String msg)
+    {
+
+        ConsoleInputReadTask readTask = new ConsoleInputReadTask();
+        Integer input = null;
+        try
+        {
+            input = readTask.getInt(msg);
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        if (input == null)
+        {
+            input = Integer.MIN_VALUE;
+        }
+        return input;
+    }
+
     public static void main(String[] args) throws PlayerHandEmptyException, BoardEmptyException
     {
         List<Player> ps = new ArrayList<>();
         AbstractBoard rb = new RectangleBoard();
-		ps.add(new RealPlayer("Jacques", rb));
+        ps.add(new RealPlayer("Jacques", rb));
 //		ps.add(new RealPlayer("Théo", rb));
 //		ps.add(new RealPlayer("Th1", rb));
 //		ps.add(new RealPlayer("Aaa", rb));
