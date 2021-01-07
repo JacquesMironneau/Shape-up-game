@@ -271,7 +271,6 @@ public class InitController
                 if (thread.isAlive() && !thread.isInterrupted())
                 {
                     thread.interrupt();
-                    System.out.println("interrupt the kidou (fact-checked)");
                 }
             }
         }

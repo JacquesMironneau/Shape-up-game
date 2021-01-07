@@ -118,12 +118,9 @@ private MyButton endRoundButton;
     @Override
     public void propertyChange(PropertyChangeEvent evt)
     {
-//        System.out.println("notified" + evt.getNewValue() + " " + evt.getPropertyName());
-        System.out.println("NEW STATE IN THE hmi " + evt.getNewValue());
 
         prevGs = gs;
         gs = (GameState) evt.getNewValue();
-//        System.out.println(gs);
 
         switch (gs)
         {
@@ -1809,7 +1806,7 @@ private MyButton endRoundButton;
 
 
         List<Player> ps = new ArrayList<>();
-        AbstractBoard rb = new RectangleBoard();
+        AbstractBoard rb = new TriangleBoard();
         ps.add(new RealPlayer("Jacques", rb));
         ps.add(new RealPlayer("Baptiste", rb));
 //		ps.add(new RealPlayer("Th1", rb));

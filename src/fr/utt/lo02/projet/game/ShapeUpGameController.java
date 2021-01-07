@@ -59,7 +59,6 @@ public class ShapeUpGameController implements GameController
     {
         reset();
 
-        System.out.println("TRY TO MOVE");
         MoveRequestResult mrr = this.gameModel.moveCardRequest(new MoveRequest(new Coordinates(x, y), new Coordinates(x2, y2)));
 
         if (mrr == MoveRequestResult.MOVE_VALID)
@@ -160,8 +159,6 @@ public class ShapeUpGameController implements GameController
 
     public synchronized void endTurn()
     {
-//        reset();
-//        reset();
         if (!endTurnLock)
         {
 
@@ -192,7 +189,6 @@ public class ShapeUpGameController implements GameController
     public synchronized void play()
     {
 
-//        reset();
         if (!lock)
         {
             lock = true;
@@ -232,9 +228,6 @@ public class ShapeUpGameController implements GameController
 
     public synchronized void endRound()
     {
-//        reset();
-
-//        reset();
         if (!endRoundLock)
         {
             endRoundLock = true;
@@ -270,8 +263,6 @@ public class ShapeUpGameController implements GameController
         {
             view.displayBoard();
 //			view.displayScoresEndRound();
-
-
         }
         gameModel.setState(GameState.VICTORY_CARD);
 
@@ -280,7 +271,7 @@ public class ShapeUpGameController implements GameController
 
     protected void reset()
     {
-        System.out.println(Thread.currentThread().getName());
+//        System.out.println(Thread.currentThread().getName());
         if (!Thread.currentThread().getName().equals(RectangleBoardFrameTest.THREAD_FROM_GAME_VIEW_NAME))
         {
             return;
@@ -298,7 +289,6 @@ public class ShapeUpGameController implements GameController
                 if (thread.isAlive() && !thread.isInterrupted())
                 {
                     thread.interrupt();
-                    System.out.println("interrupt the kinder (fact-checked)");
                 }
             }
         }

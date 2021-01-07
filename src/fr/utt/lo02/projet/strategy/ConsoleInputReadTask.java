@@ -82,7 +82,7 @@ public class ConsoleInputReadTask implements Callable<Integer> {
 
             } catch (InterruptedException e) {
                 // TODO: 1/7/21 remove log message
-                System.out.println("operation cancelled by the other threado");
+//                System.out.println("operation cancelled by the other threado");
                 return null;
             }
         } while ("".equals(input));

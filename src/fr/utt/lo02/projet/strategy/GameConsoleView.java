@@ -32,7 +32,7 @@ public class GameConsoleView implements GameView
     public void propertyChange(PropertyChangeEvent evt)
     {
 //        System.out.println("notified" + evt.getNewValue() + " " + evt.getPropertyName());
-        System.out.println("NEW STATE IN THE console " + evt.getNewValue());
+//        System.out.println("NEW STATE IN THE console " + evt.getNewValue());
 
         GameState gs = (GameState) evt.getNewValue();
         thread = new Thread(() -> stateProcess(gs));
@@ -144,7 +144,7 @@ public class GameConsoleView implements GameView
                 }
             }
             case END_TURN -> {
-                System.out.println("end turn");
+//                System.out.println("end turn");
                 this.controller.endTurn();
             }
             case CARD_DRAW -> {

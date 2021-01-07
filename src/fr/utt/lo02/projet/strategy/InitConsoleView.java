@@ -31,8 +31,6 @@ public class InitConsoleView implements InitView
     {
 
         InitState is = (InitState) evt.getNewValue();
-        System.out.println("NEW STATE IN THE console " + evt.getNewValue());
-        System.out.flush();
 //        System.out.println(SwingUtilities.isEventDispatchThread());
         thread = new Thread(() -> stateCheck(is));
         thread.start();
