@@ -28,6 +28,7 @@ public class InitController
     private Set<InitView> views;
     private InitModel initModel;
     private JFrame frame;
+    private boolean lockLaunch;
 
     public InitController(InitModel model, Set<InitView> viewSet, JFrame frame)
     {
@@ -36,11 +37,13 @@ public class InitController
         this.views = viewSet;
         this.frame = frame;
         players = new ArrayList<>();
+        lockLaunch = false;
 
     }
 
-    public void startMenu(int menu)
+    public synchronized void startMenu(int menu)
     {
+        reset();
         switch (menu)
         {
             case 1 -> initModel.setState(InitState.GAME_MODE_CHOICE);
@@ -52,8 +55,10 @@ public class InitController
     }
 
 
-    public void setGameMode(int mode)
+    public synchronized void setGameMode(int mode)
     {
+        reset();
+
         switch (mode)
         {
             case 0 -> {
@@ -73,8 +78,10 @@ public class InitController
     }
 
 
-    public void setScoreCalculator(int visitor)
+    public synchronized void setScoreCalculator(int visitor)
     {
+        reset();
+
         switch (visitor)
         {
             case 0 -> {
@@ -91,8 +98,10 @@ public class InitController
         initModel.setState(InitState.SHAPE_BOARD_CHOICE);
     }
 
-    public void shapeBoard(int board)
+    public synchronized void shapeBoard(int board)
     {
+        reset();
+
         switch (board)
         {
             case 0 -> {
@@ -110,22 +119,28 @@ public class InitController
         initModel.setState(InitState.PLAYER_CHOICE);
     }
 
-    public void setNbPlayers(int nb) {
-    	switch (nb) {
-    	case 0:
-    		initModel.setState(InitState.SHAPE_BOARD_CHOICE);
-    		return;
-    	case 2,3:
-    		return;
-    	case 1:
-    		initModel.setState(InitState.PLAYER_CHOICE);
-    		return;
-    	}
-    		
+    public synchronized void setNbPlayers(int nb)
+    {
+//        reset();
+
+        switch (nb)
+        {
+            case 0:
+                initModel.setState(InitState.SHAPE_BOARD_CHOICE);
+                return;
+            case 2, 3:
+                return;
+            case 1:
+                initModel.setState(InitState.PLAYER_CHOICE);
+                return;
+        }
+
     }
-    public void setPlayer(Map<Integer, String> realPlayers, Map<Integer, String> virtualPlayers)
+
+    public synchronized void setPlayer(Map<Integer, String> realPlayers, Map<Integer, String> virtualPlayers)
     {
 
+        reset();
 
         int playerNumber = realPlayers.size() + virtualPlayers.size();
 
@@ -156,101 +171,137 @@ public class InitController
 
     }
 
-    public void quit()
+    public synchronized void quit()
     {
         System.exit(0);
     }
 
-    public void launch()
+    public synchronized void launch()
     {
-        for (InitView view : views)
+        reset();
+
+        if (!lockLaunch)
         {
-            initModel.removePropertyChangeListener(view);
-        }
-
-        AbstractShapeUpGame game = null;
-        switch (gm)
-        {
-
-            case NORMAL -> {
-                game = new ShapeUpGame(visitor,players, board);
+            lockLaunch = true;
+            for (InitView view : views)
+            {
+                initModel.removePropertyChangeListener(view);
             }
-            case ADVANCED -> {
-                game = new ShapeUpGameAdvanced(visitor,players, board);
 
-            }
-            case NO_ADJACENCY -> {
-                game = new ShapeUpGameWithoutAdjacencyRule(visitor,players, board);
+            AbstractShapeUpGame game = null;
+            switch (gm)
+            {
 
+                case NORMAL -> {
+                    game = new ShapeUpGame(visitor, players, board);
+                }
+                case ADVANCED -> {
+                    game = new ShapeUpGameAdvanced(visitor, players, board);
+
+                }
+                case NO_ADJACENCY -> {
+                    game = new ShapeUpGameWithoutAdjacencyRule(visitor, players, board);
+
+                }
             }
-        }
-        Set<GameView> gameViewSet = new HashSet<>();
-        RectangleBoardFrameTest hmiView = new RectangleBoardFrameTest(board, game);
+            Set<GameView> gameViewSet = new HashSet<>();
+            RectangleBoardFrameTest hmiView = new RectangleBoardFrameTest(board, game);
 //        GameConsoleView consoleView = new GameConsoleView(game, board);
 
-        gameViewSet.add(hmiView);
+            gameViewSet.add(hmiView);
 //        gameViewSet.add(consoleView);
 
 
-        frame.getContentPane().removeAll();
-        frame.getContentPane().repaint();
-        frame.add(hmiView);
-        frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        frame.setResizable(false);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
+            frame.getContentPane().removeAll();
+            frame.getContentPane().repaint();
+            frame.add(hmiView);
+            frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            frame.setResizable(false);
+            frame.pack();
+            frame.setLocationRelativeTo(null);
 
 
-        GameController sugc;
-        switch (gm)
-        {
-            case NORMAL -> {
-                sugc = new ShapeUpGameController(game, gameViewSet);
+            GameController sugc;
+            switch (gm)
+            {
+                case NORMAL -> {
+                    sugc = new ShapeUpGameController(game, gameViewSet);
+                }
+                case ADVANCED -> {
+                    sugc = new AdvancedShapeUpGameController(game, gameViewSet);
+
+                }
+                default -> sugc = new ShapeUpGameController(game, gameViewSet);
+
             }
-            case ADVANCED -> {
-                sugc = new AdvancedShapeUpGameController(game, gameViewSet);
 
-            }
-            default -> throw new IllegalStateException("Unexpected value: " + gm);
-        }
-
-        hmiView.setController(sugc);
+            hmiView.setController(sugc);
 //        consoleView.setController(sugc);
-        game.addPropertyChangeListener(hmiView);
+            game.addPropertyChangeListener(hmiView);
 //        initModel.addPropertyChangeListener(consoleView);
 
+            frame.setVisible(true);
 
-        frame.setVisible(true);
-        game.setState(GameState.FIRST_TURN);
+            game.setState(GameState.FIRST_TURN);
+        } else
+        {
+            lockLaunch = false;
+        }
 
 
+
+
+    }
+
+
+    // TODO: 1/7/21 reset only if the hmi call the method (not if it's coming from the console)
+    private void reset()
+    {
+        System.out.println(Thread.currentThread().getName());
+        if (!Thread.currentThread().getName().equals(InitFrameView.THREAD_FROM_INIT_VIEW_NAME))
+        {
+            return;
+        }
+        for (InitView view : views)
+        {
+            if (view instanceof InitConsoleView)
+            {
+                InitConsoleView icv = (InitConsoleView) view;
+                Thread thread = icv.getThread();
+                if (thread.isAlive() && !thread.isInterrupted())
+                {
+                    thread.interrupt();
+                    System.out.println("interrupt the kidou (fact-checked)");
+                }
+            }
+        }
     }
 
     public static void main(String[] args) throws IOException
     {
         InitModel model = new InitModel();
- //      InitConsoleView v = new InitConsoleView();
-       InitFrameView view = new InitFrameView();
-       JFrame frame = new JFrame("Shape Up");
+        InitConsoleView v = new InitConsoleView();
+        InitFrameView view = new InitFrameView();
+        JFrame frame = new JFrame("Shape Up");
 
         Set<InitView> icv = new HashSet<>();
         icv.add(view);
-//        icv.add(v);
-        
+        icv.add(v);
+
         frame.add(view);
         frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         frame.setResizable(false);
         frame.pack();
         frame.setLocationRelativeTo(null);
-        
+
         InitController ic = new InitController(model, icv, frame);
         view.setController(ic);
- //      v.setController(ic);
-       model.addPropertyChangeListener(view);
-//       model.addPropertyChangeListener(v);
+        v.setController(ic);
+        model.addPropertyChangeListener(view);
+        model.addPropertyChangeListener(v);
+        frame.setVisible(true);
 
         model.setState(InitState.START_MENU);
-        frame.setVisible(true);
     }
 
 }

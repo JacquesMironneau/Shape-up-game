@@ -23,6 +23,7 @@ import javax.swing.JTextField;
 
 public class InitFrameView extends JPanel implements InitView {
 
+	public static final String THREAD_FROM_INIT_VIEW_NAME = "swing";
 	private Image backgroundImage;
 	
 	private InitController controller;
@@ -170,28 +171,60 @@ public class InitFrameView extends JPanel implements InitView {
         this.setMenuButton(play, 250, buttonFont);
         play.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		controller.startMenu(1);
+        		new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+				{
+					@Override
+					public void run()
+					{
+						controller.startMenu(1);
+
+					}
+				}.start();
         	}
         });
         rules = new MyButton("RULES", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
         this.setMenuButton(rules, 370, buttonFont);
         rules.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		controller.startMenu(2);
+				new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+				{
+					@Override
+					public void run()
+					{
+						controller.startMenu(2);
+
+					}
+				}.start();
         	}
         });
         credits = new MyButton("CREDITS", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
         this.setMenuButton(credits, 490, buttonFont);
         credits.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		controller.startMenu(3);
+				new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+				{
+					@Override
+					public void run()
+					{
+						controller.startMenu(3);
+
+					}
+				}.start();
         	}
         });
         quit = new MyButton("QUIT", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
         this.setMenuButton(quit, 610, buttonFont);
         quit.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		controller.startMenu(4);
+				new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+				{
+					@Override
+					public void run()
+					{
+						controller.startMenu(4);
+
+					}
+				}.start();
         	}
         });
         
@@ -200,28 +233,60 @@ public class InitFrameView extends JPanel implements InitView {
 		this.setMenuButton(normal, 360, buttonFont);
 		normal.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		controller.setGameMode(1);
+				new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+				{
+					@Override
+					public void run()
+					{        		controller.setGameMode(1);
+
+
+					}
+				}.start();
         	}
         });
 		advanced = new MyButton("ADVANCED MODE", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
 		this.setMenuButton(advanced, 480, buttonFont);
 		advanced.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		controller.setGameMode(2);
+				new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+				{
+					@Override
+					public void run()
+					{
+						controller.setGameMode(2);
+
+					}
+				}.start();
         	}
         });
 		noAdjacency = new MyButton("NO ADJACENCY MODE", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
 		this.setMenuButton(noAdjacency, 600, buttonFont);
 		noAdjacency.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		controller.setGameMode(3);
+				new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+				{
+					@Override
+					public void run()
+					{
+						controller.setGameMode(3);
+
+					}
+				}.start();
         	}
         });
 		backStartMenu = new MyButton("", "res/buttons/backward.png", "res/buttons/backward.png", "res/buttons/backward.png");
 		this.setBackButton(backStartMenu);
 		backStartMenu.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		controller.setGameMode(0);
+				new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+				{
+					@Override
+					public void run()
+					{
+						controller.setGameMode(0);
+
+					}
+				}.start();
         	}
         });
 		
@@ -230,21 +295,45 @@ public class InitFrameView extends JPanel implements InitView {
 		this.setMenuButton(normalCalculator, 360, buttonFont);
 		normalCalculator.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		controller.setScoreCalculator(1);
+				new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+				{
+					@Override
+					public void run()
+					{
+						controller.setScoreCalculator(1);
+
+					}
+				}.start();
         	}
         });
 		bonusCalculator = new MyButton("BONUS CALCULATOR", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
 		this.setMenuButton(bonusCalculator, 480, buttonFont);
 		bonusCalculator.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		controller.setScoreCalculator(2);
+				new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+				{
+					@Override
+					public void run()
+					{
+						controller.setScoreCalculator(2);
+
+					}
+				}.start();
         	}
         });
 		backGMChoice = new MyButton("", "res/buttons/backward.png", "res/buttons/backward.png", "res/buttons/backward.png");
 		this.setBackButton(backGMChoice);
 		backGMChoice.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		controller.setScoreCalculator(0);
+				new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+				{
+					@Override
+					public void run()
+					{
+						controller.setScoreCalculator(0);
+
+					}
+				}.start();
         	}
         });
 		
@@ -253,28 +342,60 @@ public class InitFrameView extends JPanel implements InitView {
 		this.setMenuButton(rectangle, 360, buttonFont);
 		rectangle.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		controller.shapeBoard(1);
+				new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+				{
+					@Override
+					public void run()
+					{
+						controller.shapeBoard(1);
+
+					}
+				}.start();
         	}
         });
 		triangle = new MyButton("TRIANGLE BOARD", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
 		this.setMenuButton(triangle, 480, buttonFont);
 		triangle.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		controller.shapeBoard(2);
+				new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+				{
+					@Override
+					public void run()
+					{
+						controller.shapeBoard(2);
+
+					}
+				}.start();
         	}
         });
 		circle = new MyButton("CIRCLE BOARD", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
 		this.setMenuButton(circle, 600, buttonFont);
 		circle.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		controller.shapeBoard(3);
+				new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+				{
+					@Override
+					public void run()
+					{
+						controller.shapeBoard(3);
+
+					}
+				}.start();
         	}
         });
 		backSCChoice = new MyButton("", "res/buttons/backward.png", "res/buttons/backward.png", "res/buttons/backward.png");
 		this.setBackButton(backSCChoice);
 		backSCChoice.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		controller.shapeBoard(0);
+				new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+				{
+					@Override
+					public void run()
+					{
+						controller.shapeBoard(0);
+
+					}
+				}.start();
         	}
         });
 		
@@ -808,14 +929,30 @@ public class InitFrameView extends JPanel implements InitView {
         				break;
         			}
         		}
-        		controller.setPlayer(realPlayers, virtualPlayers);
+				new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+				{
+					@Override
+					public void run()
+					{
+						controller.setPlayer(realPlayers, virtualPlayers);
+
+					}
+				}.start();
         	}
         });
 		backSBChoice = new MyButton("", "res/buttons/backward.png", "res/buttons/backward.png", "res/buttons/backward.png");
 		this.setBackButton(backSBChoice);
 		backSBChoice.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		controller.setNbPlayers(0);
+				new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+				{
+					@Override
+					public void run()
+					{
+						controller.setNbPlayers(0);
+
+					}
+				}.start();
         	}
         });
 		// TO DO 
@@ -869,9 +1006,16 @@ public class InitFrameView extends JPanel implements InitView {
 			
 			break;
 		case INIT_DONE:
-			
-			this.controller.launch();
-			
+			new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+			{
+				@Override
+				public void run()
+				{
+					controller.launch();
+
+				}
+			}.start();
+
 			break;
 		case PLAYER_CHOICE:
 			
@@ -899,9 +1043,17 @@ public class InitFrameView extends JPanel implements InitView {
 			
 			break;
 		case QUIT:
-			
-			this.controller.quit();
-			
+
+			new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+			{
+				@Override
+				public void run()
+				{
+					controller.quit();
+
+				}
+			}.start();
+
 			break;
 		case RULES:
 			
