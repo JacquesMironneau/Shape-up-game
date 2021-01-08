@@ -166,28 +166,28 @@ public class InitFrameView extends JPanel implements InitView {
         
         // ADD BUTONS
         // Start Menu
-        play = new MyButton("PLAY", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
+        play = new MyButton("PLAY", "res/buttons/empty-button.png", "res/buttons/empty-button-hover.png", "res/buttons/empty-button-hover.png");
         this.setMenuButton(play, 250, buttonFont);
         play.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		controller.startMenu(1);
         	}
         });
-        rules = new MyButton("RULES", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
+        rules = new MyButton("RULES", "res/buttons/empty-button.png", "res/buttons/empty-button-hover.png", "res/buttons/empty-button-hover.png");
         this.setMenuButton(rules, 370, buttonFont);
         rules.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		controller.startMenu(2);
         	}
         });
-        credits = new MyButton("CREDITS", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
+        credits = new MyButton("CREDITS", "res/buttons/empty-button.png", "res/buttons/empty-button-hover.png", "res/buttons/empty-button-hover.png");
         this.setMenuButton(credits, 490, buttonFont);
         credits.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		controller.startMenu(3);
         	}
         });
-        quit = new MyButton("QUIT", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
+        quit = new MyButton("QUIT", "res/buttons/empty-button.png", "res/buttons/empty-button-hover.png", "res/buttons/empty-button-hover.png");
         this.setMenuButton(quit, 610, buttonFont);
         quit.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -196,28 +196,28 @@ public class InitFrameView extends JPanel implements InitView {
         });
         
         // Game Mode Choice
-        normal = new MyButton("NORMAL MODE", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
+        normal = new MyButton("NORMAL MODE", "res/buttons/empty-button.png", "res/buttons/empty-button-hover.png", "res/buttons/empty-button-hover.png");
 		this.setMenuButton(normal, 360, buttonFont);
 		normal.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		controller.setGameMode(1);
         	}
         });
-		advanced = new MyButton("ADVANCED MODE", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
+		advanced = new MyButton("ADVANCED MODE", "res/buttons/empty-button.png", "res/buttons/empty-button-hover.png", "res/buttons/empty-button-hover.png");
 		this.setMenuButton(advanced, 480, buttonFont);
 		advanced.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		controller.setGameMode(2);
         	}
         });
-		noAdjacency = new MyButton("NO ADJACENCY MODE", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
+		noAdjacency = new MyButton("NO ADJACENCY MODE", "res/buttons/empty-button.png", "res/buttons/empty-button-hover.png", "res/buttons/empty-button-hover.png");
 		this.setMenuButton(noAdjacency, 600, buttonFont);
 		noAdjacency.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		controller.setGameMode(3);
         	}
         });
-		backStartMenu = new MyButton("", "res/buttons/backward.png", "res/buttons/backward.png", "res/buttons/backward.png");
+		backStartMenu = new MyButton("", "res/buttons/backward.png", "res/buttons/backward-hover.png", "res/buttons/backward-hover.png");
 		this.setBackButton(backStartMenu);
 		backStartMenu.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -226,21 +226,21 @@ public class InitFrameView extends JPanel implements InitView {
         });
 		
 		// Score Calculator Choice
-		normalCalculator = new MyButton("NORMAL CALCULATOR", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
+		normalCalculator = new MyButton("NORMAL CALCULATOR", "res/buttons/empty-button.png", "res/buttons/empty-button-hover.png", "res/buttons/empty-button-hover.png");
 		this.setMenuButton(normalCalculator, 360, buttonFont);
 		normalCalculator.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		controller.setScoreCalculator(1);
         	}
         });
-		bonusCalculator = new MyButton("BONUS CALCULATOR", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
+		bonusCalculator = new MyButton("BONUS CALCULATOR", "res/buttons/empty-button.png", "res/buttons/empty-button-hover.png", "res/buttons/empty-button-hover.png");
 		this.setMenuButton(bonusCalculator, 480, buttonFont);
 		bonusCalculator.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		controller.setScoreCalculator(2);
         	}
         });
-		backGMChoice = new MyButton("", "res/buttons/backward.png", "res/buttons/backward.png", "res/buttons/backward.png");
+		backGMChoice = new MyButton("", "res/buttons/backward.png", "res/buttons/backward-hover.png", "res/buttons/backward-hover.png");
 		this.setBackButton(backGMChoice);
 		backGMChoice.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -249,28 +249,28 @@ public class InitFrameView extends JPanel implements InitView {
         });
 		
 		// Shape Board Choice
-		rectangle = new MyButton("RECTANGLE BOARD", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
-		this.setMenuButton(rectangle, 360, buttonFont);
+		rectangle = new MyButton("", "res/buttons/shape-square.png", "res/buttons/shape-square-hover.png", "res/buttons/shape-square-hover.png");
+		this.setShapeButton(rectangle, 360, buttonFont);
 		rectangle.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		controller.shapeBoard(1);
         	}
         });
-		triangle = new MyButton("TRIANGLE BOARD", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
-		this.setMenuButton(triangle, 480, buttonFont);
+		triangle = new MyButton("", "res/buttons/shape-triangle.png", "res/buttons/shape-triangle-hover.png", "res/buttons/shape-triangle-hover.png");
+		this.setShapeButton(triangle, 490, buttonFont);
 		triangle.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		controller.shapeBoard(2);
         	}
         });
-		circle = new MyButton("CIRCLE BOARD", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
-		this.setMenuButton(circle, 600, buttonFont);
+		circle = new MyButton("", "res/buttons/shape-circle.png", "res/buttons/shape-circle-hover.png", "res/buttons/shape-circle-hover.png");
+		this.setShapeButton(circle, 620, buttonFont);
 		circle.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		controller.shapeBoard(3);
         	}
         });
-		backSCChoice = new MyButton("", "res/buttons/backward.png", "res/buttons/backward.png", "res/buttons/backward.png");
+		backSCChoice = new MyButton("", "res/buttons/backward.png", "res/buttons/backward-hover.png", "res/buttons/backward-hover.png");
 		this.setBackButton(backSCChoice);
 		backSCChoice.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -375,7 +375,7 @@ public class InitFrameView extends JPanel implements InitView {
         comp3Difficult = new JCheckBox(" Difficult");
         comp3Difficult.setFont(buttonFont);
         setCheckBox(comp3Difficult, 1180, 725);
-		add = new MyButton("", "res/buttons/add.png", "res/buttons/add2.png", "res/buttons/add.png");
+		add = new MyButton("", "res/buttons/add.png", "res/buttons/add-hover.png", "res/buttons/add-hover.png");
 		add.setBounds(900, 370, 64, 64);
 		add.setVisible(false);
 		this.add(add);
@@ -430,7 +430,7 @@ public class InitFrameView extends JPanel implements InitView {
         		}
         	}
         });
-		minus = new MyButton("", "res/buttons/minus.png", "res/buttons/minus2.png", "res/buttons/minus.png");
+		minus = new MyButton("", "res/buttons/minus.png", "res/buttons/minus-hover.png", "res/buttons/minus-hover.png");
 		minus.setBounds(750, 370, 64, 64);
 		minus.setVisible(false);
 		this.add(minus);
@@ -491,7 +491,7 @@ public class InitFrameView extends JPanel implements InitView {
         		}
         	}
         });
-		add2 = new MyButton("", "res/buttons/add.png", "res/buttons/add2.png", "res/buttons/add.png");
+		add2 = new MyButton("", "res/buttons/add.png", "res/buttons/add-hover.png", "res/buttons/add-hover.png");
 		add2.setBounds(900, 565, 64, 64);
 		add2.setVisible(false);
 		this.add(add2);
@@ -570,7 +570,7 @@ public class InitFrameView extends JPanel implements InitView {
         		}
         	}
         });
-		minus2 = new MyButton("", "res/buttons/minus.png", "res/buttons/minus2.png", "res/buttons/minus.png");
+		minus2 = new MyButton("", "res/buttons/minus.png", "res/buttons/minus-hover.png", "res/buttons/minus-hover.png");
 		minus2.setBounds(750, 565, 64, 64);
 		minus2.setVisible(false);
 		this.add(minus2);
@@ -649,7 +649,7 @@ public class InitFrameView extends JPanel implements InitView {
         		}
         	}
         });
-		start = new MyButton("START THE GAME", "res/buttons/red.png", "res/buttons/orange.png", "res/buttons/yellow.png");
+		start = new MyButton("START THE GAME", "res/buttons/empty-button.png", "res/buttons/empty-button-hover.png", "res/buttons/empty-button-hover.png");
 		this.setMenuButton(start, 780, buttonFont);
 		start.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -811,7 +811,7 @@ public class InitFrameView extends JPanel implements InitView {
         		controller.setPlayer(realPlayers, virtualPlayers);
         	}
         });
-		backSBChoice = new MyButton("", "res/buttons/backward.png", "res/buttons/backward.png", "res/buttons/backward.png");
+		backSBChoice = new MyButton("", "res/buttons/backward.png", "res/buttons/backward-hover.png", "res/buttons/backward-hover.png");
 		this.setBackButton(backSBChoice);
 		backSBChoice.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -893,7 +893,9 @@ public class InitFrameView extends JPanel implements InitView {
 			minus2.setVisible(true);
 			real.setVisible(true);
 			virtual.setVisible(true);
+			nbReal.setText("<html><font color = #FFFFFF>"+i+"</font></html>");
 			nbReal.setVisible(true);
+			nbVirtual.setText("<html><font color = #FFFFFF>"+j+"</font></html>");
 			nbVirtual.setVisible(true);
 			start.setVisible(true);
 			
@@ -955,8 +957,35 @@ public class InitFrameView extends JPanel implements InitView {
 			real.setVisible(false);
 			virtual.setVisible(false);
 			nbReal.setVisible(false);
+			i=0;
+			nbReal.setText("<html><font color = #FFFFFF></font></html>"+i);
 			nbVirtual.setVisible(false);
+			j=0;
+			nbVirtual.setText("<html><font color = #FFFFFF></font></html>"+j);
 			start.setVisible(false);
+			enterNames.setVisible(false);
+			p1.setVisible(false);
+			name1.setVisible(false);
+			p2.setVisible(false);
+			name2.setVisible(false);
+			p3.setVisible(false);
+			name3.setVisible(false);
+			enterDifficulties.setVisible(false);
+			comp1.setVisible(false);
+			comp1Easy.setVisible(false);
+			comp1Easy.setSelected(false);
+			comp1Difficult.setVisible(false);
+			comp1Difficult.setSelected(false);
+			comp2.setVisible(false);
+			comp2Easy.setVisible(false);
+			comp2Easy.setSelected(false);
+			comp2Difficult.setVisible(false);
+			comp2Difficult.setSelected(false);
+			comp3.setVisible(false);
+			comp3Easy.setVisible(false);
+			comp3Easy.setSelected(false);
+			comp3Difficult.setVisible(false);
+			comp3Difficult.setSelected(false);
 			
 			// Visible Components
 			rectangle.setVisible(true);
@@ -1010,7 +1039,7 @@ public class InitFrameView extends JPanel implements InitView {
 	}
 	
 	public void setBackButton(MyButton button) {
-		button.setBounds(50, 50, 100, 100);
+		button.setBounds(50, 50, 80, 80);
 		button.setVisible(false);
 		this.add(button);
 		
@@ -1018,6 +1047,14 @@ public class InitFrameView extends JPanel implements InitView {
 	
 	public void setMenuButton(MyButton button, int y, Font font) {
 		button.setBounds(474, y, 460, 80);
+		button.setVisible(false);
+		button.setFont(font);
+		this.add(button);
+		
+	}
+	
+	public void setShapeButton(MyButton button, int y, Font font) {
+		button.setBounds(474, y, 460, 111);
 		button.setVisible(false);
 		button.setFont(font);
 		this.add(button);
