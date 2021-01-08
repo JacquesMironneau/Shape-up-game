@@ -10,9 +10,12 @@ import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.board.visitor.ScoreCalculatorWithBonusVisitor;
 import fr.utt.lo02.projet.game.*;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
@@ -39,7 +42,11 @@ public class InitController
         players = new ArrayList<>();
         lockLaunch = false;
 
+//        playSound();
+
     }
+
+
 
     public synchronized void startMenu(int menu)
     {
@@ -158,11 +165,11 @@ public class InitController
 
                 if (virtualPlayers.get(i).equals(InitConsoleView.EASY))
                 {
-                    players.add(new VirtualPlayer("Player"+i, board, new RandomStrategy()));
+                    players.add(new VirtualPlayer("Player" + i, board, new RandomStrategy()));
 
                 } else
                 {
-                    players.add(new VirtualPlayer("Player"+i, board, new DifficultStrategy(visitor)));
+                    players.add(new VirtualPlayer("Player" + i, board, new DifficultStrategy(visitor)));
                 }
             }
 
@@ -206,10 +213,10 @@ public class InitController
             }
             Set<GameView> gameViewSet = new HashSet<>();
             RectangleBoardFrameTest hmiView = new RectangleBoardFrameTest(board, game);
-//        GameConsoleView consoleView = new GameConsoleView(game, board);
+            GameConsoleView consoleView = new GameConsoleView(game, board);
 
             gameViewSet.add(hmiView);
-//        gameViewSet.add(consoleView);
+            gameViewSet.add(consoleView);
 
 
             frame.getContentPane().removeAll();
@@ -236,9 +243,9 @@ public class InitController
             }
 
             hmiView.setController(sugc);
-//        consoleView.setController(sugc);
+            consoleView.setController(sugc);
             game.addPropertyChangeListener(hmiView);
-//        initModel.addPropertyChangeListener(consoleView);
+            game.addPropertyChangeListener(consoleView);
 
             frame.setVisible(true);
 
@@ -247,10 +254,6 @@ public class InitController
         {
             lockLaunch = false;
         }
-
-
-
-
     }
 
 

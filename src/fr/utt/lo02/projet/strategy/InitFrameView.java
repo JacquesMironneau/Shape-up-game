@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.*;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -97,17 +98,7 @@ public class InitFrameView extends JPanel implements InitView {
         setLayout(null);
         
         //Music
-      /*  try {
-	           URL url = Main.class.getClassLoader().getResource("res/music/music.wav");
-	           AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
-	           Clip clip = AudioSystem.getClip();
-	           clip.open(audioIn);
-	           clip.start();
-	       }
-		catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
-			throw new RuntimeException(e);
-		}
-	    */
+		playMusic();
         
         // Add Fonts
         try {
@@ -1223,5 +1214,23 @@ public class InitFrameView extends JPanel implements InitView {
         cb.setSelectedIcon(checkbox);
         cb.setCursor(new Cursor(Cursor.HAND_CURSOR));
         this.add(cb);
+	}
+
+	private void playMusic()
+	{
+
+		new Thread(() -> {
+			try
+			{
+				AudioInputStream ais = AudioSystem.getAudioInputStream(new File("res/music/canu.wav"));
+				Clip clip = AudioSystem.getClip();
+				clip.open(ais);
+				clip.loop(Clip.LOOP_CONTINUOUSLY);
+				clip.start();
+			} catch (UnsupportedAudioFileException | LineUnavailableException | IOException e)
+			{
+				e.printStackTrace();
+			}
+		}).start();
 	}
 }

@@ -1075,7 +1075,15 @@ private MyButton endRoundButton;
     private void drawVictoryCard(Graphics2D g2d)
     {
         // TODO: 1/7/21 crash sometime
-        Card victoryCard = this.model.getCurrentPlayer().getVictoryCard();
+        Card victoryCard = null;
+        try {
+            victoryCard = this.model.getCurrentPlayer().getVictoryCard();
+
+        } catch (NullPointerException e)
+
+        {
+
+        }
         //Card victoryCard = new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.HOLLOW);
         if (victoryCard != null)
         {
