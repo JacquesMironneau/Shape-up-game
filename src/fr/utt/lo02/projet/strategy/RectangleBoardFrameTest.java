@@ -369,9 +369,9 @@ private MyButton endRoundButton;
                     }.start();
 
                 });
-                placeButton.setBounds(1000, PLAYER_HAND_Y - 60, 250, 125);
-                moveButton.setBounds(1000, PLAYER_HAND_Y + 30, 250, 125);
-
+                placeButton.setBounds(1000, PLAYER_HAND_Y - 80, 293, 100);
+                moveButton.setBounds(1000, PLAYER_HAND_Y + 50, 293, 100);
+            
                 add(placeButton);
                 add(moveButton);
                 // Allow place and move listener ?
@@ -423,8 +423,8 @@ private MyButton endRoundButton;
 
 
                 });
-                endTurnButton.setBounds(1000, PLAYER_HAND_Y + 30, 250, 125);
-                moveButton.setBounds(1000, PLAYER_HAND_Y - 60, 250, 125);
+                endTurnButton.setBounds(1000, PLAYER_HAND_Y + 50, 293, 100);
+                moveButton.setBounds(1000, PLAYER_HAND_Y - 80, 293, 100);
 
                 add(endTurnButton);
                 add(moveButton);
@@ -813,7 +813,7 @@ private MyButton endRoundButton;
         repaint();
         endRoundButton = new MyButton("", "res/buttons/next_round.png", "res/buttons/next_round_hover.png", "res/buttons/next_round_hover.png");
         //repaint();
-        endRoundButton.setBounds(1075, 730, 333, 125);
+        endRoundButton.setBounds(499, 760, 407, 100);
 
 //        endTurnButton.setLocation(0, 0);
         endRoundButton.addActionListener(actionEvent -> {
