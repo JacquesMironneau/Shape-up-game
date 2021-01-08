@@ -1675,36 +1675,38 @@ private MyButton endRoundButton;
         x += LEFT_BOARD_OFFSET;
         int y = (maxOrdinate - j) * (CARD_HEIGHT + OFFSET_Y);
         y += TOP_BOARD_OFFSET;
-
         if (boardModel instanceof CircleBoard)
         {
-            final Card card = boardModel.getPlacedCards().get(new Coordinates(i, j));
-            CircleBoard b = (CircleBoard) boardModel;
-            Map<Coordinates, Card> pattern = b.retrievePattern();
-            b.addMissingEmptyCase(pattern);
-            Coordinates coordinates = null;
-            for (Map.Entry<Coordinates, Card> entry : pattern.entrySet())
+            int spaceIndex = maxOrdinate -j;
+            switch (spaceIndex)
             {
-                Coordinates key = entry.getKey();
-                Card value = entry.getValue();
-                if (value.equals(card))
-                {
-                    coordinates = key;
-                }
-            }
-            switch (coordinates.getY())
-            {
-                case -4, 0 -> x += BIG_SPACE;
-                case -3, -1 -> x += MEDIUM_SPACE;
+                case 0 -> x += (HOLOGRAM_WIDTH) ;
+                case 4 -> x -= (HOLOGRAM_WIDTH );
+                case 1 -> x += HOLOGRAM_WIDTH   *0.5;
+                case 3 -> x -= HOLOGRAM_WIDTH  * 0.5;
             }
         }
+
         return new Coordinates(x, y);
     }
 
     private Coordinates screenToGameCoordinates(int x, int y, int minAbscissa, int maxOrdinate)
     {
-        int i = ((x - LEFT_BOARD_OFFSET) / (CARD_WIDTH + OFFSET_X)) + minAbscissa;
         int j = maxOrdinate - ((y - TOP_BOARD_OFFSET) / (CARD_HEIGHT + OFFSET_Y));
+
+        if (boardModel instanceof CircleBoard)
+        {
+            int spaceIndex = maxOrdinate - j;
+            switch (spaceIndex)
+            {
+                case 0 -> x -= (HOLOGRAM_WIDTH);
+                case 1 -> x -= (HOLOGRAM_WIDTH) * 0.5;
+                case 3 -> x += (HOLOGRAM_WIDTH )  * 0.5;
+                case 4 -> x += (HOLOGRAM_WIDTH );
+            }
+        }
+
+        int i = ((x - LEFT_BOARD_OFFSET) / (CARD_WIDTH + OFFSET_X)) + minAbscissa;
 
         if (x < LEFT_BOARD_OFFSET)
         {
@@ -1806,7 +1808,7 @@ private MyButton endRoundButton;
 
 
         List<Player> ps = new ArrayList<>();
-        AbstractBoard rb = new TriangleBoard();
+        AbstractBoard rb = new CircleBoard();
         ps.add(new RealPlayer("Jacques", rb));
         ps.add(new RealPlayer("Baptiste", rb));
 //		ps.add(new RealPlayer("Th1", rb));
@@ -1817,7 +1819,7 @@ private MyButton endRoundButton;
 //        ps.add(new VirtualPlayer("ord2", rb, new RandomStrategy()));
 //        ps.add(new VirtualPlayer("ord3", rb, new RandomStrategy()));
 
-        AbstractShapeUpGame model = new ShapeUpGameAdvanced(visitor, ps, rb);
+        AbstractShapeUpGame model = new ShapeUpGame(visitor, ps, rb);
         Set<GameView> gameViewSet = new HashSet<>();
         RectangleBoardFrameTest view = new RectangleBoardFrameTest(rb, model);
         GameConsoleView v = new GameConsoleView(model, rb);
@@ -1834,7 +1836,7 @@ private MyButton endRoundButton;
         frame.setLocationRelativeTo(null);
 //        comp.fakeUpdate();
 
-        GameController sugc = new AdvancedShapeUpGameController(model, gameViewSet);
+        GameController sugc = new ShapeUpGameController(model, gameViewSet);
 
         view.setController(sugc);
         v.setController(sugc);
