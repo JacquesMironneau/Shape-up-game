@@ -24,7 +24,15 @@ public class DifficultStrategy implements PlayerStrategy {
 	@Override
 	public Choice makeChoice(AbstractBoard board, Card vC, List<Card> playerHand)
 	{
-		if (board.getPlacedCards().isEmpty()||board.getPlacedCards().size()==1) {
+		AbstractBoard testBoard = null;
+        try
+        {
+        	testBoard = (AbstractBoard) board.clone();
+        } catch (CloneNotSupportedException e)
+        {
+            e.printStackTrace();
+        }
+		if (testBoard.getPlacedCards().isEmpty()||testBoard.getPlacedCards().size()==1) {
 			return Choice.PLACE_A_CARD;
 		}
 		if (choice==Choice.PLACE_A_CARD) {
@@ -46,31 +54,34 @@ public class DifficultStrategy implements PlayerStrategy {
 		Card bestMoveCard;	
 		
 		// JUST PLACE
-		bestPlaceCoord = this.makePlaceRequest(board, victoryCard, playerHand);
-		board.getPlacedCards().put(bestPlaceCoord.getCoordinates(), bestPlaceCoord.getCard());	
-		scoreJustPlace = board.accept(visitor, victoryCard);
+		bestPlaceCoord = this.makePlaceRequest(testBoard, victoryCard, playerHand);
+		testBoard.getPlacedCards().put(bestPlaceCoord.getCoordinates(), bestPlaceCoord.getCard());	
+		scoreJustPlace = testBoard.accept(visitor, victoryCard);
 		
 		// PLACE THEN MOVE
-		bestMoveCoords = this.makeMoveRequest(board, victoryCard, playerHand);
-		bestMoveCard = board.getPlacedCards().get(bestMoveCoords.getOrigin());
-		board.getPlacedCards().remove(bestMoveCoords.getOrigin(), bestMoveCard);
-		board.getPlacedCards().put(bestMoveCoords.getDestination(), bestMoveCard);	
-		scorePlaceThenMove = board.accept(visitor, victoryCard);
-		board.getPlacedCards().remove(bestMoveCoords.getDestination(), bestMoveCard);
-		board.getPlacedCards().put(bestMoveCoords.getOrigin(), bestMoveCard);
-		board.getPlacedCards().remove(bestPlaceCoord.getCoordinates(), bestPlaceCoord.getCard());
+		bestMoveCoords = this.makeMoveRequest(testBoard, victoryCard, playerHand);
+		bestMoveCard = testBoard.getPlacedCards().get(bestMoveCoords.getOrigin());
+		testBoard.getPlacedCards().remove(bestMoveCoords.getOrigin(), bestMoveCard);
+		testBoard.getPlacedCards().put(bestMoveCoords.getDestination(), bestMoveCard);	
+		scorePlaceThenMove = testBoard.accept(visitor, victoryCard);
+		
+		AbstractBoard testBoard2 = null;
+        try
+        {
+        	testBoard2 = (AbstractBoard) board.clone();
+        } catch (CloneNotSupportedException e)
+        {
+            e.printStackTrace();
+        }
 		
 		//MOVE THEN PLACE
-		bestMoveCoords = this.makeMoveRequest(board, victoryCard, playerHand);
-		bestMoveCard = board.getPlacedCards().get(bestMoveCoords.getOrigin());
-		board.getPlacedCards().remove(bestMoveCoords.getOrigin(), bestMoveCard);
-		board.getPlacedCards().put(bestMoveCoords.getDestination(), bestMoveCard);
-		bestPlaceCoord = this.makePlaceRequest(board, victoryCard, playerHand);
-		board.getPlacedCards().put(bestPlaceCoord.getCoordinates(), bestPlaceCoord.getCard());
-		scoreMoveThenPlace = board.accept(visitor, victoryCard);
-		board.getPlacedCards().remove(bestPlaceCoord.getCoordinates(), bestPlaceCoord.getCard());
-		board.getPlacedCards().remove(bestMoveCoords.getDestination(), bestMoveCard);
-		board.getPlacedCards().put(bestMoveCoords.getOrigin(), bestMoveCard);
+		bestMoveCoords = this.makeMoveRequest(testBoard2, victoryCard, playerHand);
+		bestMoveCard = testBoard2.getPlacedCards().get(bestMoveCoords.getOrigin());
+		testBoard2.getPlacedCards().remove(bestMoveCoords.getOrigin(), bestMoveCard);
+		testBoard2.getPlacedCards().put(bestMoveCoords.getDestination(), bestMoveCard);
+		bestPlaceCoord = this.makePlaceRequest(testBoard2, victoryCard, playerHand);
+		testBoard2.getPlacedCards().put(bestPlaceCoord.getCoordinates(), bestPlaceCoord.getCard());
+		scoreMoveThenPlace = testBoard2.accept(visitor, victoryCard);
 		
 		if (scoreJustPlace >= scorePlaceThenMove && scoreJustPlace >= scoreMoveThenPlace) {
 			//Just Place
@@ -89,7 +100,15 @@ public class DifficultStrategy implements PlayerStrategy {
 
 	@Override
 	public PlaceRequest makePlaceRequest(AbstractBoard board, Card vC, List<Card> playerHand) {
-		if (board.getPlacedCards().isEmpty()) {
+		AbstractBoard testBoard = null;
+        try
+        {
+        	testBoard = (AbstractBoard) board.clone();
+        } catch (CloneNotSupportedException e)
+        {
+            e.printStackTrace();
+        }
+		if (testBoard.getPlacedCards().isEmpty()) {
 			
 			return new PlaceRequest(new Coordinates(0,0), playerHand.get(0));
 		}
@@ -99,7 +118,7 @@ public class DifficultStrategy implements PlayerStrategy {
 		Card cardToPlace = null;
 		Coordinates bestCoord = new Coordinates(0,0);
 		List<Coordinates> goodRequests = new ArrayList<Coordinates>();
-		List<Coordinates> coordsMap = new ArrayList<Coordinates>(board.getPlacedCards().keySet());
+		List<Coordinates> coordsMap = new ArrayList<Coordinates>(testBoard.getPlacedCards().keySet());
 		
 		int testX=Coordinates.smallestAbscissa(coordsMap)-1;
 		int testY=Coordinates.smallestOrdinate(coordsMap)-1;
@@ -110,8 +129,8 @@ public class DifficultStrategy implements PlayerStrategy {
 			testX=Coordinates.smallestAbscissa(coordsMap)-1;
 			while (testX <= Coordinates.biggestAbscissa(coordsMap) + 1) {
 				testCoord.setX(testX);
-				if (!board.getPlacedCards().containsKey(testCoord)) {
-					if (board.isCardAdjacent(testCoord) && board.isCardInTheLayout(testCoord)) {
+				if (!testBoard.getPlacedCards().containsKey(testCoord)) {
+					if (testBoard.isCardAdjacent(testCoord) && testBoard.isCardInTheLayout(testCoord)) {
 						goodRequests.add(new Coordinates(testCoord.getX(), testCoord.getY()));
 					}
 				}
@@ -123,14 +142,14 @@ public class DifficultStrategy implements PlayerStrategy {
 		if (victoryCard==null&&playerHand.size()>1) {
 			for (int i=0; i<playerHand.size(); i++) {
 				victoryCard = playerHand.get(i);
-				int bestScore = board.accept(visitor, victoryCard);
+				int bestScore = testBoard.accept(visitor, victoryCard);
 				playerHand.remove(i);
 				
 				for (int p=0; p<playerHand.size(); p++) {
 					for (int j=0; j<goodRequests.size(); j++) {
-						board.getPlacedCards().put(goodRequests.get(j), playerHand.get(p));
-						score = board.accept(visitor, victoryCard);
-						board.getPlacedCards().remove(goodRequests.get(j), playerHand.get(p));
+						testBoard.getPlacedCards().put(goodRequests.get(j), playerHand.get(p));
+						score = testBoard.accept(visitor, victoryCard);
+						testBoard.getPlacedCards().remove(goodRequests.get(j), playerHand.get(p));
 					
 						if (score >= bestScore) {
 							bestScore = score;
@@ -142,12 +161,12 @@ public class DifficultStrategy implements PlayerStrategy {
 				playerHand.add(i, victoryCard);
 			}
 		} else if (playerHand.size()==1) {
-			int bestScore = board.accept(visitor, victoryCard);
+			int bestScore = testBoard.accept(visitor, victoryCard);
 			cardToPlace = playerHand.get(0);
 			for (int i=0; i<goodRequests.size(); i++) {
-				board.getPlacedCards().put(goodRequests.get(i), cardToPlace);
-				score = board.accept(visitor, victoryCard);
-				board.getPlacedCards().remove(goodRequests.get(i), cardToPlace);
+				testBoard.getPlacedCards().put(goodRequests.get(i), cardToPlace);
+				score = testBoard.accept(visitor, victoryCard);
+				testBoard.getPlacedCards().remove(goodRequests.get(i), cardToPlace);
 				if (score >= bestScore) {
 					bestScore = score;
 					bestCoord = goodRequests.get(i);
@@ -161,23 +180,30 @@ public class DifficultStrategy implements PlayerStrategy {
 	@Override
 	public MoveRequest makeMoveRequest(AbstractBoard board, Card vC, List<Card> playerHand)
 	{
+		AbstractBoard testBoard = null;
+        try
+        {
+        	testBoard = (AbstractBoard) board.clone();
+        } catch (CloneNotSupportedException e)
+        {
+            e.printStackTrace();
+        }
 		victoryCard=vC;
 		int score; 
 		Coordinates bestCoordToMove = new Coordinates(0,0);
 		Coordinates bestNewCoord = new Coordinates(0,0);
 		List<Coordinates> goodRequests = new ArrayList<Coordinates>();
-		List<Coordinates> coordsMap = new ArrayList<Coordinates>(board.getPlacedCards().keySet());
+		List<Coordinates> coordsMap = new ArrayList<Coordinates>(testBoard.getPlacedCards().keySet());
 		int testX=Coordinates.smallestAbscissa(coordsMap)-1;
 		int testY=Coordinates.smallestOrdinate(coordsMap)-1;
 		Coordinates testCoord = new Coordinates(testX, testY);
-		
 		while (testY <= Coordinates.biggestOrdinate(coordsMap) + 1) {
 			testCoord.setY(testY);
 			testX=Coordinates.smallestAbscissa(coordsMap)-1;
 			while (testX <= Coordinates.biggestAbscissa(coordsMap) + 1) {
 				testCoord.setX(testX);
-				if (!board.getPlacedCards().containsKey(testCoord)) {
-					if (board.isCardAdjacent(testCoord) && board.isCardInTheLayout(testCoord)) {
+				if (!testBoard.getPlacedCards().containsKey(testCoord)) {
+					if (testBoard.isCardAdjacent(testCoord) && testBoard.isCardInTheLayout(testCoord)) {
 						goodRequests.add(new Coordinates(testCoord.getX(), testCoord.getY()));
 					}
 				}
@@ -189,42 +215,42 @@ public class DifficultStrategy implements PlayerStrategy {
 		if (victoryCard==null) {
 			for (int p=0; p<playerHand.size(); p++) {
 				victoryCard=playerHand.get(p);
-				int bestScore = board.accept(visitor, victoryCard);
+				int bestScore = testBoard.accept(visitor, victoryCard);
 				for (int i=0; i<coordsMap.size(); i++) {
 					for (int j=0; j<goodRequests.size(); j++) {
-						Card cardMoving = board.getPlacedCards().get(coordsMap.get(i));
-						board.getPlacedCards().remove(coordsMap.get(i), cardMoving);
-						if (board.isCardAdjacent(goodRequests.get(j)) && board.isCardInTheLayout(goodRequests.get(j))) {
-							board.getPlacedCards().put(goodRequests.get(j), cardMoving);
-							score = board.accept(visitor, victoryCard);
+						Card cardMoving = testBoard.getPlacedCards().get(coordsMap.get(i));
+						testBoard.getPlacedCards().remove(coordsMap.get(i), cardMoving);
+						if (testBoard.isCardAdjacent(goodRequests.get(j)) && testBoard.isCardInTheLayout(goodRequests.get(j))) {
+							testBoard.getPlacedCards().put(goodRequests.get(j), cardMoving);
+							score = testBoard.accept(visitor, victoryCard);
 							if (score >= bestScore) {
 								bestScore = score;
 								bestCoordToMove = coordsMap.get(i);
 								bestNewCoord = goodRequests.get(j);
 							}
-							board.getPlacedCards().remove(goodRequests.get(j), cardMoving);
+							testBoard.getPlacedCards().remove(goodRequests.get(j), cardMoving);
 						}
-						board.getPlacedCards().put(coordsMap.get(i), cardMoving);	
+						testBoard.getPlacedCards().put(coordsMap.get(i), cardMoving);	
 					}
 				}		
 			}
 		} else {
-			int bestScore = board.accept(visitor, victoryCard);
+			int bestScore = testBoard.accept(visitor, victoryCard);
 			for (int i=0; i<coordsMap.size(); i++) {
 				for (int j=0; j<goodRequests.size(); j++) {
-					Card cardMoving = board.getPlacedCards().get(coordsMap.get(i));
-					board.getPlacedCards().remove(coordsMap.get(i), cardMoving);
-					if (board.isCardAdjacent(goodRequests.get(j)) && board.isCardInTheLayout(goodRequests.get(j))) {
-						board.getPlacedCards().put(goodRequests.get(j), cardMoving);
-						score = board.accept(visitor, victoryCard);
+					Card cardMoving = testBoard.getPlacedCards().get(coordsMap.get(i));
+					testBoard.getPlacedCards().remove(coordsMap.get(i), cardMoving);
+					if (testBoard.isCardAdjacent(goodRequests.get(j)) && testBoard.isCardInTheLayout(goodRequests.get(j))) {
+						testBoard.getPlacedCards().put(goodRequests.get(j), cardMoving);
+						score = testBoard.accept(visitor, victoryCard);
 						if (score >= bestScore) {
 							bestScore = score;
 							bestCoordToMove = coordsMap.get(i);
 							bestNewCoord = goodRequests.get(j);
 						}
-						board.getPlacedCards().remove(goodRequests.get(j), cardMoving);
+						testBoard.getPlacedCards().remove(goodRequests.get(j), cardMoving);
 					}
-					board.getPlacedCards().put(coordsMap.get(i), cardMoving);	
+					testBoard.getPlacedCards().put(coordsMap.get(i), cardMoving);	
 				}
 			}
 		}

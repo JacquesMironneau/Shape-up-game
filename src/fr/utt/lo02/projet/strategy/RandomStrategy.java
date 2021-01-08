@@ -18,10 +18,8 @@ public class RandomStrategy implements PlayerStrategy
 	@Override
 	public Choice makeChoice(AbstractBoard board, Card victoryCard, List<Card> playerHand)
 	{
-		int randomNumber = 1 + (int) (Math.random() * ((3 - 1) + 1));
+		int randomNumber = 1 + (int) (Math.random() * ((2 - 1) + 1));
 		if (randomNumber == 1) {
-			return Choice.MOVE_A_CARD;
-		} else if (randomNumber == 2) {
 			return Choice.PLACE_A_CARD;
 		} else {
 			return Choice.END_THE_TURN;
