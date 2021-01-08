@@ -283,19 +283,19 @@ public class GameConsoleView implements GameView
     {
         List<Player> ps = new ArrayList<>();
         AbstractBoard rb = new RectangleBoard();
-		ps.add(new RealPlayer("Jacques", rb));
+//		ps.add(new RealPlayer("Jacques", rb));
 //		ps.add(new RealPlayer("Théo", rb));
 //		ps.add(new RealPlayer("Th1", rb));
 //		ps.add(new RealPlayer("Aaa", rb));
         ScoreCalculatorVisitor visitor = new ScoreCalculatorVisitor();
 
         ps.add(new VirtualPlayer("ord1", rb, new RandomStrategy()));
-//        ps.add(new VirtualPlayer("ord3", rb, new RandomStrategy()));
+ //       ps.add(new VirtualPlayer("ord3", rb, new RandomStrategy()));
 
 
 //		ps.add(new RealPlayer("Baptiste", rb));
 
-        //ps.add(new VirtualPlayer("ord2", rb, new DifficultStrategy(visitor)));
+        ps.add(new VirtualPlayer("ord2", rb, new DifficultStrategy(visitor)));
 //		ps.add(new VirtualPlayer("ord3", rb, new RandomStrategy()));
         AbstractShapeUpGame model = new ShapeUpGame(visitor, ps, rb);
         GameView view = new GameConsoleView(model, rb);

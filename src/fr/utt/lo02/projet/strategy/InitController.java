@@ -211,7 +211,8 @@ public class InitController
                 sugc = new AdvancedShapeUpGameController(game, gameViewSet);
 
             }
-            default -> throw new IllegalStateException("Unexpected value: " + gm);
+            default -> sugc = new ShapeUpGameController(game, gameViewSet);
+
         }
 
         hmiView.setController(sugc);
