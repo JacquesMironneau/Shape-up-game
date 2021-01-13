@@ -1,11 +1,11 @@
 package fr.utt.lo02.projet;
 
-import fr.utt.lo02.projet.board.AbstractBoard;
-import fr.utt.lo02.projet.board.BoardEmptyException;
-import fr.utt.lo02.projet.board.RectangleBoard;
-import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
-import fr.utt.lo02.projet.game.ShapeUpGame;
-import fr.utt.lo02.projet.strategy.*;
+import fr.utt.lo02.projet.model.board.AbstractBoard;
+import fr.utt.lo02.projet.model.board.BoardEmptyException;
+import fr.utt.lo02.projet.model.board.RectangleBoard;
+import fr.utt.lo02.projet.model.board.visitor.ScoreCalculatorVisitor;
+import fr.utt.lo02.projet.model.game.ShapeUpGame;
+import fr.utt.lo02.projet.model.strategy.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 public class Main
 {
 
-	public static void main(String[] args) throws PlayerHandEmptyException, BoardEmptyException
+	public static void main(String[] args)
 	{
 		// TODO Auto-generated method stub
 		AbstractBoard rb = new RectangleBoard();

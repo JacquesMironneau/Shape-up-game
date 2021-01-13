@@ -1,10 +1,10 @@
 package fr.utt.lo02.projet.junit;
 
-import fr.utt.lo02.projet.board.*;
-import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
-import fr.utt.lo02.projet.game.AbstractShapeUpGame;
-import fr.utt.lo02.projet.game.ShapeUpGame;
-import fr.utt.lo02.projet.strategy.*;
+import fr.utt.lo02.projet.model.board.*;
+import fr.utt.lo02.projet.model.board.visitor.ScoreCalculatorVisitor;
+import fr.utt.lo02.projet.model.game.AbstractShapeUpGame;
+import fr.utt.lo02.projet.model.game.ShapeUpGame;
+import fr.utt.lo02.projet.model.strategy.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -17,14 +17,14 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 
-import static fr.utt.lo02.projet.board.Card.Color.*;
-import static fr.utt.lo02.projet.board.Card.Filling.FILLED;
-import static fr.utt.lo02.projet.board.Card.Filling.HOLLOW;
-import static fr.utt.lo02.projet.board.Card.Shape.*;
-import static fr.utt.lo02.projet.strategy.MoveRequestResult.MOVE_VALID;
-import static fr.utt.lo02.projet.strategy.MoveRequestResult.NO_CARD_IN_THE_ORIGIN_COORDINATE;
-import static fr.utt.lo02.projet.strategy.PlaceRequestResult.CORRECT_PLACEMENT;
-import static fr.utt.lo02.projet.strategy.PlaceRequestResult.PLAYER_DOESNT_OWN_CARD;
+import static fr.utt.lo02.projet.model.board.Card.Color.*;
+import static fr.utt.lo02.projet.model.board.Card.Filling.FILLED;
+import static fr.utt.lo02.projet.model.board.Card.Filling.HOLLOW;
+import static fr.utt.lo02.projet.model.board.Card.Shape.*;
+import static fr.utt.lo02.projet.model.strategy.MoveRequestResult.MOVE_VALID;
+import static fr.utt.lo02.projet.model.strategy.MoveRequestResult.NO_CARD_IN_THE_ORIGIN_COORDINATE;
+import static fr.utt.lo02.projet.model.strategy.PlaceRequestResult.CORRECT_PLACEMENT;
+import static fr.utt.lo02.projet.model.strategy.PlaceRequestResult.PLAYER_DOESNT_OWN_CARD;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ShapeUpGameTest
@@ -103,7 +103,7 @@ class ShapeUpGameTest
 	}
 
 	@RepeatedTest(100)
-	void TestFirstTurnForEachPlayerPlaceCard() throws BoardEmptyException
+	void TestFirstTurnForEachPlayerPlaceCard()
 	{
 		//List<Set<Card>> cards = game.getPlayerCards();
 
@@ -136,7 +136,6 @@ class ShapeUpGameTest
 		if (ca.getFilling() == HOLLOW)
 		{
 			System.out.println("ca");
-			card = new Card(BLUE, CIRCLE, FILLED);
 		}
 
 		if (ca2.getColor() == GREEN)

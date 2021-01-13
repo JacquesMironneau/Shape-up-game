@@ -1,10 +1,10 @@
 package fr.utt.lo02.projet;
 
 import com.diogonunes.jcolor.Attribute;
-import fr.utt.lo02.projet.board.*;
-import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
-import fr.utt.lo02.projet.game.ShapeUpGame;
-import fr.utt.lo02.projet.strategy.*;
+import fr.utt.lo02.projet.model.board.*;
+import fr.utt.lo02.projet.model.board.visitor.ScoreCalculatorVisitor;
+import fr.utt.lo02.projet.model.game.ShapeUpGame;
+import fr.utt.lo02.projet.model.strategy.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ public class LaunchGame
 
 	private static Scanner scanner = new Scanner(System.in);
 
-	public static void main(String[] args) throws PlayerHandEmptyException, BoardEmptyException
+	public static void main(String[] args)
 	{
 		boolean quit = false;
 		while (!quit)
@@ -73,7 +73,7 @@ public class LaunchGame
 					System.out.println("1. 2 Players");
 					System.out.println("2. 3 Players");
 					int choiceNumberPlayers = readInt(2);
-					List<Player> players = new ArrayList<Player>();
+					List<Player> players = new ArrayList<>();
 					int virtualNumber = 1;
 					for (int i = 1; i <= choiceNumberPlayers + 1; i++)
 					{

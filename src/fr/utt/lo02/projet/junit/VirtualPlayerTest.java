@@ -1,9 +1,9 @@
 package fr.utt.lo02.projet.junit;
 
-import fr.utt.lo02.projet.board.*;
-import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
-import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
-import fr.utt.lo02.projet.strategy.*;
+import fr.utt.lo02.projet.model.board.*;
+import fr.utt.lo02.projet.model.board.visitor.IBoardVisitor;
+import fr.utt.lo02.projet.model.board.visitor.ScoreCalculatorVisitor;
+import fr.utt.lo02.projet.model.strategy.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;

@@ -1,15 +1,15 @@
 package fr.utt.lo02.projet.junit;
 
-import fr.utt.lo02.projet.board.AbstractBoard;
-import fr.utt.lo02.projet.board.Card;
-import fr.utt.lo02.projet.board.Coordinates;
-import fr.utt.lo02.projet.board.RectangleBoard;
-import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
-import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
-import fr.utt.lo02.projet.strategy.Choice;
-import fr.utt.lo02.projet.strategy.DifficultStrategy;
-import fr.utt.lo02.projet.strategy.MoveRequest;
-import fr.utt.lo02.projet.strategy.PlaceRequest;
+import fr.utt.lo02.projet.model.board.AbstractBoard;
+import fr.utt.lo02.projet.model.board.Card;
+import fr.utt.lo02.projet.model.board.Coordinates;
+import fr.utt.lo02.projet.model.board.RectangleBoard;
+import fr.utt.lo02.projet.model.board.visitor.IBoardVisitor;
+import fr.utt.lo02.projet.model.board.visitor.ScoreCalculatorVisitor;
+import fr.utt.lo02.projet.model.strategy.Choice;
+import fr.utt.lo02.projet.model.strategy.DifficultStrategy;
+import fr.utt.lo02.projet.model.strategy.MoveRequest;
+import fr.utt.lo02.projet.model.strategy.PlaceRequest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ class DifficultStrategyTest {
         board.getPlacedCards().put(new Coordinates(2, -2), new Card(Card.Color.BLUE, Card.Shape.CIRCLE, Card.Filling.HOLLOW));
         Card victoryCard = new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.HOLLOW);
         Card handCard = new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.FILLED);
-        List<Card> handCards = new ArrayList<Card>();
+        List<Card> handCards = new ArrayList<>();
         handCards.add(handCard);
         DifficultStrategy strategy = new DifficultStrategy(visitor);
         Choice choice = strategy.makeChoice(board, victoryCard, handCards);
@@ -72,7 +72,7 @@ class DifficultStrategyTest {
         board.getPlacedCards().put(new Coordinates(3, -2), new Card(Card.Color.GREEN, Card.Shape.SQUARE, Card.Filling.FILLED));
         Card victoryCard = new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.HOLLOW);
         Card handCard = new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.FILLED);
-        List<Card> handCards = new ArrayList<Card>();
+        List<Card> handCards = new ArrayList<>();
         handCards.add(handCard);
         DifficultStrategy strategy = new DifficultStrategy(visitor);
         Choice choice = strategy.makeChoice(board, victoryCard, handCards);
@@ -89,7 +89,7 @@ class DifficultStrategyTest {
     void emptyBoard() {
         AbstractBoard board = new RectangleBoard();
         IBoardVisitor visitor = new ScoreCalculatorVisitor();
-        List<Card> handCards = new ArrayList<Card>();
+        List<Card> handCards = new ArrayList<>();
         Card victoryCard = new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.HOLLOW);
         Card handCard = new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.FILLED);
         handCards.add(handCard);
@@ -108,7 +108,7 @@ class DifficultStrategyTest {
     void oneCardBoard() {
         AbstractBoard board = new RectangleBoard();
         IBoardVisitor visitor = new ScoreCalculatorVisitor();
-        List<Card> handCards = new ArrayList<Card>();
+        List<Card> handCards = new ArrayList<>();
         board.getPlacedCards().put(new Coordinates(0, 0), new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.HOLLOW));
         Card victoryCard = new Card(Card.Color.GREEN, Card.Shape.CIRCLE, Card.Filling.HOLLOW);
         Card handCard = new Card(Card.Color.RED, Card.Shape.TRIANGLE, Card.Filling.FILLED);

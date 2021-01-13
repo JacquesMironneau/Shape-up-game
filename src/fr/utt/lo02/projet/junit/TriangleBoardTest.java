@@ -1,8 +1,8 @@
 package fr.utt.lo02.projet.junit;
 
-import fr.utt.lo02.projet.board.Card;
-import fr.utt.lo02.projet.board.Coordinates;
-import fr.utt.lo02.projet.board.TriangleBoard;
+import fr.utt.lo02.projet.model.board.Card;
+import fr.utt.lo02.projet.model.board.Coordinates;
+import fr.utt.lo02.projet.model.board.TriangleBoard;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

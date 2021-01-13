@@ -1,6 +1,6 @@
 package fr.utt.lo02.projet.junit;
 
-import fr.utt.lo02.projet.board.Coordinates;
+import fr.utt.lo02.projet.model.board.Coordinates;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ class CoordinatesTest
 	@Test
 	void test()
 	{
-		List<Coordinates> listCoord = new ArrayList<Coordinates>();
+		List<Coordinates> listCoord = new ArrayList<>();
 		listCoord.add(new Coordinates(0, 0));
 		listCoord.add(new Coordinates(1, 0));
 		listCoord.add(new Coordinates(2, 0));
