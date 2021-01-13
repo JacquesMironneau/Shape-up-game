@@ -1,4 +1,4 @@
-package fr.utt.lo02.projet.model.strategy;
+package fr.utt.lo02.projet.model.player;
 
 import fr.utt.lo02.projet.model.board.Coordinates;
 

@@ -1,8 +1,9 @@
-package fr.utt.lo02.projet.view;
+package fr.utt.lo02.projet.view.console;
 
 import fr.utt.lo02.projet.controller.InitController;
 import fr.utt.lo02.projet.model.InitModel;
 import fr.utt.lo02.projet.model.InitState;
+import fr.utt.lo02.projet.view.InitView;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;

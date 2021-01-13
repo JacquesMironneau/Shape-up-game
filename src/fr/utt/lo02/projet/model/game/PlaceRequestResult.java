@@ -1,4 +1,4 @@
-package fr.utt.lo02.projet.model.strategy;
+package fr.utt.lo02.projet.model.game;
 
 public enum PlaceRequestResult
 {

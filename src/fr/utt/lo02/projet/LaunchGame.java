@@ -4,6 +4,9 @@ import com.diogonunes.jcolor.Attribute;
 import fr.utt.lo02.projet.model.board.*;
 import fr.utt.lo02.projet.model.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.model.game.ShapeUpGame;
+import fr.utt.lo02.projet.model.player.Player;
+import fr.utt.lo02.projet.model.player.RealPlayer;
+import fr.utt.lo02.projet.model.player.VirtualPlayer;
 import fr.utt.lo02.projet.model.strategy.*;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package fr.utt.lo02.projet.view;
+package fr.utt.lo02.projet.view.console;
 
 import java.io.BufferedReader;
 import java.io.IOException;

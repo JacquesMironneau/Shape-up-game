@@ -2,7 +2,10 @@ package fr.utt.lo02.projet.model.game;
 
 import fr.utt.lo02.projet.model.board.*;
 import fr.utt.lo02.projet.model.board.visitor.IBoardVisitor;
-import fr.utt.lo02.projet.model.strategy.*;
+import fr.utt.lo02.projet.model.player.MoveRequest;
+import fr.utt.lo02.projet.model.player.PlaceRequest;
+import fr.utt.lo02.projet.model.player.Player;
+import fr.utt.lo02.projet.model.player.PlayerHandEmptyException;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;

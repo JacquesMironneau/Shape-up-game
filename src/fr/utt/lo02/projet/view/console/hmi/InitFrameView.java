@@ -1,7 +1,8 @@
-package fr.utt.lo02.projet.view;
+package fr.utt.lo02.projet.view.console.hmi;
 
 import fr.utt.lo02.projet.controller.InitController;
 import fr.utt.lo02.projet.model.InitState;
+import fr.utt.lo02.projet.view.InitView;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;

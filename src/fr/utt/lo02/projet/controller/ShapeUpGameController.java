@@ -5,10 +5,15 @@ import fr.utt.lo02.projet.model.board.Card;
 import fr.utt.lo02.projet.model.board.Coordinates;
 import fr.utt.lo02.projet.model.game.AbstractShapeUpGame;
 import fr.utt.lo02.projet.model.game.GameState;
-import fr.utt.lo02.projet.model.strategy.*;
-import fr.utt.lo02.projet.view.GameConsoleView;
+import fr.utt.lo02.projet.model.game.MoveRequestResult;
+import fr.utt.lo02.projet.model.game.PlaceRequestResult;
+import fr.utt.lo02.projet.model.player.MoveRequest;
+import fr.utt.lo02.projet.model.player.PlaceRequest;
+import fr.utt.lo02.projet.model.player.PlayerHandEmptyException;
+import fr.utt.lo02.projet.model.player.RealPlayer;
+import fr.utt.lo02.projet.view.console.GameConsoleView;
 import fr.utt.lo02.projet.view.GameView;
-import fr.utt.lo02.projet.view.SwingHmiView;
+import fr.utt.lo02.projet.view.console.hmi.SwingHmiView;
 
 import java.util.Set;
 

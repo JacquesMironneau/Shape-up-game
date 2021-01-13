@@ -1,7 +1,9 @@
-package fr.utt.lo02.projet.model.strategy;
+package fr.utt.lo02.projet.model.player;
 
 import fr.utt.lo02.projet.model.board.AbstractBoard;
 import fr.utt.lo02.projet.model.board.BoardEmptyException;
+import fr.utt.lo02.projet.model.game.ChoiceOrder;
+import fr.utt.lo02.projet.model.strategy.*;
 
 /**
  * Represent a virtual player (It uses a predefined strategy).

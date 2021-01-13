@@ -1,10 +1,11 @@
 package fr.utt.lo02.projet;
 
 import fr.utt.lo02.projet.model.board.AbstractBoard;
-import fr.utt.lo02.projet.model.board.BoardEmptyException;
 import fr.utt.lo02.projet.model.board.RectangleBoard;
 import fr.utt.lo02.projet.model.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.model.game.ShapeUpGame;
+import fr.utt.lo02.projet.model.player.Player;
+import fr.utt.lo02.projet.model.player.VirtualPlayer;
 import fr.utt.lo02.projet.model.strategy.*;
 
 import java.util.ArrayList;

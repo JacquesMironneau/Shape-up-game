@@ -1,16 +1,17 @@
-package fr.utt.lo02.projet.view;
+package fr.utt.lo02.projet.view.console;
 
 import fr.utt.lo02.projet.controller.GameController;
 import fr.utt.lo02.projet.controller.ShapeUpGameController;
 import fr.utt.lo02.projet.model.board.AbstractBoard;
-import fr.utt.lo02.projet.model.board.BoardEmptyException;
 import fr.utt.lo02.projet.model.board.Card;
 import fr.utt.lo02.projet.model.board.RectangleBoard;
 import fr.utt.lo02.projet.model.board.visitor.ScoreCalculatorVisitor;
-import fr.utt.lo02.projet.model.game.AbstractShapeUpGame;
-import fr.utt.lo02.projet.model.game.GameState;
-import fr.utt.lo02.projet.model.game.ShapeUpGame;
+import fr.utt.lo02.projet.model.game.*;
+import fr.utt.lo02.projet.model.player.Player;
+import fr.utt.lo02.projet.model.player.RealPlayer;
+import fr.utt.lo02.projet.model.player.VirtualPlayer;
 import fr.utt.lo02.projet.model.strategy.*;
+import fr.utt.lo02.projet.view.GameView;
 
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;

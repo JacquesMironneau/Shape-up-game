@@ -3,8 +3,8 @@ package fr.utt.lo02.projet.controller;
 import fr.utt.lo02.projet.model.board.BoardEmptyException;
 import fr.utt.lo02.projet.model.game.AbstractShapeUpGame;
 import fr.utt.lo02.projet.model.game.GameState;
-import fr.utt.lo02.projet.model.strategy.PlayerHandEmptyException;
-import fr.utt.lo02.projet.model.strategy.RealPlayer;
+import fr.utt.lo02.projet.model.player.PlayerHandEmptyException;
+import fr.utt.lo02.projet.model.player.RealPlayer;
 import fr.utt.lo02.projet.view.GameView;
 
 import java.util.Set;

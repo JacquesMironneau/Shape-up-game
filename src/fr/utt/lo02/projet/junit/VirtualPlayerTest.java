@@ -3,6 +3,11 @@ package fr.utt.lo02.projet.junit;
 import fr.utt.lo02.projet.model.board.*;
 import fr.utt.lo02.projet.model.board.visitor.IBoardVisitor;
 import fr.utt.lo02.projet.model.board.visitor.ScoreCalculatorVisitor;
+import fr.utt.lo02.projet.model.game.ChoiceOrder;
+import fr.utt.lo02.projet.model.player.MoveRequest;
+import fr.utt.lo02.projet.model.player.PlaceRequest;
+import fr.utt.lo02.projet.model.player.PlayerHandEmptyException;
+import fr.utt.lo02.projet.model.player.VirtualPlayer;
 import fr.utt.lo02.projet.model.strategy.*;
 import org.junit.jupiter.api.Test;
 

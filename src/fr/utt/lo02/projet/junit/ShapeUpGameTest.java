@@ -3,7 +3,13 @@ package fr.utt.lo02.projet.junit;
 import fr.utt.lo02.projet.model.board.*;
 import fr.utt.lo02.projet.model.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.model.game.AbstractShapeUpGame;
+import fr.utt.lo02.projet.model.game.MoveRequestResult;
+import fr.utt.lo02.projet.model.game.PlaceRequestResult;
 import fr.utt.lo02.projet.model.game.ShapeUpGame;
+import fr.utt.lo02.projet.model.player.MoveRequest;
+import fr.utt.lo02.projet.model.player.PlaceRequest;
+import fr.utt.lo02.projet.model.player.Player;
+import fr.utt.lo02.projet.model.player.VirtualPlayer;
 import fr.utt.lo02.projet.model.strategy.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
@@ -21,10 +27,10 @@ import static fr.utt.lo02.projet.model.board.Card.Color.*;
 import static fr.utt.lo02.projet.model.board.Card.Filling.FILLED;
 import static fr.utt.lo02.projet.model.board.Card.Filling.HOLLOW;
 import static fr.utt.lo02.projet.model.board.Card.Shape.*;
-import static fr.utt.lo02.projet.model.strategy.MoveRequestResult.MOVE_VALID;
-import static fr.utt.lo02.projet.model.strategy.MoveRequestResult.NO_CARD_IN_THE_ORIGIN_COORDINATE;
-import static fr.utt.lo02.projet.model.strategy.PlaceRequestResult.CORRECT_PLACEMENT;
-import static fr.utt.lo02.projet.model.strategy.PlaceRequestResult.PLAYER_DOESNT_OWN_CARD;
+import static fr.utt.lo02.projet.model.game.MoveRequestResult.MOVE_VALID;
+import static fr.utt.lo02.projet.model.game.MoveRequestResult.NO_CARD_IN_THE_ORIGIN_COORDINATE;
+import static fr.utt.lo02.projet.model.game.PlaceRequestResult.CORRECT_PLACEMENT;
+import static fr.utt.lo02.projet.model.game.PlaceRequestResult.PLAYER_DOESNT_OWN_CARD;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ShapeUpGameTest

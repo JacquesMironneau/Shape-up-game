@@ -4,7 +4,7 @@ package fr.utt.lo02.projet.model.game;
 import fr.utt.lo02.projet.model.board.AbstractBoard;
 import fr.utt.lo02.projet.model.board.BoardEmptyException;
 import fr.utt.lo02.projet.model.board.visitor.IBoardVisitor;
-import fr.utt.lo02.projet.model.strategy.*;
+import fr.utt.lo02.projet.model.player.*;
 
 import java.util.List;
 

@@ -10,8 +10,15 @@ import fr.utt.lo02.projet.model.board.visitor.IBoardVisitor;
 import fr.utt.lo02.projet.model.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.model.board.visitor.ScoreCalculatorWithBonusVisitor;
 import fr.utt.lo02.projet.model.game.*;
+import fr.utt.lo02.projet.model.player.Player;
+import fr.utt.lo02.projet.model.player.RealPlayer;
+import fr.utt.lo02.projet.model.player.VirtualPlayer;
 import fr.utt.lo02.projet.model.strategy.*;
 import fr.utt.lo02.projet.view.*;
+import fr.utt.lo02.projet.view.console.GameConsoleView;
+import fr.utt.lo02.projet.view.console.InitConsoleView;
+import fr.utt.lo02.projet.view.console.hmi.InitFrameView;
+import fr.utt.lo02.projet.view.console.hmi.SwingHmiView;
 
 import javax.swing.*;
 import java.io.IOException;

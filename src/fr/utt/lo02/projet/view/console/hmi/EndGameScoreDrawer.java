@@ -1,7 +1,7 @@
-package fr.utt.lo02.projet.view;
+package fr.utt.lo02.projet.view.console.hmi;
 
 import fr.utt.lo02.projet.model.game.AbstractShapeUpGame;
-import fr.utt.lo02.projet.model.strategy.Player;
+import fr.utt.lo02.projet.model.player.Player;
 
 import java.awt.*;
 import java.util.ArrayList;

@@ -1,8 +1,9 @@
-package fr.utt.lo02.projet.model.strategy;
+package fr.utt.lo02.projet.model.player;
 
 import fr.utt.lo02.projet.model.board.AbstractBoard;
 import fr.utt.lo02.projet.model.board.BoardEmptyException;
 import fr.utt.lo02.projet.model.board.Card;
+import fr.utt.lo02.projet.model.game.ChoiceOrder;
 
 import java.util.ArrayList;
 import java.util.List;

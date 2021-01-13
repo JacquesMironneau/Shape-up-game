@@ -1,8 +1,8 @@
 package fr.utt.lo02.projet.view;
 
 import fr.utt.lo02.projet.controller.GameController;
-import fr.utt.lo02.projet.model.strategy.MoveRequestResult;
-import fr.utt.lo02.projet.model.strategy.PlaceRequestResult;
+import fr.utt.lo02.projet.model.game.MoveRequestResult;
+import fr.utt.lo02.projet.model.game.PlaceRequestResult;
 
 import java.beans.PropertyChangeListener;
 

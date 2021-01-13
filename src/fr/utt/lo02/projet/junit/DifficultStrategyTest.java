@@ -6,10 +6,10 @@ import fr.utt.lo02.projet.model.board.Coordinates;
 import fr.utt.lo02.projet.model.board.RectangleBoard;
 import fr.utt.lo02.projet.model.board.visitor.IBoardVisitor;
 import fr.utt.lo02.projet.model.board.visitor.ScoreCalculatorVisitor;
-import fr.utt.lo02.projet.model.strategy.Choice;
+import fr.utt.lo02.projet.model.player.Choice;
 import fr.utt.lo02.projet.model.strategy.DifficultStrategy;
-import fr.utt.lo02.projet.model.strategy.MoveRequest;
-import fr.utt.lo02.projet.model.strategy.PlaceRequest;
+import fr.utt.lo02.projet.model.player.MoveRequest;
+import fr.utt.lo02.projet.model.player.PlaceRequest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

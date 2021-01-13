@@ -1,4 +1,4 @@
-package fr.utt.lo02.projet.view;
+package fr.utt.lo02.projet.view.console.hmi;
 
 import fr.utt.lo02.projet.model.game.AbstractShapeUpGame;
 
