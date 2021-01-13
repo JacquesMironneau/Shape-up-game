@@ -13,7 +13,7 @@ import fr.utt.lo02.projet.model.player.PlayerHandEmptyException;
 import fr.utt.lo02.projet.model.player.RealPlayer;
 import fr.utt.lo02.projet.view.console.GameConsoleView;
 import fr.utt.lo02.projet.view.GameView;
-import fr.utt.lo02.projet.view.console.hmi.SwingHmiView;
+import fr.utt.lo02.projet.view.hmi.SwingHmiView;
 
 import java.util.Set;
 
@@ -35,7 +35,7 @@ public class ShapeUpGameController implements GameController
         this.gameModel = gameModel;
         this.gameModel.initRound();
         lastAction = GameState.FIRST_TURN;
-        lock = false;
+        lock = true;
         endTurnLock = false;
         endRoundLock = false;
     }

@@ -1,10 +1,10 @@
-package fr.utt.lo02.projet.view.console.hmi;
+package fr.utt.lo02.projet.view.hmi;
 
 import fr.utt.lo02.projet.model.board.AbstractBoard;
 import fr.utt.lo02.projet.model.board.CircleBoard;
 import fr.utt.lo02.projet.model.board.Coordinates;
 
-import static fr.utt.lo02.projet.view.console.hmi.SwingHmiView.*;
+import static fr.utt.lo02.projet.view.hmi.SwingHmiView.*;
 
 public class CoordinatesConvertor
 {

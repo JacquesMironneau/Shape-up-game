@@ -1,4 +1,4 @@
-package fr.utt.lo02.projet.view.console.hmi;
+package fr.utt.lo02.projet.view.hmi;
 
 import fr.utt.lo02.projet.model.game.AbstractShapeUpGame;
 
@@ -8,7 +8,7 @@ import java.util.List;
 public class ScoreDrawer
 {
 
-    protected AbstractShapeUpGame model;
+    protected final AbstractShapeUpGame model;
 
     public ScoreDrawer(AbstractShapeUpGame model)
     {

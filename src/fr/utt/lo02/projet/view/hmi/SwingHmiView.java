@@ -1,4 +1,4 @@
-package fr.utt.lo02.projet.view.console.hmi;
+package fr.utt.lo02.projet.view.hmi;
 
 import fr.utt.lo02.projet.controller.GameController;
 import fr.utt.lo02.projet.controller.ShapeUpGameController;
@@ -49,8 +49,6 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
     public static final int ANIMATION_REFRESH_RATE = 100;
     public static final String BACKGROUND_PATH = "background.png";
     public static final int IA_SLEEP_TIME = 5;
-    private static final int BIG_SPACE = 400;
-    private static final int MEDIUM_SPACE = 200;
 
     private final List<Image> sprite;
     private final Image[][] spriteGlitchAnimations;
@@ -93,8 +91,8 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
 
     private final CoordinatesConvertor coordinatesConvertor;
 
-    private EndRoundScoreDrawer endRoundScoreDrawer;
-    private EndGameScoreDrawer endGameScoreDrawer;
+    private final EndRoundScoreDrawer endRoundScoreDrawer;
+    private final EndGameScoreDrawer endGameScoreDrawer;
 
 
     public SwingHmiView(AbstractBoard modelBoard, AbstractShapeUpGame game)
@@ -967,7 +965,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
             }
         } else
         {
-            endRoundScoreDrawer.drawEndRoundScores(g2d);
+            endGameScoreDrawer.drawEndGameScores(g2d);
         }
     }
 

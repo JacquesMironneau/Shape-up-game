@@ -1,4 +1,4 @@
-package fr.utt.lo02.projet.view.console.hmi;
+package fr.utt.lo02.projet.view.hmi;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static fr.utt.lo02.projet.view.console.hmi.SwingHmiView.*;
+import static fr.utt.lo02.projet.view.hmi.SwingHmiView.*;
 
 public class SpriteSplitter
 {

@@ -17,8 +17,8 @@ import fr.utt.lo02.projet.model.strategy.*;
 import fr.utt.lo02.projet.view.*;
 import fr.utt.lo02.projet.view.console.GameConsoleView;
 import fr.utt.lo02.projet.view.console.InitConsoleView;
-import fr.utt.lo02.projet.view.console.hmi.InitFrameView;
-import fr.utt.lo02.projet.view.console.hmi.SwingHmiView;
+import fr.utt.lo02.projet.view.hmi.InitFrameView;
+import fr.utt.lo02.projet.view.hmi.SwingHmiView;
 
 import javax.swing.*;
 import java.io.IOException;

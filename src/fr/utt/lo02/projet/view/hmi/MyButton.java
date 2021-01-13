@@ -1,4 +1,4 @@
-package fr.utt.lo02.projet.view.console.hmi;
+package fr.utt.lo02.projet.view.hmi;
 
 import javax.swing.*;
 import java.awt.*;

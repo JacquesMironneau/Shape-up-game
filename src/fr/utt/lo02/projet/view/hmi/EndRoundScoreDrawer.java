@@ -1,4 +1,4 @@
-package fr.utt.lo02.projet.view.console.hmi;
+package fr.utt.lo02.projet.view.hmi;
 
 import fr.utt.lo02.projet.model.game.AbstractShapeUpGame;
 import fr.utt.lo02.projet.model.player.Player;
@@ -7,7 +7,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.utt.lo02.projet.view.console.hmi.SwingHmiView.PLAYER_HAND_Y;
+import static fr.utt.lo02.projet.view.hmi.SwingHmiView.PLAYER_HAND_Y;
 
 
 public class EndRoundScoreDrawer extends ScoreDrawer
