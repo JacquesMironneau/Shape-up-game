@@ -2,7 +2,6 @@ package fr.utt.lo02.projet.strategy;
 
 import fr.utt.lo02.projet.board.Card;
 
-import java.awt.*;
 import java.util.Objects;
 
 public class CardImage {

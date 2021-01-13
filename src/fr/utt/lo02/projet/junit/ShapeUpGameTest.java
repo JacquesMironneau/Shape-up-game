@@ -1,7 +1,6 @@
 package fr.utt.lo02.projet.junit;
 
 import fr.utt.lo02.projet.board.*;
-import fr.utt.lo02.projet.board.Card.Color;
 import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.game.AbstractShapeUpGame;
 import fr.utt.lo02.projet.game.ShapeUpGame;
@@ -18,12 +17,14 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 
-import static fr.utt.lo02.projet.board.Card.*;
 import static fr.utt.lo02.projet.board.Card.Color.*;
-import static fr.utt.lo02.projet.board.Card.Filling.*;
+import static fr.utt.lo02.projet.board.Card.Filling.FILLED;
+import static fr.utt.lo02.projet.board.Card.Filling.HOLLOW;
 import static fr.utt.lo02.projet.board.Card.Shape.*;
-import static fr.utt.lo02.projet.strategy.MoveRequestResult.*;
-import static fr.utt.lo02.projet.strategy.PlaceRequestResult.*;
+import static fr.utt.lo02.projet.strategy.MoveRequestResult.MOVE_VALID;
+import static fr.utt.lo02.projet.strategy.MoveRequestResult.NO_CARD_IN_THE_ORIGIN_COORDINATE;
+import static fr.utt.lo02.projet.strategy.PlaceRequestResult.CORRECT_PLACEMENT;
+import static fr.utt.lo02.projet.strategy.PlaceRequestResult.PLAYER_DOESNT_OWN_CARD;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ShapeUpGameTest

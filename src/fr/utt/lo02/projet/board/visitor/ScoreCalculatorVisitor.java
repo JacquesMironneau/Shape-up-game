@@ -5,7 +5,10 @@ import fr.utt.lo02.projet.board.Card.Color;
 import fr.utt.lo02.projet.board.Card.Filling;
 import fr.utt.lo02.projet.board.Card.Shape;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Represent one of the different variants to calculate the score for the game.

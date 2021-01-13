@@ -1,10 +1,8 @@
 package fr.utt.lo02.projet;
 
 import fr.utt.lo02.projet.board.RectangleBoard;
-import fr.utt.lo02.projet.board.BoardEmptyException;
 import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.game.ShapeUpGame;
-import fr.utt.lo02.projet.strategy.PlayerHandEmptyException;
 import fr.utt.lo02.projet.strategy.Player;
 import fr.utt.lo02.projet.strategy.RealPlayer;
 

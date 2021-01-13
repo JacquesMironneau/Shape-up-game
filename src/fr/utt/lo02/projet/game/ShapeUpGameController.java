@@ -272,7 +272,7 @@ public class ShapeUpGameController implements GameController
     protected void reset()
     {
 //        System.out.println(Thread.currentThread().getName());
-        if (!Thread.currentThread().getName().equals(RectangleBoardFrameTest.THREAD_FROM_GAME_VIEW_NAME))
+        if (!Thread.currentThread().getName().equals(SwingHmiView.THREAD_FROM_GAME_VIEW_NAME))
         {
             return;
         }

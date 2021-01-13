@@ -1,7 +1,10 @@
 package fr.utt.lo02.projet.strategy;
 
 import fr.utt.lo02.projet.GameView;
-import fr.utt.lo02.projet.board.*;
+import fr.utt.lo02.projet.board.AbstractBoard;
+import fr.utt.lo02.projet.board.BoardEmptyException;
+import fr.utt.lo02.projet.board.Card;
+import fr.utt.lo02.projet.board.RectangleBoard;
 import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.game.*;
 

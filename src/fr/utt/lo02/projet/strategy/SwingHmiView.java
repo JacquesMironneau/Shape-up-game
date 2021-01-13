@@ -1,7 +1,10 @@
 package fr.utt.lo02.projet.strategy;
 
 import fr.utt.lo02.projet.GameView;
-import fr.utt.lo02.projet.board.*;
+import fr.utt.lo02.projet.board.AbstractBoard;
+import fr.utt.lo02.projet.board.Card;
+import fr.utt.lo02.projet.board.CircleBoard;
+import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.game.*;
 
@@ -13,7 +16,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -22,24 +24,24 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
-public class RectangleBoardFrameTest extends JPanel implements GameView, MouseListener, MouseMotionListener
+public class SwingHmiView extends JPanel implements GameView, MouseListener, MouseMotionListener
 {
 
     public static final String THREAD_FROM_GAME_VIEW_NAME = "swing_thread_view";
-    private static final int CARD_WIDTH = 64;
-    private static final int CARD_HEIGHT = 64;
+    public static final int CARD_WIDTH = 64;
+    public static final int CARD_HEIGHT = 64;
 
-    private static final int OFFSET_X = 40;
-    private static final int OFFSET_Y = 70;
+    public static final int OFFSET_X = 40;
+    public static final int OFFSET_Y = 70;
 
-    private static final int HOLOGRAM_WIDTH = 96;
-    private static final int HOLOGRAM_HEIGHT = 128;
+    public static final int HOLOGRAM_WIDTH = 96;
+    public static final int HOLOGRAM_HEIGHT = 128;
 
-    private static final int LEFT_BOARD_OFFSET = 450;
-    private static final int TOP_BOARD_OFFSET = 150;
-    private static final int PLAYER_HAND_Y = 700;
+    public static final int LEFT_BOARD_OFFSET = 450;
+    public static final int TOP_BOARD_OFFSET = 150;
+    public static final int PLAYER_HAND_Y = 700;
     public static final int ANIMATION_REFRESH_RATE = 100;
-    public static final String BACKGROUND_PATH = "res/background.png";
+    public static final String BACKGROUND_PATH = "background.png";
     public static final int IA_SLEEP_TIME = 5;
     private static final int BIG_SPACE = 400;
     private static final int MEDIUM_SPACE = 200;
@@ -47,21 +49,21 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
     private final List<Image> sprite;
     private final Image[][] spriteGlitchAnimations;
 
-    int xadj;
-    int yadj;
-    int prevX;
-    int prevY;
-    int currX;
-    int currY;
-    int cardIndex;
-    boolean shouldDrawText;
+    private int xadj;
+    private int yadj;
+    private int prevX;
+    private int prevY;
+    private int currX;
+    private int currY;
+    private int cardIndex;
+    private boolean shouldDrawText;
     private static Font font = null;
 
     private GameController controller;
 
     private final AbstractShapeUpGame model;
 
-    private final AbstractBoard boardModel /*= new RectangleBoard()*/;
+    private final AbstractBoard boardModel;
 
     private final CopyOnWriteArrayList<CardImage> boardView;
     private final List<CardImage> handView;
@@ -69,20 +71,27 @@ public class RectangleBoardFrameTest extends JPanel implements GameView, MouseLi
     private CardImage cardImage;
     private boolean placementTime;
     private GameState gs;
-    private GameState prevGs;
-    List<Coordinates> goodRequestsScreen = new CopyOnWriteArrayList<>();
+    private List<Coordinates> goodRequestsScreen = new CopyOnWriteArrayList<>();
     private boolean displayScores;
 
-    private List<Image> spriteHologram;
-    private CardImage cardImageToAnimate;
+    private final List<Image> spriteHologram;
     private int numberOfFrame;
     private boolean animate;
+
+
     private MyButton endTurnButton;
     private MyButton moveButton;
-private MyButton placeButton;
-private MyButton endRoundButton;
+    private MyButton placeButton;
+    private MyButton endRoundButton;
+    private BufferedImage backgroundImage;
 
-    public RectangleBoardFrameTest(AbstractBoard modelBoard, AbstractShapeUpGame game)
+    private final CoordinatesConvertor coordinatesConvertor;
+
+    private EndRoundScoreDrawer endRoundScoreDrawer;
+    private EndGameScoreDrawer endGameScoreDrawer;
+
+
+    public SwingHmiView(AbstractBoard modelBoard, AbstractShapeUpGame game)
     {
         this.model = game;
         this.boardModel = modelBoard;
@@ -92,21 +101,32 @@ private MyButton endRoundButton;
         setPreferredSize(preferredSize);
         setBounds(0, 0, preferredSize.width, preferredSize.height);
         setLayout(null);
-        sprite = splitSprite();
-        spriteHologram = splitSpriteHologram();
-        spriteGlitchAnimations = splitSpriteGlitchAnimations();
+
+        SpriteSplitter splitter = new SpriteSplitter();
+        sprite = splitter.splitSprite();
+        spriteHologram = splitter.splitSpriteHologram();
+        spriteGlitchAnimations = splitter.splitSpriteGlitchAnimations();
+
         moveButton = new MyButton("", "res/buttons/move.png", "res/buttons/move_hover.png", "res/buttons/move_hover.png");
         endTurnButton = new MyButton("", "res/buttons/end_turn.png", "res/buttons/end_turn_hover.png", "res/buttons/end_turn_hover.png");
         placeButton = new MyButton("", "res/buttons/place.png", "res/buttons/place_hover.png", "res/buttons/place_hover.png");
         endRoundButton = new MyButton("", "res/buttons/next_round.png", "res/buttons/next_round_hover.png", "res/buttons/next_round_hover.png");
-
 
         UIManager.put("Slider.onlyLeftMouseButtonDrag", Boolean.TRUE);
 
         boardView = new CopyOnWriteArrayList<>();
         handView = Collections.synchronizedList(new ArrayList<>());
 
-
+        endGameScoreDrawer = new EndGameScoreDrawer(model);
+        endRoundScoreDrawer = new EndRoundScoreDrawer(model);
+        try
+        {
+            backgroundImage = ImageIO.read(getClass().getClassLoader().getResource(BACKGROUND_PATH));
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        coordinatesConvertor = new CoordinatesConvertor(boardModel);
         placementTime = false;
         shouldDrawText = false;
         gs = null;
@@ -118,15 +138,15 @@ private MyButton endRoundButton;
     @Override
     public void propertyChange(PropertyChangeEvent evt)
     {
-
-        prevGs = gs;
+        GameState prevGs = gs;
         gs = (GameState) evt.getNewValue();
 
         switch (gs)
         {
-
-
             case MOVE -> {
+//                endRoundButton.setVisible(false);
+//                moveButton.setVisible(false);
+//                placeButton.setVisible(false);
                 remove(endRoundButton);
                 remove(moveButton);
                 remove(placeButton);
@@ -135,7 +155,6 @@ private MyButton endRoundButton;
                     shouldDrawText = true;
                 placementTime = true;
 
-//                System.out.println("move");
                 generateFreeLocation();
                 updateDisplayBoard();
                 placementTime = false;
@@ -155,14 +174,12 @@ private MyButton endRoundButton;
                 placementTime = true;
 
                 generateFreeLocation();
-//                System.out.println("place");
                 removeMouseMotionListener(this);
                 removeMouseListener(this);
                 addMouseListener(this);
                 addMouseMotionListener(this);
                 updateDisplayBoard();
                 updateDisplayHand();
-
 
             }
             case PLACE_DONE -> {
@@ -174,22 +191,6 @@ private MyButton endRoundButton;
                     {
                         SwingUtilities.invokeAndWait(() -> {
                             updateDisplayBoard();
-//                            animate = true;
-//
-//                            for (int i = 0; i < 8; i++)
-//                            {
-//                                repaint();
-//                                validate();
-//                                try
-//                                {
-//                                    Thread.sleep(ANIMATION_REFRESH_RATE);
-//                                } catch (InterruptedException e)
-//                                {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//                            animate = false;
-//                            repaint();
                             repaint();
 
                             try
@@ -224,12 +225,8 @@ private MyButton endRoundButton;
                     repaint();
 
                 }
-
-
-//                System.out.println("placed");
                 removeMouseListener(this);
                 removeMouseMotionListener(this);
-
 
             }
             case MOVE_DONE -> {
@@ -245,21 +242,6 @@ private MyButton endRoundButton;
                     {
                         SwingUtilities.invokeAndWait(() -> {
                             updateDisplayBoard();
-//                                animate = true;
-//
-//                                for (int i = 0; i < 8; i++)
-//                                {
-//                                    repaint();
-//                                    try
-//                                    {
-//                                        Thread.sleep(ANIMATION_REFRESH_RATE);
-//                                    } catch (InterruptedException e)
-//                                    {
-//                                        e.printStackTrace();
-//                                    }
-//                                }
-//                                animate = false;
-//                                repaint();
                             try
                             {
                                 Thread.sleep(IA_SLEEP_TIME);
@@ -290,11 +272,7 @@ private MyButton endRoundButton;
                     }
                     animate = false;
                     repaint();
-
                 }
-
-//                System.out.println("moved");
-
 
             }
 
@@ -307,9 +285,6 @@ private MyButton endRoundButton;
                 goodRequestsScreen.add(new Coordinates(LEFT_BOARD_OFFSET, TOP_BOARD_OFFSET));
                 repaint();
 
-
-//                this.controller.play();
-//                new Thread(() -> controller.play()).start();
                 new Thread(THREAD_FROM_GAME_VIEW_NAME)
                 {
                     @Override
@@ -342,7 +317,6 @@ private MyButton endRoundButton;
 
                     remove(moveButton);
                     remove(placeButton);
-//                    new Thread(() -> controller.askChoice(1, 2)).start();
                     new Thread(THREAD_FROM_GAME_VIEW_NAME)
                     {
                         @Override
@@ -358,7 +332,6 @@ private MyButton endRoundButton;
 
                     remove(moveButton);
                     remove(placeButton);
-//                    new Thread(() -> controller.askChoice(1, 1)).start();
                     new Thread(THREAD_FROM_GAME_VIEW_NAME)
                     {
                         @Override
@@ -371,12 +344,9 @@ private MyButton endRoundButton;
                 });
                 placeButton.setBounds(1000, PLAYER_HAND_Y - 80, 293, 100);
                 moveButton.setBounds(1000, PLAYER_HAND_Y + 50, 293, 100);
-            
+
                 add(placeButton);
                 add(moveButton);
-                // Allow place and move listener ?
-                // If user click on hand => place case
-                // if click on board => move case
 
             }
             case SECOND_CHOICE -> {
@@ -389,12 +359,10 @@ private MyButton endRoundButton;
 
                 endTurnButton = new MyButton("", "res/buttons/end_turn.png", "res/buttons/end_turn_hover.png", "res/buttons/end_turn_hover.png");
                 moveButton = new MyButton("", "res/buttons/move.png", "res/buttons/move_hover.png", "res/buttons/move_hover.png");
-                //repaint();
                 endTurnButton.addActionListener(actionEvent -> {
 
                     remove(moveButton);
                     remove(endTurnButton);
-//                    new Thread(() -> controller.askChoice(2, 2)).start();
                     new Thread(THREAD_FROM_GAME_VIEW_NAME)
                     {
                         @Override
@@ -409,15 +377,12 @@ private MyButton endRoundButton;
                 moveButton.addActionListener(actionEvent -> {
                     remove(moveButton);
                     remove(endTurnButton);
-//                    new Thread(() -> controller.askChoice(2, 1)).start();
                     new Thread(THREAD_FROM_GAME_VIEW_NAME)
                     {
                         @Override
                         public void run()
                         {
                             controller.askChoice(2, 1);
-
-
                         }
                     }.start();
 
@@ -428,9 +393,7 @@ private MyButton endRoundButton;
 
                 add(endTurnButton);
                 add(moveButton);
-                //
 
-                // Allow display end turn button and ?
             }
             case END_TURN -> {
 
@@ -456,8 +419,6 @@ private MyButton endRoundButton;
                         e.printStackTrace();
                     }
                 }
-//                this.controller.endTurn();
-//                new Thread(() -> controller.endTurn()).start();
                 new Thread(THREAD_FROM_GAME_VIEW_NAME)
                 {
                     @Override
@@ -468,7 +429,6 @@ private MyButton endRoundButton;
                 }.start();
 
 
-                // Display end turn (next player animation I guess)
             }
             case CARD_DRAW, VICTORY_CARD -> {
 
@@ -476,9 +436,7 @@ private MyButton endRoundButton;
                 repaint();
 
             }
-            // ?
             case END_ROUND -> {
-                // Display end round (scores...)
 
                 try
                 {
@@ -494,7 +452,6 @@ private MyButton endRoundButton;
                 boardView.clear();
                 handView.clear();
 
-//                new Thread(() -> controller.endRound()).start();
                 new Thread(THREAD_FROM_GAME_VIEW_NAME)
                 {
                     @Override
@@ -504,32 +461,11 @@ private MyButton endRoundButton;
                     }
                 }.start();
 
-
-//                validate();
-//                repaint();
-
-
-//                JButton ok = new JButton("Ok");
-//                ok.setBounds(700,7000,50,50);
-//                ok.addActionListener(new ActionListener()
-//                {
-//                    @Override
-//                    public void actionPerformed(ActionEvent actionEvent)
-//                    {
-//                        controller.endRound();
-//
-//                    }
-//                });
-//                add(ok);
-
-
             }
             case END_GAME -> {
                 boardView.clear();
                 handView.clear();
                 repaint();
-//                model.getPlayers().forEach(Player::displayFinalScore);
-
             }
         }
 
@@ -570,7 +506,6 @@ private MyButton endRoundButton;
             handView.remove(cardImage);
             repaint();
 
-            //cardImage = new CardImage(cardImage.getX(), cardImage.getY(), null));
 
         } // Select card among board
         else
@@ -595,11 +530,7 @@ private MyButton endRoundButton;
             generateFreeLocation();
             repaint();
 
-            // boardView.set(boardView.indexOf(cardImage), new CardImage(cardImage.getX(), cardImage.getY(), null));
             boardView.remove(cardImage);
-//            generateFreeLocation();
-//
-//            repaint();
 
         }
 
@@ -609,7 +540,6 @@ private MyButton endRoundButton;
         xadj = prevX - mouseEvent.getX();
         yadj = prevY - mouseEvent.getY();
         setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
-//        System.out.println(cardImage);
 
 
     }
@@ -623,10 +553,6 @@ private MyButton endRoundButton;
         currX = mouseEvent.getX();
         currY = mouseEvent.getY();
         cardImage = new CardImage(currX + xadj, currY + yadj, cardImage.getCard());
-
-
-        // CREATE EMPTY LOCALISATIONS AND DISPLAY
-
 
         repaint();
     }
@@ -651,11 +577,8 @@ private MyButton endRoundButton;
                     hasBeenPlaced = true;
                     setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
-                    CardImage ci = cardImage;
                     cardImage = null;
                     repaint();
-//                    this.controller.askPlace(0, 0, cardIndex);
-//                    new Thread(() -> controller.askPlace(0, 0, cardIndex)).start();
                     new Thread(THREAD_FROM_GAME_VIEW_NAME)
                     {
                         @Override
@@ -665,7 +588,6 @@ private MyButton endRoundButton;
                         }
                     }.start();
 
-                    //TODO check
                 }
             }
             if (!hasBeenPlaced)
@@ -693,9 +615,6 @@ private MyButton endRoundButton;
         // Else put back to previous location
         if (!hasBeenPlaced)
         {
-            //TODO animation instead of quick back to previous coordinates
-//            cardImage = new CardImage((cardImage.getX() + prevX)/2, (cardImage.getY() + prevY) /2, cardImage.getCard());
-//            repaint();
             if (placementTime)
             {
                 handView.add(new CardImage(prevX, prevY, cardImage.getCard()));
@@ -709,17 +628,12 @@ private MyButton endRoundButton;
         }
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
-        cardImageToAnimate = cardImage;
         cardImage = null;
         repaint();
-
-        int x = currX;
-        int y = currY;
 
 
         Map<Coordinates, Card> placedCards = this.boardModel.getPlacedCards();
 
-//        System.out.println(placedCards.size());
         Set<Integer> abscissaCoordinates = new HashSet<>();
         Set<Integer> ordinateCoordinates = new HashSet<>();
 
@@ -733,11 +647,9 @@ private MyButton endRoundButton;
         int maxOrdinate = Collections.max(ordinateCoordinates);
 
 
-        Coordinates coordinates = screenToGameCoordinates(x, y, minAbscissa, maxOrdinate);
+        Coordinates coordinates = coordinatesConvertor.screenToGameCoordinates(currX, currY, minAbscissa, maxOrdinate);
         if (placementTime)
         {
-//            this.controller.askPlace(coordinates.getX(), coordinates.getY(), cardIndex);
-//            new Thread(() -> controller.askPlace(coordinates.getX(), coordinates.getY(), cardIndex)).start();
             new Thread(THREAD_FROM_GAME_VIEW_NAME)
             {
                 @Override
@@ -747,12 +659,9 @@ private MyButton endRoundButton;
                 }
             }.start();
 
-
         } else
         {
-            Coordinates previous = screenToGameCoordinates(prevX, prevY, minAbscissa, maxOrdinate);
-//            this.controller.askMove(previous.getX(), previous.getY(), coordinates.getX(), coordinates.getY());
-//            new Thread(() -> controller.askMove(previous.getX(), previous.getY(), coordinates.getX(), coordinates.getY())).start();
+            Coordinates previous = coordinatesConvertor.screenToGameCoordinates(prevX, prevY, minAbscissa, maxOrdinate);
             new Thread(THREAD_FROM_GAME_VIEW_NAME)
             {
                 @Override
@@ -761,9 +670,7 @@ private MyButton endRoundButton;
                     controller.askMove(previous.getX(), previous.getY(), coordinates.getX(), coordinates.getY());
                 }
             }.start();
-
         }
-
         repaint();
     }
 
@@ -790,14 +697,11 @@ private MyButton endRoundButton;
     public void displayMoveFailed(PlaceRequestResult prr)
     {
 
-//        System.out.println(prr);
     }
 
     @Override
     public void displayPlaceFailed(MoveRequestResult mrr)
     {
-//        System.out.println(mrr);
-
 
     }
 
@@ -815,13 +719,11 @@ private MyButton endRoundButton;
         //repaint();
         endRoundButton.setBounds(499, 760, 407, 100);
 
-//        endTurnButton.setLocation(0, 0);
         endRoundButton.addActionListener(actionEvent -> {
 
             remove(endRoundButton);
             displayScores = false;
             repaint();
-//            new Thread(() -> controller.play()).start();
             new Thread(THREAD_FROM_GAME_VIEW_NAME)
             {
                 @Override
@@ -833,35 +735,11 @@ private MyButton endRoundButton;
 
         });
         add(endRoundButton);
-        //model.getPlayers().forEach(Player::displayRoundScore);
-
-//        SwingUtilities.invokeLater(new Thread(){
-//            @Override
-//            public void run()
-//            {
-//                for (Player player : model.getPlayers())
-//                {        int offset = 0;
-//
-//                    StringBuilder sb = new StringBuilder();
-//                    sb.append(player.getName());
-//                    sb.append(": ");
-//                    sb.append(player.getScoresRound().get(player.getScoresRound().size() - 1));
-//                    sb.append(" points");
-//
-//                    getGraphics().drawString(sb.toString(), getWidth()/2, getHeight()/2 + offset);
-//                    offset += 30;
-//
-//
-//                }
-//                validate();
-//            }
-//        });
     }
 
     @Override
     public void displayBoard()
     {
-
         updateDisplayBoard();
         repaint();
     }
@@ -895,7 +773,6 @@ private MyButton endRoundButton;
         if (placedCards.isEmpty()) return;
         boardView.clear();
 
-//        System.out.println(placedCards.size());
         Set<Integer> abscissaCoordinates = new HashSet<>();
         Set<Integer> ordinateCoordinates = new HashSet<>();
 
@@ -917,103 +794,18 @@ private MyButton endRoundButton;
             {
                 Card card = placedCards.get(new Coordinates(i, j));
 
-                Coordinates coord = gameToScreenCoordinates(i, j, minAbscissa, maxOrdinate);
+                Coordinates coord = coordinatesConvertor.gameToScreenCoordinates(i, j, minAbscissa, maxOrdinate);
                 boardView.add(new CardImage(coord.getX(), coord.getY(), card));
 
             }
         }
-//        System.out.println("REPAINT");
-//        for (int i = 0; i < 8; i++)
-//        {
-//            repaint();
-//            try
-//            {
-//                Thread.sleep(400);
-//            } catch (InterruptedException e)
-//            {
-//                e.printStackTrace();
-//            }
-//        }
-//        if (gs == GameState.MOVE_DONE || gs == GameState.PLACE_DONE)
-//        {
-//
-//            for (numberOfFrame = 0; numberOfFrame < 8; numberOfFrame++)
-//            {
-//                repaint();
-//                try
-//                {
-//                    Thread.sleep(500);
-//                } catch (InterruptedException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//            }
-//            numberOfFrame = 0;
-//        } else
-//        {
+
         repaint();
-//        }
     }
 
     // Draw the board + the dragged card
     public void draw(Graphics2D g2d)
     {
-        // draw background
-        try
-        {
-            g2d.drawImage(ImageIO.read(new File(BACKGROUND_PATH)), 0, 0, getWidth(), getHeight(), null);
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-        // Draw location
-        if (gs == GameState.MOVE || gs == GameState.PLACE || gs == GameState.FIRST_TURN)
-        {
-            if (placementTime)
-            {
-                g2d.setColor(Color.WHITE);
-
-            } else
-                g2d.setColor(Color.YELLOW);
-            for (Coordinates coord : goodRequestsScreen)
-            {
-                //TODO replace by image
-
-                g2d.drawRect(coord.getX(), coord.getY(), CARD_WIDTH, CARD_HEIGHT);
-            }
-
-            if (shouldDrawText)
-            {
-                try
-                {
-                    if (font == null)
-                    {
-                        font = AddFont.createFont();
-                    }
-                } catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-                Font f = new Font(font.getFontName(), Font.PLAIN, 40);
-                g2d.setFont(f);
-
-                String str = "";
-                if (gs == GameState.MOVE)
-                {
-                    str = "Time to move";
-
-                } else if (gs == GameState.PLACE)
-                {
-                    str = "Time to place";
-
-                }
-                g2d.setColor(Color.WHITE);
-                g2d.drawString(str, 42, 275);
-            }
-        }
-
-//        System.out.println("BOARD VIEW + size" + boardView.size());
         for (CardImage cardImage : boardView)
         {
             Card card = cardImage.getCard();
@@ -1033,9 +825,6 @@ private MyButton endRoundButton;
                     }
 
                     Image[] anim = glitchAnimationMatcher(card);
-//                    System.out.println(card);
-
-//                    System.out.println("REPAINTING ANIMATION" + numberOfFrame);
                     g2d.drawImage(anim[numberOfFrame], x + (CARD_WIDTH - HOLOGRAM_WIDTH) / 2, y + (CARD_HEIGHT - HOLOGRAM_HEIGHT) / 2, null);
 
 
@@ -1048,23 +837,79 @@ private MyButton endRoundButton;
 
             }
             numberOfFrame++;
-
         }
+        validate();
+    }
 
-
+    private void drawDraggedCard(Graphics2D g2d)
+    {
         if (cardImage != null)
-
         {
-//            System.out.println("card above!!!!!");
             g2d.drawImage(cardImageMatcher(cardImage.getCard())[0], cardImage.getX(), cardImage.getY(), null);
         }
+    }
 
-        validate();
+    private void drawFreeLocation(Graphics2D g2d)
+    {
+        if (gs == GameState.MOVE || gs == GameState.PLACE || gs == GameState.FIRST_TURN)
+        {
+            if (placementTime)
+            {
+                g2d.setColor(Color.WHITE);
+
+            } else
+            {
+                g2d.setColor(Color.YELLOW);
+            }
+
+            for (Coordinates coord : goodRequestsScreen)
+            {
+                //TODO replace by image
+                g2d.drawRect(coord.getX(), coord.getY(), CARD_WIDTH, CARD_HEIGHT);
+            }
+
+        }
+    }
+
+    private void drawTextInstruction(Graphics2D g2d)
+    {
+        if (shouldDrawText)
+        {
+            try
+            {
+                if (font == null)
+                {
+                    font = AddFont.createFont();
+                }
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            Font f = new Font(font.getFontName(), Font.PLAIN, 40);
+            g2d.setFont(f);
+
+            String str = "";
+            if (gs == GameState.MOVE)
+            {
+                str = "Time to move";
+
+            } else if (gs == GameState.PLACE)
+            {
+                str = "Time to place";
+
+            }
+            g2d.setColor(Color.WHITE);
+            g2d.drawString(str, 42, 275);
+        }
+    }
+
+    private void drawBackground(Graphics2D g2d)
+    {
+        g2d.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), null);
     }
 
     public void drawHand(Graphics2D g2d)
     {
-
         for (CardImage cardImage : handView)
         {
             g2d.drawImage(cardImageMatcher(cardImage.getCard())[0], cardImage.getX(), cardImage.getY(), null);
@@ -1074,17 +919,15 @@ private MyButton endRoundButton;
 
     private void drawVictoryCard(Graphics2D g2d)
     {
-        // TODO: 1/7/21 crash sometime
         Card victoryCard = null;
-        try {
+        try
+        {
             victoryCard = this.model.getCurrentPlayer().getVictoryCard();
 
-        } catch (NullPointerException e)
-
+        } catch (NullPointerException ignored)
         {
 
         }
-        //Card victoryCard = new Card(Card.Color.RED, Card.Shape.SQUARE, Card.Filling.HOLLOW);
         if (victoryCard != null)
         {
             Image[] images = cardImageMatcher(victoryCard);
@@ -1095,414 +938,35 @@ private MyButton endRoundButton;
 
     }
 
-    public List<Image> splitSprite()
-    {
-        int[][] spriteSheetCoords = {{0, 0, 32, 32}, {32, 0, 32, 32}, {64, 0, 32, 32},
-                {0, 32, 32, 32}, {32, 32, 32, 32}, {64, 32, 32, 32},
-                {0, 64, 32, 32}, {32, 64, 32, 32}, {64, 64, 32, 32},
-
-                {0, 96, 32, 32}, {32, 96, 32, 32}, {64, 96, 32, 32},
-                {0, 128, 32, 32}, {32, 128, 32, 32}, {64, 128, 32, 32},
-                {0, 160, 32, 32}, {32, 160, 32, 32}, {64, 160, 32, 32},
-
-        };
-
-        BufferedImage img = null;
-        try
-        {
-            img = ImageIO.read(new File("res/cards_rocks_rework.png"));
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
 
 
-        List<Image> imgArray = new ArrayList<>();
-        for (int[] a : spriteSheetCoords)
-        {
 
-            Image img2 = img.getSubimage(a[0], a[1], a[2], a[3]);
-            img2 = img2.getScaledInstance(CARD_WIDTH, CARD_HEIGHT, Image.SCALE_SMOOTH);
-            imgArray.add(img2);
-        }
-
-        return imgArray;
-    }
-
-    public List<Image> splitSpriteHologram()
-    {
-        int[][] spriteSheetCoords = {
-                {0, 0, 48, 64}, {48, 0, 48, 64}, {96, 0, 48, 64},
-                {0, 64, 48, 64}, {48, 64, 48, 64}, {96, 64, 48, 64},
-                {0, 128, 48, 64}, {48, 128, 48, 64}, {96, 128, 48, 64},
-
-                {0, 192, 48, 64}, {48, 192, 48, 64}, {96, 192, 48, 64},
-                {0, 256, 48, 64}, {48, 256, 48, 64}, {96, 256, 48, 64},
-                {0, 320, 48, 64}, {48, 320, 48, 64}, {96, 320, 48, 64},
-
-        };
-
-        BufferedImage img = null;
-        try
-        {
-            img = ImageIO.read(new File("res/holo_card_final.png"));
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-
-        List<Image> imgArray = new ArrayList<>();
-        for (int[] a : spriteSheetCoords)
-        {
-
-            Image img2 = img.getSubimage(a[0], a[1], a[2], a[3]);
-            img2 = img2.getScaledInstance(HOLOGRAM_WIDTH, HOLOGRAM_HEIGHT, Image.SCALE_SMOOTH);
-            imgArray.add(img2);
-        }
-
-        return imgArray;
-    }
-
-    public Image[][] splitSpriteGlitchAnimations()
-    {
-        int[][] spriteSheetCoords = {
-                // Triangle filled
-                {0, 0, 48, 64}, {48, 0, 48, 64}, {96, 0, 48, 64}, {144, 0, 48, 64}, {192, 0, 48, 64}, {240, 0, 48, 64}, {288, 0, 48, 64}, {336, 0, 48, 64},
-                {0, 64, 48, 64}, {48, 64, 48, 64}, {96, 64, 48, 64}, {144, 64, 48, 64}, {192, 64, 48, 64}, {240, 64, 48, 64}, {288, 64, 48, 64}, {336, 64, 48, 64},
-                {0, 128, 48, 64}, {48, 128, 48, 64}, {96, 128, 48, 64}, {144, 128, 48, 64}, {192, 128, 48, 64}, {240, 128, 48, 64}, {288, 128, 48, 64}, {336, 128, 48, 64},
-
-                // Triangle hollow
-                {0, 192, 48, 64}, {48, 192, 48, 64}, {96, 192, 48, 64}, {144, 192, 48, 64}, {192, 192, 48, 64}, {240, 192, 48, 64}, {288, 192, 48, 64}, {336, 192, 48, 64},
-                {0, 256, 48, 64}, {48, 256, 48, 64}, {96, 256, 48, 64}, {144, 256, 48, 64}, {192, 256, 48, 64}, {240, 256, 48, 64}, {288, 256, 48, 64}, {336, 256, 48, 64},
-                {0, 320, 48, 64}, {48, 320, 48, 64}, {96, 320, 48, 64}, {144, 320, 48, 64}, {192, 320, 48, 64}, {240, 320, 48, 64}, {288, 320, 48, 64}, {336, 320, 48, 64},
-
-                // Square filled
-                {0, 384, 48, 64}, {48, 384, 48, 64}, {96, 384, 48, 64}, {144, 384, 48, 64}, {192, 384, 48, 64}, {240, 384, 48, 64}, {288, 384, 48, 64}, {336, 384, 48, 64},
-                {0, 448, 48, 64}, {48, 448, 48, 64}, {96, 448, 48, 64}, {144, 448, 48, 64}, {192, 448, 48, 64}, {240, 448, 48, 64}, {288, 448, 48, 64}, {336, 448, 48, 64},
-                {0, 512, 48, 64}, {48, 512, 48, 64}, {96, 512, 48, 64}, {144, 512, 48, 64}, {192, 512, 48, 64}, {240, 512, 48, 64}, {288, 512, 48, 64}, {336, 512, 48, 64},
-
-                // Square hollow
-                {0, 576, 48, 64}, {48, 576, 48, 64}, {96, 576, 48, 64}, {144, 576, 48, 64}, {192, 576, 48, 64}, {240, 576, 48, 64}, {288, 576, 48, 64}, {336, 576, 48, 64},
-
-                {0, 640, 48, 64}, {48, 640, 48, 64}, {96, 640, 48, 64}, {144, 640, 48, 64}, {192, 640, 48, 64}, {240, 640, 48, 64}, {288, 640, 48, 64}, {336, 640, 48, 64},
-
-                {0, 704, 48, 64}, {48, 704, 48, 64}, {96, 704, 48, 64}, {144, 704, 48, 64}, {192, 704, 48, 64}, {240, 704, 48, 64}, {288, 704, 48, 64}, {336, 704, 48, 64},
-
-                // Circle filled
-                {0, 768, 48, 64}, {48, 768, 48, 64}, {96, 768, 48, 64}, {144, 768, 48, 64}, {192, 768, 48, 64}, {240, 768, 48, 64}, {288, 768, 48, 64}, {336, 768, 48, 64},
-                {0, 832, 48, 64}, {48, 832, 48, 64}, {96, 832, 48, 64}, {144, 832, 48, 64}, {192, 832, 48, 64}, {240, 832, 48, 64}, {288, 832, 48, 64}, {336, 832, 48, 64},
-                {0, 896, 48, 64}, {48, 896, 48, 64}, {96, 896, 48, 64}, {144, 896, 48, 64}, {192, 896, 48, 64}, {240, 896, 48, 64}, {288, 896, 48, 64}, {336, 896, 48, 64},
-
-                // Circle hollow
-                {0, 960, 48, 64}, {48, 960, 48, 64}, {96, 960, 48, 64}, {144, 960, 48, 64}, {192, 960, 48, 64}, {240, 960, 48, 64}, {288, 960, 48, 64}, {336, 960, 48, 64},
-                {0, 1024, 48, 64}, {48, 1024, 48, 64}, {96, 1024, 48, 64}, {144, 1024, 48, 64}, {192, 1024, 48, 64}, {240, 1024, 48, 64}, {288, 1024, 48, 64}, {336, 1024, 48, 64},
-                {0, 1088, 48, 64}, {48, 1088, 48, 64}, {96, 1088, 48, 64}, {144, 1088, 48, 64}, {192, 1088, 48, 64}, {240, 1088, 48, 64}, {288, 1088, 48, 64}, {336, 1088, 48, 64},
-
-
-        };
-        BufferedImage img = null;
-        try
-        {
-            img = ImageIO.read(new File("res/anims/holo_card_anims_final.png"));
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        Image[][] res = new Image[18][8];
-        for (int indexRow = 0; indexRow < 18; indexRow++)
-        {
-            for (int indexCol = 0; indexCol < 8; indexCol++)
-            {
-                int[] sheetCoord = spriteSheetCoords[indexRow * 8 + indexCol];
-                Image subimg = img.getSubimage(sheetCoord[0], sheetCoord[1], sheetCoord[2], sheetCoord[3]);
-                subimg = subimg.getScaledInstance(HOLOGRAM_WIDTH, HOLOGRAM_HEIGHT, Image.SCALE_SMOOTH);
-
-                res[indexRow][indexCol] = subimg;
-            }
-        }
-        return res;
-    }
 
     @Override
     protected void paintComponent(Graphics g)
     {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
+        drawBackground(g2d);
 
-//        if (gs == GameState.MOVE_DONE || gs == GameState.PLACE_DONE)
-//        {
-//
-//            numberOfFrame = 0;
-//
-//            draw((Graphics2D) g);
-//            drawHand((Graphics2D) g);
-//            drawVictoryCard((Graphics2D) g);
-//
-//            while (numberOfFrame < 8)
-//            {
-//                numberOfFrame++;
-//
-//                try
-//                {
-//                    Thread.sleep(500);
-//                } catch (InterruptedException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                g.fillRect(0,0,getWidth(), getHeight());
-//                draw((Graphics2D) g);
-//                validate();
-//            }
-//
-//        }
-//        if (gs == GameState.END_ROUND)
-//        {
-//            drawEndRoundScores((Graphics2D) g);
-//        } else
         if (gs != GameState.END_GAME)
         {
-            g.setColor(getBackground());
-
-
+            drawFreeLocation(g2d);
+            drawTextInstruction(g2d);
             draw(g2d);
+            drawDraggedCard(g2d);
             drawHand(g2d);
             drawVictoryCard(g2d);
 
-//            System.out.println("SHOULDA REPAINT :c");
             if (displayScores)
             {
-                drawEndRoundScores(g2d);
+                endRoundScoreDrawer.drawEndRoundScores(g2d);
             }
         } else
         {
-//            g.drawString("Thank you for playing :D\n todo end screen", getWidth() / 2, getHeight() / 2);
-            drawEndScores(g2d);
-        }
-
-
-    }
-
-    //TODO baptiste (méthode de fin de round)
-    private void drawEndRoundScores(Graphics2D g2d)
-    {
-
-        try
-        {
-            g2d.drawImage(ImageIO.read(new File(BACKGROUND_PATH)), 0, 0, getWidth(), getHeight(), null);
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        Font font = null;
-        try
-        {
-            font = AddFont.createFont();
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        Color blue = new Color(102, 153, 255);
-        Color green = new Color(102, 204, 102);
-        Color red = new Color(204, 51, 51);
-        Color yellow = new Color(204, 204, 153);
-
-
-        List<Color> colors = new ArrayList<>();
-        colors.add(blue);
-        colors.add(green);
-        colors.add(red);
-
-        // Title "Scores"
-        int offsetX = 450;
-        drawRainbowTitle(g2d, font, colors, offsetX, "SCORES");
-        Color curr;
-
-
-        // Draw player name and their scores
-        g2d.setFont(new Font(font.getName(), Font.PLAIN, 70));
-
-        curr = colors.get(0);
-        g2d.setColor(curr);
-        int y = 300;
-        int space = 12;
-        for (Player player : model.getPlayers())
-        {
-
-            int realSpaces = space - player.getName().length();
-            StringBuilder bs = new StringBuilder();
-            bs.append(player.getName());
-            for (int i = 0; i < realSpaces; i++)
-            {
-                bs.append(" ");
-            }
-            bs.append(player.getScoresRound().get(player.getScoresRound().size() - 1));
-            g2d.drawString(bs.toString().toUpperCase(), 450, y);
-            curr = colors.get((colors.indexOf(curr) + 1) % colors.size());
-            g2d.setColor(curr);
-
-            y += 150;
-        }
-
-        int scoresRound = -1;
-        Player winner = null;
-        List<Player> players = model.getPlayers();
-        for (int i = 0; i < players.size(); i++)
-        {
-            Player player = players.get(i);
-            int playerScore = player.getScoresRound().get(player.getScoresRound().size() - 1);
-
-            if (playerScore > scoresRound)
-            {
-                scoresRound = playerScore;
-                curr = colors.get(i);
-                winner = players.get(i);
-            }
-
-        }
-        g2d.setColor(curr);
-        g2d.drawString(winner.getName().toUpperCase(), 350, PLAYER_HAND_Y + 30);
-        g2d.setColor(Color.white);
-        g2d.drawString("WON THIS ROUND", 350 + winner.getName().length() * 50 - 60, PLAYER_HAND_Y + 30);
-
-
-        // g2d.setFont(...)
-        // g2d.setColor(...)
-        // g2d.drawString("string", x ,y)
-    }
-
-    private void drawRainbowTitle(Graphics2D g2d, Font font, List<Color> colors, int offsetX, String text)
-    {
-        g2d.setFont(new Font(font.getName(), Font.PLAIN, 140));
-        Color curr = colors.get(0);
-        g2d.setColor(curr);
-
-        for (int i = 0; i < text.length(); i++)
-        {
-            g2d.drawString(String.valueOf(text.charAt(i)), 80 * i + offsetX, 200);
-
-            if (text.charAt(i) == ' ') continue;
-            curr = colors.get((colors.indexOf(curr) + 1) % colors.size());
-            g2d.setColor(curr);
-
+            endRoundScoreDrawer.drawEndRoundScores(g2d);
         }
     }
-
-
-    //TODO baptiste (méthode de fin de partie)
-    private void drawEndScores(Graphics2D g2d)
-    {
-
-
-        try
-        {
-            g2d.drawImage(ImageIO.read(new File(BACKGROUND_PATH)), 0, 0, getWidth(), getHeight(), null);
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        Font font = null;
-        try
-        {
-            font = AddFont.createFont();
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        Color blue = new Color(102, 153, 255);
-        Color green = new Color(102, 204, 102);
-        Color red = new Color(204, 51, 51);
-        Color yellow = new Color(204, 204, 153);
-
-
-        List<Color> colors = new ArrayList<>();
-        colors.add(blue);
-        colors.add(green);
-        colors.add(red);
-
-        // Title "Scores"
-        int offsetX = 200;
-        drawRainbowTitle(g2d, font, colors, offsetX, "FINAL SCORES");
-        Color curr;
-
-
-        // Draw player name and their scores
-        g2d.setFont(new Font(font.getName(), Font.PLAIN, 70));
-
-        curr = colors.get(0);
-        g2d.setColor(curr);
-        int y = 300;
-        int space = 10;
-//        for (Player player : model.getPlayers())
-//        {
-//
-//            int realSpaces = space - player.getName().length();
-//            StringBuilder bs = new StringBuilder();
-//            bs.append(player.getName());
-//            for (int i = 0; i < realSpaces; i++)
-//            {
-//                bs.append(" ");
-//            }
-//            bs.append(player.getScoresRound().get(player.getScoresRound().size() - 1));
-//            g2d.drawString(bs.toString(), 450, y);
-//            curr = colors.get((colors.indexOf(curr) + 1) % colors.size());
-//            g2d.setColor(curr);
-//
-//            y += 150;
-//        }
-        List<Player> players = model.getPlayers();
-        for (int i = 0; i < players.size(); i++)
-        {
-            Player player = players.get(i);
-            curr = colors.get(i);
-            g2d.setColor(curr);
-            g2d.drawString(player.getName(), 500 + i * 200, 300);
-
-        }
-
-        for (int i = 0; i < 4; i++)
-        {
-            // draw round number
-            g2d.setColor(Color.white);
-            g2d.drawString("ROUND " + (i + 1), 50, 400 + 100 * i);
-
-            // draw scores for the round
-
-            for (int j = 0; j < players.size(); j++)
-            {
-
-                curr = colors.get(j);
-                g2d.setColor(curr);
-
-                g2d.drawString(String.valueOf(players.get(j).getScoresRound().get(i)), 500 + 200 * j, 400 + 100 * i);
-            }
-
-        }
-        int scoresGame = -1;
-        Player winner = null;
-
-        for (int i = 0; i < players.size(); i++)
-        {
-            Player p = players.get(i);
-            int playerSum = p.getScoresRound().stream().mapToInt(a -> a).sum();
-
-            if (playerSum > scoresGame)
-            {
-                scoresGame = playerSum;
-                curr = colors.get(i);
-                winner = p;
-            }
-        }
-        // TODO total
-
-        // Win text (player won the game)
-        g2d.setColor(curr);
-        g2d.drawString(winner.getName(), 350, 800);
-        g2d.setColor(Color.white);
-        g2d.drawString("WON THE GAME", 350 + winner.getName().length() * 50 - 60, 800);
-
-    }
-
 
     private Image[] cardImageMatcher(Card card)
     {
@@ -1677,55 +1141,6 @@ private MyButton endRoundButton;
 
     }
 
-    private Coordinates gameToScreenCoordinates(int i, int j, int minAbscissa, int maxOrdinate)
-    {
-        int x = (i - minAbscissa) * (CARD_WIDTH + OFFSET_X);
-        x += LEFT_BOARD_OFFSET;
-        int y = (maxOrdinate - j) * (CARD_HEIGHT + OFFSET_Y);
-        y += TOP_BOARD_OFFSET;
-        if (boardModel instanceof CircleBoard)
-        {
-            int spaceIndex = maxOrdinate -j;
-            switch (spaceIndex)
-            {
-                case 0 -> x += (HOLOGRAM_WIDTH) ;
-                case 4 -> x -= (HOLOGRAM_WIDTH );
-                case 1 -> x += HOLOGRAM_WIDTH   *0.5;
-                case 3 -> x -= HOLOGRAM_WIDTH  * 0.5;
-            }
-        }
-
-        return new Coordinates(x, y);
-    }
-
-    private Coordinates screenToGameCoordinates(int x, int y, int minAbscissa, int maxOrdinate)
-    {
-        int j = maxOrdinate - ((y - TOP_BOARD_OFFSET) / (CARD_HEIGHT + OFFSET_Y));
-
-        if (boardModel instanceof CircleBoard)
-        {
-            int spaceIndex = maxOrdinate - j;
-            switch (spaceIndex)
-            {
-                case 0 -> x -= (HOLOGRAM_WIDTH);
-                case 1 -> x -= (HOLOGRAM_WIDTH) * 0.5;
-                case 3 -> x += (HOLOGRAM_WIDTH )  * 0.5;
-                case 4 -> x += (HOLOGRAM_WIDTH );
-            }
-        }
-
-        int i = ((x - LEFT_BOARD_OFFSET) / (CARD_WIDTH + OFFSET_X)) + minAbscissa;
-
-        if (x < LEFT_BOARD_OFFSET)
-        {
-            i = minAbscissa - 1;
-        } else if (y < TOP_BOARD_OFFSET)
-        {
-            j = maxOrdinate + 1;
-
-        }
-        return new Coordinates(i, j);
-    }
 
     private void generateFreeLocation()
     {
@@ -1740,17 +1155,8 @@ private MyButton endRoundButton;
                 e.printStackTrace();
             }
             List<Coordinates> goodRequests = new ArrayList<Coordinates>();
-            //Set<Coordinates> coordinatesSet = board.getPlacedCards().keySet();
-//            board.getPlacedCards().clear();
             List<Coordinates> coordsMap = new ArrayList<Coordinates>(board.getPlacedCards().keySet());
 
-//            for (Coordinates coord: board.getPlacedCards().keySet())
-//            {
-//                coordsMap.add(coord);
-//            }
-
-
-            // TODO WIP HERE
             if (!placementTime)
             {
                 Map<Coordinates, Card> placedCards = board.getPlacedCards();
@@ -1769,7 +1175,7 @@ private MyButton endRoundButton;
                 int maxOrdinate = Collections.max(ordinateCoordinates);
                 int x = cardImage.getX();
                 int y = cardImage.getY();
-                Coordinates coordinates = screenToGameCoordinates(x, y, minAbscissa, maxOrdinate);
+                Coordinates coordinates = coordinatesConvertor.screenToGameCoordinates(x, y, minAbscissa, maxOrdinate);
                 coordsMap.remove(coordinates);
                 board.getPlacedCards().remove(coordinates);
             }
@@ -1802,7 +1208,7 @@ private MyButton endRoundButton;
 
             for (Coordinates coord : goodRequests)
             {
-                goodRequestsScreen.add(gameToScreenCoordinates(coord.getX(), coord.getY(), Coordinates.smallestAbscissa(coordsMap), Coordinates.biggestOrdinate(coordsMap)));
+                goodRequestsScreen.add(coordinatesConvertor.gameToScreenCoordinates(coord.getX(), coord.getY(), Coordinates.smallestAbscissa(coordsMap), Coordinates.biggestOrdinate(coordsMap)));
 
 
             }
@@ -1829,7 +1235,7 @@ private MyButton endRoundButton;
 
         AbstractShapeUpGame model = new ShapeUpGame(visitor, ps, rb);
         Set<GameView> gameViewSet = new HashSet<>();
-        RectangleBoardFrameTest view = new RectangleBoardFrameTest(rb, model);
+        SwingHmiView view = new SwingHmiView(rb, model);
         GameConsoleView v = new GameConsoleView(model, rb);
 
         gameViewSet.add(view);
@@ -1842,7 +1248,6 @@ private MyButton endRoundButton;
         frame.setResizable(false);
         frame.pack();
         frame.setLocationRelativeTo(null);
-//        comp.fakeUpdate();
 
         GameController sugc = new ShapeUpGameController(model, gameViewSet);
 
@@ -1856,7 +1261,6 @@ private MyButton endRoundButton;
         model.setState(GameState.FIRST_TURN);
 
 
-//        comp.fakeUpdate2();
     }
 
 }

@@ -1,12 +1,5 @@
 package fr.utt.lo02.projet.junit;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import fr.utt.lo02.projet.board.AbstractBoard;
 import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.Coordinates;
@@ -17,6 +10,12 @@ import fr.utt.lo02.projet.strategy.Choice;
 import fr.utt.lo02.projet.strategy.DifficultStrategy;
 import fr.utt.lo02.projet.strategy.MoveRequest;
 import fr.utt.lo02.projet.strategy.PlaceRequest;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class DifficultStrategyTest {
 

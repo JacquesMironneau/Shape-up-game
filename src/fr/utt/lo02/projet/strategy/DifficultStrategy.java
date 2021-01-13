@@ -1,14 +1,12 @@
 package fr.utt.lo02.projet.strategy;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import fr.utt.lo02.projet.board.AbstractBoard;
 import fr.utt.lo02.projet.board.Card;
 import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.board.visitor.IBoardVisitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DifficultStrategy implements PlayerStrategy {
 	

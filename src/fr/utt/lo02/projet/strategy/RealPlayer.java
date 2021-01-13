@@ -1,14 +1,7 @@
 package fr.utt.lo02.projet.strategy;
 
 import fr.utt.lo02.projet.board.AbstractBoard;
-import fr.utt.lo02.projet.board.Card;
-import fr.utt.lo02.projet.board.Coordinates;
 import fr.utt.lo02.projet.board.BoardEmptyException;
-
-import java.util.Scanner;
-
-import static com.diogonunes.jcolor.Ansi.colorize;
-import static com.diogonunes.jcolor.Attribute.GREEN_TEXT;
 
 /**
  * Represent the strategy for a real player.

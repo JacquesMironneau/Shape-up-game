@@ -10,12 +10,8 @@ import fr.utt.lo02.projet.board.visitor.ScoreCalculatorVisitor;
 import fr.utt.lo02.projet.board.visitor.ScoreCalculatorWithBonusVisitor;
 import fr.utt.lo02.projet.game.*;
 
-import javax.sound.sampled.*;
 import javax.swing.*;
-
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
@@ -212,7 +208,7 @@ public class InitController
                 }
             }
             Set<GameView> gameViewSet = new HashSet<>();
-            RectangleBoardFrameTest hmiView = new RectangleBoardFrameTest(board, game);
+            SwingHmiView hmiView = new SwingHmiView(board, game);
             GameConsoleView consoleView = new GameConsoleView(game, board);
 
             gameViewSet.add(hmiView);
@@ -291,7 +287,7 @@ public class InitController
         icv.add(v);
 
         frame.add(view);
-        frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.pack();
         frame.setLocationRelativeTo(null);

@@ -1,6 +1,6 @@
 package fr.utt.lo02.projet.strategy;
 
-import java.awt.Font;
+import java.awt.*;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;

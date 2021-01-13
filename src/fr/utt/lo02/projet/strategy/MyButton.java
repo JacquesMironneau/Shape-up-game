@@ -1,11 +1,7 @@
 package fr.utt.lo02.projet.strategy;
 
-import java.awt.Color;
-import java.awt.Cursor;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.SwingConstants;
+import javax.swing.*;
+import java.awt.*;
 
 public class MyButton extends JButton {
 		 
@@ -16,8 +12,8 @@ public class MyButton extends JButton {
 	        setForeground(Color.WHITE);
 	         
 	        setOpaque(false);
-	        setContentAreaFilled(false); // On met à false pour empêcher le composant de peindre l'intérieur du JButton.
-	        setBorderPainted(false); // De même, on ne veut pas afficher les bordures.
+	        setContentAreaFilled(false); // On met ï¿½ false pour empï¿½cher le composant de peindre l'intï¿½rieur du JButton.
+	        setBorderPainted(false); // De mï¿½me, on ne veut pas afficher les bordures.
 	        setFocusPainted(false); // On n'affiche pas l'effet de focus.
 	         
 	        setHorizontalAlignment(SwingConstants.CENTER);

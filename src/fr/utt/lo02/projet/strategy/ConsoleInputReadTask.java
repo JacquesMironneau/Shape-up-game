@@ -1,6 +1,8 @@
 package fr.utt.lo02.projet.strategy;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.concurrent.Callable;
 
 public class ConsoleInputReadTask implements Callable<Integer> {

@@ -1,13 +1,9 @@
 package fr.utt.lo02.projet.strategy;
 
+import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.util.*;
-
-import fr.utt.lo02.projet.game.GameController;
-import fr.utt.lo02.projet.game.GameState;
-
-import javax.swing.*;
 
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
