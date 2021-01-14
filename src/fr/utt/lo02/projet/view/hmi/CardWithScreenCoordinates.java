@@ -4,16 +4,29 @@ import fr.utt.lo02.projet.model.board.Card;
 
 import java.util.Objects;
 
-public class CardImage {
+/**
+ * Represent a card and its screen coordinates
+ */
+public class CardWithScreenCoordinates
+{
 
+    /**
+     * Screen card abscissa
+     */
     private int x;
 
+    /**
+     * Screen card ordinate
+     */
     private int y;
 
+    /**
+     * the card
+     */
     private Card card;
 
 
-    public CardImage(int x, int y, Card card) {
+    public CardWithScreenCoordinates(int x, int y, Card card) {
         this.x = x;
         this.y = y;
         this.card = card;
@@ -47,7 +60,7 @@ public class CardImage {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CardImage cardImage = (CardImage) o;
+        CardWithScreenCoordinates cardImage = (CardWithScreenCoordinates) o;
         return x == cardImage.x &&
                 y == cardImage.y &&
                 Objects.equals(card, cardImage.card);

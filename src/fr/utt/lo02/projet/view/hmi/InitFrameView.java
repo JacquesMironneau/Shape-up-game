@@ -95,7 +95,7 @@ public class InitFrameView extends JPanel implements InitView
         setLayout(null);
 
         //Music
-//        playMusic();
+        playMusic();
 
         // Add Fonts
         try
@@ -132,7 +132,7 @@ public class InitFrameView extends JPanel implements InitView
         this.add(titlePage);
 
         // Add Official Rules Image
-        ImageIcon icon = new ImageIcon("res/rules.PNG");
+        ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("rules.PNG"));
         rulesImg = new JLabel();
         rulesImg.setIcon(icon);
         rulesImg.setBounds(274, 280, 860, 564);
@@ -158,7 +158,7 @@ public class InitFrameView extends JPanel implements InitView
 
         // ADD BUTONS
         // Start Menu
-        play = new MyButton("PLAY", "res/buttons/empty-button.png", "res/buttons/empty-button-hover.png", "res/buttons/empty-button-hover.png");
+        play = new MyButton("PLAY", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
         this.setMenuButton(play, 250, buttonFont);
         play.addActionListener(new ActionListener()
         {
@@ -175,7 +175,7 @@ public class InitFrameView extends JPanel implements InitView
                 }.start();
             }
         });
-        rules = new MyButton("RULES", "res/buttons/empty-button.png", "res/buttons/empty-button-hover.png", "res/buttons/empty-button-hover.png");
+        rules = new MyButton("RULES", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
         this.setMenuButton(rules, 370, buttonFont);
         rules.addActionListener(new ActionListener()
         {
@@ -192,7 +192,7 @@ public class InitFrameView extends JPanel implements InitView
                 }.start();
             }
         });
-        credits = new MyButton("CREDITS", "res/buttons/empty-button.png", "res/buttons/empty-button-hover.png", "res/buttons/empty-button-hover.png");
+        credits = new MyButton("CREDITS", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
         this.setMenuButton(credits, 490, buttonFont);
         credits.addActionListener(new ActionListener()
         {
@@ -209,7 +209,7 @@ public class InitFrameView extends JPanel implements InitView
                 }.start();
             }
         });
-        quit = new MyButton("QUIT", "res/buttons/empty-button.png", "res/buttons/empty-button-hover.png", "res/buttons/empty-button-hover.png");
+        quit = new MyButton("QUIT", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
         this.setMenuButton(quit, 610, buttonFont);
         quit.addActionListener(new ActionListener()
         {
@@ -228,7 +228,7 @@ public class InitFrameView extends JPanel implements InitView
         });
 
         // Game Mode Choice
-        normal = new MyButton("NORMAL MODE", "res/buttons/empty-button.png", "res/buttons/empty-button-hover.png", "res/buttons/empty-button-hover.png");
+        normal = new MyButton("NORMAL MODE", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
         this.setMenuButton(normal, 360, buttonFont);
         normal.addActionListener(new ActionListener()
         {
@@ -246,7 +246,7 @@ public class InitFrameView extends JPanel implements InitView
                 }.start();
             }
         });
-        advanced = new MyButton("ADVANCED MODE", "res/buttons/empty-button.png", "res/buttons/empty-button-hover.png", "res/buttons/empty-button-hover.png");
+        advanced = new MyButton("ADVANCED MODE", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
         this.setMenuButton(advanced, 480, buttonFont);
         advanced.addActionListener(new ActionListener()
         {
@@ -263,7 +263,7 @@ public class InitFrameView extends JPanel implements InitView
                 }.start();
             }
         });
-        noAdjacency = new MyButton("NO ADJACENCY MODE", "res/buttons/empty-button.png", "res/buttons/empty-button-hover.png", "res/buttons/empty-button-hover.png");
+        noAdjacency = new MyButton("NO ADJACENCY MODE", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
         this.setMenuButton(noAdjacency, 600, buttonFont);
         noAdjacency.addActionListener(new ActionListener()
         {
@@ -280,7 +280,7 @@ public class InitFrameView extends JPanel implements InitView
                 }.start();
             }
         });
-        backStartMenu = new MyButton("", "res/buttons/backward.png", "res/buttons/backward-hover.png", "res/buttons/backward-hover.png");
+        backStartMenu = new MyButton("", "buttons/backward.png", "buttons/backward-hover.png", "buttons/backward-hover.png");
         this.setBackButton(backStartMenu);
         backStartMenu.addActionListener(new ActionListener()
         {
@@ -299,7 +299,7 @@ public class InitFrameView extends JPanel implements InitView
         });
 
         // Score Calculator Choice
-        normalCalculator = new MyButton("NORMAL CALCULATOR", "res/buttons/empty-button.png", "res/buttons/empty-button-hover.png", "res/buttons/empty-button-hover.png");
+        normalCalculator = new MyButton("NORMAL CALCULATOR", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
         this.setMenuButton(normalCalculator, 360, buttonFont);
         normalCalculator.addActionListener(new ActionListener()
         {
@@ -316,7 +316,7 @@ public class InitFrameView extends JPanel implements InitView
                 }.start();
             }
         });
-        bonusCalculator = new MyButton("BONUS CALCULATOR", "res/buttons/empty-button.png", "res/buttons/empty-button-hover.png", "res/buttons/empty-button-hover.png");
+        bonusCalculator = new MyButton("BONUS CALCULATOR", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
         this.setMenuButton(bonusCalculator, 480, buttonFont);
         bonusCalculator.addActionListener(new ActionListener()
         {
@@ -333,7 +333,7 @@ public class InitFrameView extends JPanel implements InitView
                 }.start();
             }
         });
-        backGMChoice = new MyButton("", "res/buttons/backward.png", "res/buttons/backward-hover.png", "res/buttons/backward-hover.png");
+        backGMChoice = new MyButton("", "buttons/backward.png", "buttons/backward-hover.png", "buttons/backward-hover.png");
         this.setBackButton(backGMChoice);
         backGMChoice.addActionListener(new ActionListener()
         {
@@ -352,7 +352,7 @@ public class InitFrameView extends JPanel implements InitView
         });
 
         // Shape Board Choice
-        rectangle = new MyButton("", "res/buttons/shape-square.png", "res/buttons/shape-square-hover.png", "res/buttons/shape-square-hover.png");
+        rectangle = new MyButton("", "buttons/shape-square.png", "buttons/shape-square-hover.png", "buttons/shape-square-hover.png");
         this.setShapeButton(rectangle, 360, buttonFont);
         rectangle.addActionListener(new ActionListener()
         {
@@ -369,7 +369,7 @@ public class InitFrameView extends JPanel implements InitView
                 }.start();
             }
         });
-        triangle = new MyButton("", "res/buttons/shape-triangle.png", "res/buttons/shape-triangle-hover.png", "res/buttons/shape-triangle-hover.png");
+        triangle = new MyButton("", "buttons/shape-triangle.png", "buttons/shape-triangle-hover.png", "buttons/shape-triangle-hover.png");
         this.setShapeButton(triangle, 490, buttonFont);
         triangle.addActionListener(new ActionListener()
         {
@@ -386,7 +386,7 @@ public class InitFrameView extends JPanel implements InitView
                 }.start();
             }
         });
-        circle = new MyButton("", "res/buttons/shape-circle.png", "res/buttons/shape-circle-hover.png", "res/buttons/shape-circle-hover.png");
+        circle = new MyButton("", "buttons/shape-circle.png", "buttons/shape-circle-hover.png", "buttons/shape-circle-hover.png");
         this.setShapeButton(circle, 620, buttonFont);
         circle.addActionListener(new ActionListener()
         {
@@ -403,7 +403,7 @@ public class InitFrameView extends JPanel implements InitView
                 }.start();
             }
         });
-        backSCChoice = new MyButton("", "res/buttons/backward.png", "res/buttons/backward-hover.png", "res/buttons/backward-hover.png");
+        backSCChoice = new MyButton("", "buttons/backward.png", "buttons/backward-hover.png", "buttons/backward-hover.png");
         this.setBackButton(backSCChoice);
         backSCChoice.addActionListener(new ActionListener()
         {
@@ -518,7 +518,7 @@ public class InitFrameView extends JPanel implements InitView
         comp3Difficult = new JCheckBox(" Difficult");
         comp3Difficult.setFont(buttonFont);
         setCheckBox(comp3Difficult, 1180, 725);
-        add = new MyButton("", "res/buttons/add.png", "res/buttons/add-hover.png", "res/buttons/add-hover.png");
+        add = new MyButton("", "buttons/add.png", "buttons/add-hover.png", "buttons/add-hover.png");
         add.setBounds(900, 370, 64, 64);
         add.setVisible(false);
         this.add(add);
@@ -577,7 +577,7 @@ public class InitFrameView extends JPanel implements InitView
                 }
             }
         });
-        minus = new MyButton("", "res/buttons/minus.png", "res/buttons/minus-hover.png", "res/buttons/minus-hover.png");
+        minus = new MyButton("", "buttons/minus.png", "buttons/minus-hover.png", "buttons/minus-hover.png");
         minus.setBounds(750, 370, 64, 64);
         minus.setVisible(false);
         this.add(minus);
@@ -642,7 +642,7 @@ public class InitFrameView extends JPanel implements InitView
                 }
             }
         });
-        add2 = new MyButton("", "res/buttons/add.png", "res/buttons/add-hover.png", "res/buttons/add-hover.png");
+        add2 = new MyButton("", "buttons/add.png", "buttons/add-hover.png", "buttons/add-hover.png");
         add2.setBounds(900, 565, 64, 64);
         add2.setVisible(false);
         this.add(add2);
@@ -725,7 +725,7 @@ public class InitFrameView extends JPanel implements InitView
                 }
             }
         });
-        minus2 = new MyButton("", "res/buttons/minus.png", "res/buttons/minus-hover.png", "res/buttons/minus-hover.png");
+        minus2 = new MyButton("", "buttons/minus.png", "buttons/minus-hover.png", "buttons/minus-hover.png");
         minus2.setBounds(750, 565, 64, 64);
         minus2.setVisible(false);
         this.add(minus2);
@@ -808,7 +808,7 @@ public class InitFrameView extends JPanel implements InitView
                 }
             }
         });
-        start = new MyButton("START THE GAME", "res/buttons/empty-button.png", "res/buttons/empty-button-hover.png", "res/buttons/empty-button-hover.png");
+        start = new MyButton("START THE GAME", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
         this.setMenuButton(start, 780, buttonFont);
         start.addActionListener(new ActionListener()
         {
@@ -994,7 +994,7 @@ public class InitFrameView extends JPanel implements InitView
                 }.start();
             }
         });
-        backSBChoice = new MyButton("", "res/buttons/backward.png", "res/buttons/backward-hover.png", "res/buttons/backward-hover.png");
+        backSBChoice = new MyButton("", "buttons/backward.png", "buttons/backward-hover.png", "buttons/backward-hover.png");
         this.setBackButton(backSBChoice);
         backSBChoice.addActionListener(new ActionListener()
         {
@@ -1276,8 +1276,8 @@ public class InitFrameView extends JPanel implements InitView
 
     public void setCheckBox(JCheckBox cb, int x, int y)
     {
-        ImageIcon checkbox = new ImageIcon("res/buttons/checkbox.png");
-        ImageIcon box = new ImageIcon("res/buttons/box.png");
+        ImageIcon checkbox = new ImageIcon(getClass().getClassLoader().getResource("buttons/checkbox.png"));
+        ImageIcon box = new ImageIcon(getClass().getClassLoader().getResource("buttons/box.png"));
         cb.setBounds(x, y, 200, 50);
         cb.setVisible(false);
         cb.setBackground(Color.LIGHT_GRAY);

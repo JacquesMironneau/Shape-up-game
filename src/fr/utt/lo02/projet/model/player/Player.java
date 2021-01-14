@@ -82,6 +82,10 @@ public abstract class Player
 
 	public Card getDrawCard()
 	{
+		if (playerHand.isEmpty())
+		{
+			return null;
+		}
 		return this.playerHand.get(getPlayerHand().size()-1);
 	}
 

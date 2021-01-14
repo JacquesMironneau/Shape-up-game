@@ -11,23 +11,60 @@ import fr.utt.lo02.projet.model.player.MoveRequest;
 import fr.utt.lo02.projet.model.player.PlaceRequest;
 import fr.utt.lo02.projet.model.player.PlayerHandEmptyException;
 import fr.utt.lo02.projet.model.player.RealPlayer;
-import fr.utt.lo02.projet.view.console.GameConsoleView;
 import fr.utt.lo02.projet.view.GameView;
+import fr.utt.lo02.projet.view.console.GameConsoleView;
 import fr.utt.lo02.projet.view.hmi.SwingHmiView;
 
 import java.util.Set;
 
+/**
+ * This class represent a game controller in the shape up game
+ * It is intended to work with 2 views (more precisely a console and a hmi one)
+ * and implements therefore a lock system which allow to play using both view in a concurrent way.
+ *
+ * The controller is here a state-machine, that changes the state of the model (here the AbstractShapeUpGame)
+ * the views are observing (Observer pattern) the model and thus are notified when the model changes its states
+ * they then call controller method and so on.
+ */
 public class ShapeUpGameController implements GameController
 {
 
+    /**
+     * the model used in the current game
+     */
     protected final AbstractShapeUpGame gameModel;
+
+    /**
+     * The views of the MVC pattern
+     */
     protected Set<GameView> view;
+
+    /**
+     * The last action, here used to make some decision based on previous and current state
+     */
     protected GameState lastAction;
 
-    protected boolean lock;
+    /**
+     * A lock used in the play method, allowing only one view (in the 2) to use this method
+     */
+    protected boolean playLock;
+
+    /**
+     * A lock used in the endTurn method, allowing only one view (in the 2) to use this method
+     */
     protected boolean endTurnLock;
+
+    /**
+     * A lock used in the endRound method, allowing only one view (in the 2) to use this method
+     */
     protected boolean endRoundLock;
 
+    /**
+     * Instantiate the controller, setting up the lock and model
+     *
+     * @param gameModel the game to use
+     * @param viewSet   the MVC views
+     */
     public ShapeUpGameController(AbstractShapeUpGame gameModel, Set<GameView> viewSet)
     {
 
@@ -35,11 +72,15 @@ public class ShapeUpGameController implements GameController
         this.gameModel = gameModel;
         this.gameModel.initRound();
         lastAction = GameState.FIRST_TURN;
-        lock = true;
+        // We here place playLock to true because the hmi view call this method after the call of the console
+        // and we want the hmi to trigger if the game should be played (after a button click from the user).
+        playLock = true;
+        // The others lock are set to false: the first view to call their associated method, block the other call
         endTurnLock = false;
         endRoundLock = false;
     }
 
+    @Override
     public synchronized void askChoice(int choiceNumber, int choice)
     {
         reset();
@@ -63,7 +104,7 @@ public class ShapeUpGameController implements GameController
         }
     }
 
-    // Called by event in case HMI
+    @Override
     public synchronized void askMove(int x, int y, int x2, int y2)
     {
         reset();
@@ -72,7 +113,6 @@ public class ShapeUpGameController implements GameController
 
         if (mrr == MoveRequestResult.MOVE_VALID)
         {
-            // Change game state step 2
             if (lastAction == GameState.PLACE_DONE)
             {
                 lastAction = GameState.END_TURN;
@@ -103,6 +143,7 @@ public class ShapeUpGameController implements GameController
         }
     }
 
+    @Override
     public synchronized void askPlace(int x, int y, int cardIndex)
     {
         reset();
@@ -166,6 +207,7 @@ public class ShapeUpGameController implements GameController
         }
     }
 
+    @Override
     public synchronized void endTurn()
     {
         if (!endTurnLock)
@@ -180,10 +222,10 @@ public class ShapeUpGameController implements GameController
                 gameModel.setState(GameState.END_ROUND);
             } else
             {
-                boolean oldLock = lock;
-                lock = false;
+                boolean oldLock = playLock;
+                playLock = false;
                 play();
-                lock = oldLock;
+                playLock = oldLock;
             }
 
         } else
@@ -194,17 +236,17 @@ public class ShapeUpGameController implements GameController
 
     }
 
-
+    @Override
     public synchronized void play()
     {
 
-        if (!lock)
+        if (!playLock)
         {
-            lock = true;
+            playLock = true;
             if (gameModel.getCurrentPlayer() instanceof RealPlayer)// If the player is real, give him the choice
             {
                 this.gameModel.drawCard();
-                gameModel.setState(GameState.CARD_DRAW);
+//                gameModel.setState(GameState.CARD_DRAW);
 
                 if (lastAction == GameState.FIRST_TURN)
                 {
@@ -218,7 +260,7 @@ public class ShapeUpGameController implements GameController
             } else
             {
                 this.gameModel.drawCard();
-                gameModel.setState(GameState.CARD_DRAW);
+//                gameModel.setState(GameState.CARD_DRAW);
 
                 try
                 {
@@ -230,11 +272,12 @@ public class ShapeUpGameController implements GameController
             }
         } else
         {
-            lock = false;
+            playLock = false;
         }
 
     }
 
+    @Override
     public synchronized void endRound()
     {
         if (!endRoundLock)
@@ -264,6 +307,7 @@ public class ShapeUpGameController implements GameController
 
     }
 
+    @Override
     public synchronized void endGame()
     {
         reset();
@@ -271,16 +315,23 @@ public class ShapeUpGameController implements GameController
         for (GameView view : view)
         {
             view.displayBoard();
-//			view.displayScoresEndRound();
         }
         gameModel.setState(GameState.VICTORY_CARD);
 
         gameModel.setState(GameState.END_GAME);
     }
 
+    /**
+     * This method handle the console view interruption:
+     * To put it shortly when the user can do an action (place,move) he has the choice to do it in console
+     * or in hmi. If he does the choice to do it in hmi, the controller needs to stop the console from reading input
+     * in the terminal. To do this, we interrupt the reading thread.
+     *
+     * @see fr.utt.lo02.projet.view.console.ConsoleInputReadTask for explanation on how the console handle
+     * the interruption
+     */
     protected void reset()
     {
-//        System.out.println(Thread.currentThread().getName());
         if (!Thread.currentThread().getName().equals(SwingHmiView.THREAD_FROM_GAME_VIEW_NAME))
         {
             return;

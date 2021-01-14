@@ -196,7 +196,7 @@ public abstract class AbstractShapeUpGame
 		if (!this.deck.isEmpty())
 		{
 			currentPlayer.drawCard(this.deck.poll());
-//			setState(GameState.CARD_DRAW);
+			setState(GameState.CARD_DRAW);
 		}
 	}
 

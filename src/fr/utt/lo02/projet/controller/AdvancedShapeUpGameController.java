@@ -9,6 +9,11 @@ import fr.utt.lo02.projet.view.GameView;
 
 import java.util.Set;
 
+/**
+ * Controller for the game used in the advanced mode
+ * The main changes are here when the card are draw since in the rules
+ * the card are drawn at the end of a turn and not at the beginning.
+ */
 public class AdvancedShapeUpGameController extends ShapeUpGameController
 {
     public AdvancedShapeUpGameController(AbstractShapeUpGame gameModel, Set<GameView> view)
@@ -20,9 +25,9 @@ public class AdvancedShapeUpGameController extends ShapeUpGameController
     public void play()
     {
 
-        if (!lock)
+        if (!playLock)
         {
-            lock = true;
+            playLock = true;
             if (gameModel.getCurrentPlayer() instanceof RealPlayer)// If the player is real, give him the choice
             {
                 if (lastAction == GameState.FIRST_TURN)
@@ -45,7 +50,7 @@ public class AdvancedShapeUpGameController extends ShapeUpGameController
             }
         } else
         {
-            lock = false;
+            playLock = false;
         }
     }
 
@@ -59,7 +64,6 @@ public class AdvancedShapeUpGameController extends ShapeUpGameController
             if (gameModel.getCurrentPlayer() instanceof RealPlayer)
             {
                 gameModel.drawCard();
-                gameModel.setState(GameState.CARD_DRAW);
             }
 
             gameModel.nextPlayer();
@@ -69,10 +73,10 @@ public class AdvancedShapeUpGameController extends ShapeUpGameController
                 gameModel.setState(GameState.END_ROUND);
             } else
             {
-                boolean oldLock = lock;
-                lock = false;
+                boolean oldLock = playLock;
+                playLock = false;
                 play();
-                lock = oldLock;
+                playLock = oldLock;
             }
         } else
         {

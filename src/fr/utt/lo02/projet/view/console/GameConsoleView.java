@@ -147,9 +147,11 @@ public class GameConsoleView implements GameView
             }
             case END_TURN -> this.controller.endTurn();
             case CARD_DRAW -> {
+                Card c = model.getCurrentPlayer().getDrawCard();
                 System.out.println(model.getCurrentPlayer().getName() + " you have draw");
-                // TODO: 1/7/21 add this (cause a strange bug)
-//				Card.printSingleCard(model.getCurrentPlayer().getDrawCard());
+                // TODO: 1/7/21 sometimes the card is placed before the display is set
+                Card.printSingleCard(c);
+
             }
             case END_ROUND -> {
                 System.out.println("The round is finished");

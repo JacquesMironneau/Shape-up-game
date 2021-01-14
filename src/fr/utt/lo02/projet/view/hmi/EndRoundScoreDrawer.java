@@ -9,7 +9,9 @@ import java.util.List;
 
 import static fr.utt.lo02.projet.view.hmi.SwingHmiView.PLAYER_HAND_Y;
 
-
+/**
+ * Draw the end round score using Graphics2D
+ */
 public class EndRoundScoreDrawer extends ScoreDrawer
 {
 
@@ -18,6 +20,12 @@ public class EndRoundScoreDrawer extends ScoreDrawer
         super(model);
     }
 
+    /**
+     * draw the end round scores, with the players' scores for this round
+     * and the winner announcement
+     *
+     * @param g2d the Graphics2D of the JPanel
+     * */
     public void drawEndRoundScores(Graphics2D g2d)
     {
 

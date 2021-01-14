@@ -17,6 +17,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+/**
+ * Test for special case of the difficult strategy (virtual player)
+ * Theses test are mainly limit test (for a almost full or empty and almost empty board)
+ */
 class DifficultStrategyTest {
 
 

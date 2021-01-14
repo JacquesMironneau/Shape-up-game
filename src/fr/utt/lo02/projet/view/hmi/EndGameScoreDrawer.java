@@ -7,6 +7,9 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Draw the end game score using Graphics2D
+ */
 public class EndGameScoreDrawer extends ScoreDrawer
 {
 
@@ -15,6 +18,11 @@ public class EndGameScoreDrawer extends ScoreDrawer
         super(model);
     }
 
+    /**
+     * draw the end game scores, with the players' scores for each rounds
+     *
+     * @param g2d the Graphics2D of the JPanel
+     */
     public void drawEndGameScores(Graphics2D g2d)
     {
 

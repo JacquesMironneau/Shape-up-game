@@ -10,11 +10,19 @@ import java.util.Objects;
 
 import static fr.utt.lo02.projet.view.hmi.SwingHmiView.*;
 
+/**
+ * Split the needed sprites for the SwingHmiView
+ */
 public class SpriteSplitter
 {
-    public java.util.List<Image> splitSprite()
+    /**
+     * Split the sprites of the cards (stones)
+     *
+     * @return list of stones image
+     */
+    public List<Image> splitSprite()
     {
-        int[][] spriteSheetCoords = {{0, 0, 32, 32}, {32, 0, 32, 32}, {64, 0, 32, 32},
+        int[][] spriteSheetCoordinates = {{0, 0, 32, 32}, {32, 0, 32, 32}, {64, 0, 32, 32},
                 {0, 32, 32, 32}, {32, 32, 32, 32}, {64, 32, 32, 32},
                 {0, 64, 32, 32}, {32, 64, 32, 32}, {64, 64, 32, 32},
 
@@ -35,7 +43,7 @@ public class SpriteSplitter
 
 
         List<Image> imgArray = new ArrayList<>();
-        for (int[] a : spriteSheetCoords)
+        for (int[] a : spriteSheetCoordinates)
         {
 
             Image img2 = img.getSubimage(a[0], a[1], a[2], a[3]);
@@ -46,6 +54,10 @@ public class SpriteSplitter
         return imgArray;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Image> splitSpriteHologram()
     {
         int[][] spriteSheetCoords = {
@@ -123,8 +135,7 @@ public class SpriteSplitter
         BufferedImage img = null;
         try
         {
-            System.out.println(getClass().getClassLoader().getResource("cards_rocks_rework.png"));
-            System.out.println(getClass().getResource("res/holo_card_anims_final.png"));
+            System.out.println(getClass().getClassLoader().getResource("anims/holo_card_anims_final.png"));
 
             img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("anims/holo_card_anims_final.png")));
         } catch (IOException e)

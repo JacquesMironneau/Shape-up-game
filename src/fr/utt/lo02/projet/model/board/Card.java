@@ -8,7 +8,7 @@ import static com.diogonunes.jcolor.Attribute.*;
 
 /**
  * Represents a card from the Game
- * A card is made of a color a shape and if its filled or not.
+ * A card is made of a color, a shape and if its filled or not.
  *
  * @author Baptiste, Jacques
  */
@@ -34,9 +34,9 @@ public class Card
     {HOLLOW, FILLED}
 
 
-    private Color color;
-    private Shape shape;
-    private Filling filling;
+    private final Color color;
+    private final Shape shape;
+    private final Filling filling;
 
     public Card(Color c, Shape s, Filling f)
     {
@@ -61,8 +61,16 @@ public class Card
         return filling;
     }
 
+    /**
+     * Print a card in terminal using ascii art
+     * @param card the card to print
+     */
     public static void printSingleCard(Card card)
     {
+        if (card == null)
+        {
+            return;
+        }
         printTop(card.getColor());
         System.out.println();
         printMiddle(card);
@@ -71,6 +79,10 @@ public class Card
         System.out.println();
     }
 
+    /**
+     * Print the bottom part of a card in terminal using ascii art
+     * @param color the color of the card
+     */
     public static void printBottom(Card.Color color)
     {
         switch (color)
@@ -80,7 +92,10 @@ public class Card
             case GREEN -> System.out.print(colorize("└─┘ ", GREEN_TEXT()));
         }
     }
-
+    /**
+     * Print the upper part of a card in terminal using ascii art
+     * @param color the color of the card
+     */
     public static void printTop(Card.Color color)
     {
         switch (color)
@@ -92,6 +107,11 @@ public class Card
 
     }
 
+    /**
+     * Print the middle part of a card in terminal using ascii art
+     * with the symbol, color and shape
+     * @param card the card
+     */
     public static void printMiddle(Card card)
     {
         StringBuilder buf = new StringBuilder();
@@ -133,8 +153,6 @@ public class Card
             case GREEN -> System.out.print(colorize(buf.toString(), GREEN_TEXT()));
             case RED -> System.out.print(colorize(buf.toString(), RED_TEXT()));
         }
-//		System.out.print(buf+" ");
-
     }
 
     @Override
