@@ -30,6 +30,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
+/**
+ * Game view using swing hmi
+ * this view is based on the Observer pattern, it basically receives events in the propertyChange method
+ * and then display and set the correct listener accordingly.
+ */
 public class SwingHmiView extends JPanel implements GameView, MouseListener, MouseMotionListener
 {
 
@@ -69,10 +74,10 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
 
     private final AbstractBoard boardModel;
 
-    private final CopyOnWriteArrayList<CardImage> boardView;
-    private final List<CardImage> handView;
+    private final CopyOnWriteArrayList<CardWithScreenCoordinates> boardView;
+    private final List<CardWithScreenCoordinates> handView;
 
-    private CardImage cardImage;
+    private CardWithScreenCoordinates cardImage;
     private boolean placementTime;
     private GameState gs;
     private List<Coordinates> goodRequestsScreen = new CopyOnWriteArrayList<>();
@@ -87,6 +92,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
     private MyButton moveButton;
     private MyButton placeButton;
     private MyButton endRoundButton;
+    private MyButton secondMoveButton;
     private BufferedImage backgroundImage;
 
     private final CoordinatesConvertor coordinatesConvertor;
@@ -111,10 +117,8 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
         spriteHologram = splitter.splitSpriteHologram();
         spriteGlitchAnimations = splitter.splitSpriteGlitchAnimations();
 
-        moveButton = new MyButton("", "res/buttons/move.png", "res/buttons/move_hover.png", "res/buttons/move_hover.png");
-        endTurnButton = new MyButton("", "res/buttons/end_turn.png", "res/buttons/end_turn_hover.png", "res/buttons/end_turn_hover.png");
-        placeButton = new MyButton("", "res/buttons/place.png", "res/buttons/place_hover.png", "res/buttons/place_hover.png");
-        endRoundButton = new MyButton("", "res/buttons/next_round.png", "res/buttons/next_round_hover.png", "res/buttons/next_round_hover.png");
+        instantiateButtons();
+
 
         UIManager.put("Slider.onlyLeftMouseButtonDrag", Boolean.TRUE);
 
@@ -125,7 +129,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
         endRoundScoreDrawer = new EndRoundScoreDrawer(model);
         try
         {
-            backgroundImage = ImageIO.read(getClass().getClassLoader().getResource(BACKGROUND_PATH));
+            backgroundImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource(BACKGROUND_PATH)));
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -139,6 +143,11 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
     }
 
 
+    /**
+     * Observable method from the game model
+     * @param evt the event observed in the model
+     * @see GameState
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt)
     {
@@ -148,15 +157,15 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
         switch (gs)
         {
             case MOVE -> {
-//                endRoundButton.setVisible(false);
-//                moveButton.setVisible(false);
-//                placeButton.setVisible(false);
-                remove(endRoundButton);
-                remove(moveButton);
-                remove(placeButton);
-                remove(endTurnButton);
-                if (prevGs != GameState.MOVE) //TODO or failed
+                endRoundButton.setVisible(false);
+                moveButton.setVisible(false);
+                placeButton.setVisible(false);
+                secondMoveButton.setVisible(false);
+                endTurnButton.setVisible(false);
+                if (prevGs != GameState.MOVE)
+                {
                     shouldDrawText = true;
+                }
                 placementTime = true;
 
                 generateFreeLocation();
@@ -170,24 +179,28 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
 
             }
             case PLACE -> {
-                remove(moveButton);
-                remove(placeButton);
-                remove(endTurnButton);
+                moveButton.setVisible(false);
+                placeButton.setVisible(false);
+                secondMoveButton.setVisible(false);
+                endTurnButton.setVisible(false);
+
                 if (prevGs != GameState.PLACE)
                     shouldDrawText = true;
                 placementTime = true;
 
                 generateFreeLocation();
+
                 removeMouseMotionListener(this);
                 removeMouseListener(this);
+
                 addMouseListener(this);
                 addMouseMotionListener(this);
+
                 updateDisplayBoard();
                 updateDisplayHand();
 
             }
             case PLACE_DONE -> {
-
 
                 if (model.getCurrentPlayer() instanceof VirtualPlayer && !SwingUtilities.isEventDispatchThread())
                 {
@@ -300,10 +313,13 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
 
             }
             case FIRST_CHOICE -> {
-                remove(endRoundButton);
-                remove(moveButton);
-                remove(placeButton);
-                remove(endTurnButton);
+
+                endRoundButton.setVisible(false);
+                moveButton.setVisible(false);
+                placeButton.setVisible(false);
+                secondMoveButton.setVisible(false);
+                endTurnButton.setVisible(false);
+
                 displayScores = false;
 
                 removeMouseListener(this);
@@ -315,88 +331,28 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
                 repaint();
 
 
-                placeButton = new MyButton("", "res/buttons/place.png", "res/buttons/place_hover.png", "res/buttons/place_hover.png");
-                moveButton = new MyButton("", "res/buttons/move.png", "res/buttons/move_hover.png", "res/buttons/move_hover.png");
-                placeButton.addActionListener(actionEvent -> {
-
-                    remove(moveButton);
-                    remove(placeButton);
-                    new Thread(THREAD_FROM_GAME_VIEW_NAME)
-                    {
-                        @Override
-                        public void run()
-                        {
-                            controller.askChoice(1, 2);
-                        }
-                    }.start();
-
-                });
-
-                moveButton.addActionListener(actionEvent -> {
-
-                    remove(moveButton);
-                    remove(placeButton);
-                    new Thread(THREAD_FROM_GAME_VIEW_NAME)
-                    {
-                        @Override
-                        public void run()
-                        {
-                            controller.askChoice(1, 1);
-                        }
-                    }.start();
-
-                });
-                placeButton.setBounds(1000, PLAYER_HAND_Y - 80, 293, 100);
-                moveButton.setBounds(1000, PLAYER_HAND_Y + 50, 293, 100);
-
-                add(placeButton);
-                add(moveButton);
+                placeButton.setVisible(true);
+                moveButton.setVisible(true);
+                placeButton.validate();
+                moveButton.validate();
+                validate();
+                repaint();
 
             }
             case SECOND_CHOICE -> {
-                remove(endRoundButton);
-                remove(moveButton);
-                remove(placeButton);
-                remove(endTurnButton);
+
+                endRoundButton.setVisible(false);
+                moveButton.setVisible(false);
+                placeButton.setVisible(false);
+                secondMoveButton.setVisible(false);
+                endTurnButton.setVisible(false);
+
                 removeMouseListener(this);
                 removeMouseMotionListener(this);
 
-                endTurnButton = new MyButton("", "res/buttons/end_turn.png", "res/buttons/end_turn_hover.png", "res/buttons/end_turn_hover.png");
-                moveButton = new MyButton("", "res/buttons/move.png", "res/buttons/move_hover.png", "res/buttons/move_hover.png");
-                endTurnButton.addActionListener(actionEvent -> {
 
-                    remove(moveButton);
-                    remove(endTurnButton);
-                    new Thread(THREAD_FROM_GAME_VIEW_NAME)
-                    {
-                        @Override
-                        public void run()
-                        {
-                            controller.askChoice(2, 2);
-                        }
-                    }.start();
-
-                });
-
-                moveButton.addActionListener(actionEvent -> {
-                    remove(moveButton);
-                    remove(endTurnButton);
-                    new Thread(THREAD_FROM_GAME_VIEW_NAME)
-                    {
-                        @Override
-                        public void run()
-                        {
-                            controller.askChoice(2, 1);
-                        }
-                    }.start();
-
-
-                });
-                endTurnButton.setBounds(1000, PLAYER_HAND_Y + 50, 293, 100);
-                moveButton.setBounds(1000, PLAYER_HAND_Y - 80, 293, 100);
-
-                add(endTurnButton);
-                add(moveButton);
+                endTurnButton.setVisible(true);
+                secondMoveButton.setVisible(true);
 
             }
             case END_TURN -> {
@@ -475,11 +431,19 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
 
     }
 
+    @Override
     public void mouseClicked(MouseEvent mouseEvent)
     {
 
     }
 
+    /**
+     * Mouse event to get the card under cursor, if a card exists, allow it to be dragged and remove it
+     * from its previous location
+     *
+     * @param mouseEvent mouse event of the pressed card
+     */
+    @Override
     public void mousePressed(MouseEvent mouseEvent)
     {
 
@@ -490,7 +454,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
         if (placementTime)
         {
 
-            for (CardImage cardImage : handView)
+            for (CardWithScreenCoordinates cardImage : handView)
             {
                 if (mouseEvent.getX() >= cardImage.getX() && mouseEvent.getX() <= cardImage.getX() + CARD_WIDTH)
                 {
@@ -514,8 +478,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
         } // Select card among board
         else
         {
-            // TODO optimize
-            for (CardImage cardImage : boardView)
+            for (CardWithScreenCoordinates cardImage : boardView)
             {
 
                 if (mouseEvent.getX() >= cardImage.getX() && mouseEvent.getX() <= cardImage.getX() + CARD_WIDTH)
@@ -548,6 +511,12 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
 
     }
 
+    /**
+     * Update the coordinates of cardImage
+     *
+     * @param mouseEvent mouse event of the dragged card
+     */
+    @Override
     public void mouseDragged(MouseEvent mouseEvent)
     {
 
@@ -556,12 +525,18 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
 
         currX = mouseEvent.getX();
         currY = mouseEvent.getY();
-        cardImage = new CardImage(currX + xadj, currY + yadj, cardImage.getCard());
+        cardImage.setX(currX + xadj);
+        cardImage.setY(currY+yadj);
 
         repaint();
     }
 
-    //TODO refactor
+    /**
+     * Released the dragged card and try to fit it in a correct location
+     * if not, put it back in the hand or its previous location.
+     *
+     * @param mouseEvent mouse event of the released card
+     */
     public void mouseReleased(MouseEvent mouseEvent)
     {
 
@@ -577,7 +552,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
             {
                 if (mouseEvent.getY() >= TOP_BOARD_OFFSET && mouseEvent.getY() <= PLAYER_HAND_Y)
                 {
-                    boardView.add(new CardImage(LEFT_BOARD_OFFSET, TOP_BOARD_OFFSET, cardImage.getCard()));
+                    boardView.add(new CardWithScreenCoordinates(LEFT_BOARD_OFFSET, TOP_BOARD_OFFSET, cardImage.getCard()));
                     hasBeenPlaced = true;
                     setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
@@ -596,7 +571,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
             }
             if (!hasBeenPlaced)
             {
-                handView.add(new CardImage(prevX, prevY, cardImage.getCard()));
+                handView.add(new CardWithScreenCoordinates(prevX, prevY, cardImage.getCard()));
             }
             return;
 
@@ -609,7 +584,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
             {
                 if (mouseEvent.getY() >= cimage.getY() && mouseEvent.getY() <= cimage.getY() + CARD_HEIGHT)
                 {
-                    boardView.add(new CardImage(cimage.getX(), cimage.getY(), cardImage.getCard()));
+                    boardView.add(new CardWithScreenCoordinates(cimage.getX(), cimage.getY(), cardImage.getCard()));
                     hasBeenPlaced = true;
                     break;
                 }
@@ -621,11 +596,11 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
         {
             if (placementTime)
             {
-                handView.add(new CardImage(prevX, prevY, cardImage.getCard()));
+                handView.add(new CardWithScreenCoordinates(prevX, prevY, cardImage.getCard()));
 
             } else
             {
-                boardView.add(new CardImage(prevX, prevY, cardImage.getCard()));
+                boardView.add(new CardWithScreenCoordinates(prevX, prevY, cardImage.getCard()));
 
             }
 
@@ -690,7 +665,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
 
     }
 
-
+    @Override
     public void mouseMoved(MouseEvent mouseEvent)
     {
 
@@ -712,33 +687,18 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
     @Override
     public void displayScoresEndRound()
     {
-        remove(endRoundButton);
-        remove(moveButton);
-        remove(placeButton);
-        remove(endTurnButton);
+
+        endRoundButton.setVisible(false);
+        moveButton.setVisible(false);
+        placeButton.setVisible(false);
+        secondMoveButton.setVisible(false);
+        endTurnButton.setVisible(false);
         displayScores = true;
 
         repaint();
-        endRoundButton = new MyButton("", "res/buttons/next_round.png", "res/buttons/next_round_hover.png", "res/buttons/next_round_hover.png");
-        //repaint();
-        endRoundButton.setBounds(499, 760, 407, 100);
 
-        endRoundButton.addActionListener(actionEvent -> {
 
-            remove(endRoundButton);
-            displayScores = false;
-            repaint();
-            new Thread(THREAD_FROM_GAME_VIEW_NAME)
-            {
-                @Override
-                public void run()
-                {
-                    controller.play();
-                }
-            }.start();
-
-        });
-        add(endRoundButton);
+        endRoundButton.setVisible(true);
     }
 
     @Override
@@ -755,6 +715,10 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
     }
 
 
+    /**
+     * Update the content of the handView based on the model current player hand
+     * and repaint the panel
+     */
     private void updateDisplayHand()
     {
 
@@ -765,11 +729,15 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
         for (int j = 0; j < playerHand.size(); j++)
         {
             int x = j * (CARD_WIDTH + OFFSET_X) + 100;
-            handView.add(new CardImage(x, PLAYER_HAND_Y, playerHand.get(j)));
+            handView.add(new CardWithScreenCoordinates(x, PLAYER_HAND_Y, playerHand.get(j)));
         }
         repaint();
     }
 
+    /**
+     * update the content of boardView based on the model board
+     * and then repaint the panel
+     */
     private void updateDisplayBoard()
     {
 
@@ -799,7 +767,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
                 Card card = placedCards.get(new Coordinates(i, j));
 
                 Coordinates coord = coordinatesConvertor.gameToScreenCoordinates(i, j, minAbscissa, maxOrdinate);
-                boardView.add(new CardImage(coord.getX(), coord.getY(), card));
+                boardView.add(new CardWithScreenCoordinates(coord.getX(), coord.getY(), card));
 
             }
         }
@@ -807,10 +775,15 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
         repaint();
     }
 
-    // Draw the board + the dragged card
+
+    /**
+     * Draw the board and the animation if needed
+     *
+     * @param g2d graphics2D of the panel
+     */
     public void draw(Graphics2D g2d)
     {
-        for (CardImage cardImage : boardView)
+        for (CardWithScreenCoordinates cardImage : boardView)
         {
             Card card = cardImage.getCard();
             int x = cardImage.getX();
@@ -845,6 +818,11 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
         validate();
     }
 
+    /**
+     * Draw the moving/dragged card
+     *
+     * @param g2d graphics2D of the panel
+     */
     private void drawDraggedCard(Graphics2D g2d)
     {
         if (cardImage != null)
@@ -853,6 +831,11 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
         }
     }
 
+    /**
+     * Draw the free emplacement position for placement or movement
+     *
+     * @param g2d graphics2D of the panel
+     */
     private void drawFreeLocation(Graphics2D g2d)
     {
         if (gs == GameState.MOVE || gs == GameState.PLACE || gs == GameState.FIRST_TURN)
@@ -875,6 +858,11 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
         }
     }
 
+    /**
+     * Draw text instruction to help player to make his choice
+     *
+     * @param g2d graphics2D of the panel
+     */
     private void drawTextInstruction(Graphics2D g2d)
     {
         if (shouldDrawText)
@@ -907,20 +895,35 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
         }
     }
 
+    /**
+     * Draw the background image
+     *
+     * @param g2d graphics2D of the panel
+     */
     private void drawBackground(Graphics2D g2d)
     {
         g2d.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), null);
     }
 
+    /**
+     * Draw the current player hand on the bottom left of the screen
+     *
+     * @param g2d graphics2D of the panel
+     */
     public void drawHand(Graphics2D g2d)
     {
-        for (CardImage cardImage : handView)
+        for (CardWithScreenCoordinates cardImage : handView)
         {
             g2d.drawImage(cardImageMatcher(cardImage.getCard())[0], cardImage.getX(), cardImage.getY(), null);
         }
 
     }
 
+    /**
+     * Draw the victory card of the current player on the top left of the screen
+     *
+     * @param g2d graphics2D of the panel
+     */
     private void drawVictoryCard(Graphics2D g2d)
     {
         Card victoryCard = null;
@@ -1217,7 +1220,117 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
         }
     }
 
+    /**
+     * Create the needed buttons with their location and their associated action listener
+     */
+    private void instantiateButtons()
+    {
+        moveButton = new MyButton("", "buttons/move.png", "buttons/move_hover.png", "buttons/move_hover.png");
+        secondMoveButton = new MyButton("", "buttons/move.png", "buttons/move_hover.png", "buttons/move_hover.png");
 
+        endTurnButton = new MyButton("", "buttons/end_turn.png", "buttons/end_turn_hover.png", "buttons/end_turn_hover.png");
+        placeButton = new MyButton("", "buttons/place.png", "buttons/place_hover.png", "buttons/place_hover.png");
+        endRoundButton = new MyButton("", "buttons/next_round.png", "buttons/next_round_hover.png", "buttons/next_round_hover.png");
+
+
+        // hide every button at the beginning
+        moveButton.setVisible(false);
+        endTurnButton.setVisible(false);
+        placeButton.setVisible(false);
+        endRoundButton.setVisible(false);
+        secondMoveButton.setVisible(false);
+
+
+        // Set them to their correct location
+        placeButton.setBounds(1000, PLAYER_HAND_Y - 80, 293, 100);
+        moveButton.setBounds(1000, PLAYER_HAND_Y + 50, 293, 100);
+        endTurnButton.setBounds(1000, PLAYER_HAND_Y + 50, 293, 100);
+        secondMoveButton.setBounds(1000, PLAYER_HAND_Y - 80, 293, 100);
+        endRoundButton.setBounds(499, 760, 407, 100);
+
+        // add them in the panel
+        add(moveButton);
+        add(secondMoveButton);
+        add(placeButton);
+        add(endRoundButton);
+        add(endTurnButton);
+
+        // Set correct listener for each of them
+        placeButton.addActionListener(actionEvent -> {
+
+
+            moveButton.setVisible(false);
+            placeButton.setVisible(false);
+            new Thread(THREAD_FROM_GAME_VIEW_NAME)
+            {
+                @Override
+                public void run()
+                {
+                    controller.askChoice(1, 2);
+                }
+            }.start();
+        });
+
+        moveButton.addActionListener(actionEvent -> {
+            moveButton.setVisible(false);
+            placeButton.setVisible(false);
+            new Thread(THREAD_FROM_GAME_VIEW_NAME)
+            {
+                @Override
+                public void run()
+                {
+                    controller.askChoice(1, 1);
+                }
+            }.start();
+        });
+
+
+        endTurnButton.addActionListener(actionEvent -> {
+            moveButton.setVisible(false);
+            endTurnButton.setVisible(false);
+            new Thread(THREAD_FROM_GAME_VIEW_NAME)
+            {
+                @Override
+                public void run()
+                {
+                    controller.askChoice(2, 2);
+                }
+            }.start();
+        });
+
+        secondMoveButton.addActionListener(actionEvent -> {
+            moveButton.setVisible(false);
+            endTurnButton.setVisible(false);
+            new Thread(THREAD_FROM_GAME_VIEW_NAME)
+            {
+                @Override
+                public void run()
+                {
+                    controller.askChoice(2, 1);
+                }
+            }.start();
+        });
+
+        endRoundButton.addActionListener(actionEvent -> {
+            endRoundButton.setVisible(false);
+            displayScores = false;
+            repaint();
+            new Thread(THREAD_FROM_GAME_VIEW_NAME)
+            {
+                @Override
+                public void run()
+                {
+                    controller.play();
+                }
+            }.start();
+
+        });
+    }
+
+
+    /**
+     * Entry point for the game only (without the main menu)
+     */
     public static void main(String[] args)
     {
 
