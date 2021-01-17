@@ -6,14 +6,17 @@ import fr.utt.lo02.projet.model.game.ChoiceOrder;
 import fr.utt.lo02.projet.model.strategy.*;
 
 /**
- * Represent a virtual player (It uses a predefined strategy).
+ * Represents a virtual player (It uses a predefined strategy: random or difficult).
+ *	It extends Player to follow the player's construction. 
  *
  * @author Baptiste, Jacques
  */
-
 public class VirtualPlayer extends Player
 {
 
+	/**
+	 * The strategy of the player.
+	 */
 	private PlayerStrategy strategy;
 
 	public VirtualPlayer(String name, AbstractBoard b, PlayerStrategy strategy)
@@ -22,12 +25,20 @@ public class VirtualPlayer extends Player
 		this.strategy = strategy;
 	}
 
+	/**
+	 * Ask the player if he wants to place or move a card, or end his turn.
+	 * @param choiceNumber player's choice.
+	 */
 	@Override
 	public Choice askChoice(ChoiceOrder choiceNumber)
 	{
 		return strategy.makeChoice(super.board, super.getVictoryCard(), super.getPlayerHand()) ;
 	}
 
+	/**
+	 * Ask a player to place a card
+	 * So pick one card and select where he wants to put it.
+	 */
 	@Override
 	public PlaceRequest askPlaceCard() throws PlayerHandEmptyException
 	{
@@ -35,6 +46,10 @@ public class VirtualPlayer extends Player
 		return this.strategy.makePlaceRequest(super.board, super.getVictoryCard(), super.getPlayerHand());
 	}
 
+	/**
+	 * Ask a player to move a card.
+	 * So pick one card and select where he wants to move it.
+	 */
 	@Override
 	public MoveRequest askMoveCard() throws BoardEmptyException
 	{

@@ -10,6 +10,11 @@ import fr.utt.lo02.projet.model.player.Player;
 
 import java.util.List;
 
+/**
+ * Represents the no adjacency mode of the game. It's the same as normal mode but without adjacency rule. It extends ShapeUpGame to follow the normal mode game's construction.
+ * @author Baptiste, Jacques
+ *
+ */
 public class ShapeUpGameWithoutAdjacencyRule extends ShapeUpGame
 {
 	public ShapeUpGameWithoutAdjacencyRule(IBoardVisitor visitor, List<Player> players, AbstractBoard board)
@@ -17,6 +22,12 @@ public class ShapeUpGameWithoutAdjacencyRule extends ShapeUpGame
 		super(visitor, players, board);
 	}
 
+	/**
+	 * Request to place a card from the player hand to a position on the board. We remove adjacency verification from the normal mode. 
+	 * 
+	 * @param placeRequest place request from one player
+	 * @return if the card has been placed or not
+	 */
 	public PlaceRequestResult placeCardRequest(PlaceRequest placeRequest)
 	{
 
@@ -42,9 +53,9 @@ public class ShapeUpGameWithoutAdjacencyRule extends ShapeUpGame
 	}
 
 	/**
-	 * * Request to move a existing card from the board to another position
+	 * Request to move an existing card from the board to another position. We remove adjacency verification from the normal mode. 
 	 *
-	 * @param moveRequest player request
+	 * @param moveRequest player request from one player
 	 * @return if the card has been moved or not
 	 */
 	public MoveRequestResult moveCardRequest(MoveRequest moveRequest)

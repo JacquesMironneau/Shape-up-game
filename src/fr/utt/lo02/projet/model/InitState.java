@@ -1,5 +1,10 @@
 package fr.utt.lo02.projet.model;
 
+/**
+ * Lists all states of the initialization menu.
+ * @author Baptiste, Jacques
+ * There is 9 different states.
+ */
 public enum InitState
 {
     START_MENU,

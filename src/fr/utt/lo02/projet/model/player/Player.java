@@ -9,20 +9,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represent the player strategy in which we can define
- * It is an interface because we have 2 player strategies, a real player and a virtual player.
+ * Represents a player with all his characteristics and his actions.
+ * It is abstract because we have 2 types of player, a real player and a virtual player.
  *
  * @author Baptiste, Jacques
  */
-
 public abstract class Player
 {
+	/**
+	 * Player's name.
+	 */
 	private final String name;
+	
+	/**
+	 * Player's hand.
+	 */
 	protected List<Card> playerHand;
 
-
+	/**
+	 * Player's scores, one at each round of the game.
+	 */
 	private final List<Integer> scoresRound;
+	
+	/**
+	 * Player's victory card.
+	 */
 	private Card victoryCard;
+	
+	/**
+	 * The board of the game.
+	 */
 	protected AbstractBoard board;
 
 	public Player(String name, AbstractBoard b)
@@ -32,26 +48,27 @@ public abstract class Player
 		this.scoresRound = new ArrayList<>();
 		this.playerHand = new ArrayList<>();
 	}
+	
 	/**
-	 * Ask the player if he wants to place or move a card
-	 * @param choiceNumber
+	 * Ask the player if he wants to place or move a card, or end his turn.
+	 * @param choiceNumber player's choice.
 	 */
 	public abstract Choice askChoice(ChoiceOrder choiceNumber);
 
 	/**
 	 * Ask a player to place a card
-	 * So pick one card and select where he wants to put it
+	 * So pick one card and select where he wants to put it.
 	 */
 	public  abstract PlaceRequest askPlaceCard() throws PlayerHandEmptyException;
 
 	/**
-	 * Ask a player to move a card
-	 * So pick one card and select where he wants to move it
+	 * Ask a player to move a card.
+	 * So pick one card and select where he wants to move it.
 	 */
 	public abstract MoveRequest askMoveCard() throws BoardEmptyException;
 
 	/**
-	 * Display the scores to player
+	 * Display player's round score
 	 */
 	public void displayRoundScore()
 	{
@@ -59,6 +76,9 @@ public abstract class Player
 		System.out.println(name + " score : "+ score);
 	}
 
+	/**
+	 * Display all player's round scores and player's final score
+	 */
 	public void displayFinalScore() {
 		int roundNumber=1;
 		int finalScore=0;
@@ -75,6 +95,10 @@ public abstract class Player
 		this.victoryCard = victoryCard;
 	}
 
+	/**
+	 * Makes the player draw a card
+	 * @param card the card he draws
+	 */
 	public void drawCard(Card card)
 	{
 		this.playerHand.add(card);
@@ -89,6 +113,10 @@ public abstract class Player
 		return this.playerHand.get(getPlayerHand().size()-1);
 	}
 
+	/**
+	 * Add the current round's score to the list scoresRound.
+	 * @param scoreOfCurrentRound
+	 */
 	public void addRoundScore(int scoreOfCurrentRound)
 	{
 		this.scoresRound.add(scoreOfCurrentRound);

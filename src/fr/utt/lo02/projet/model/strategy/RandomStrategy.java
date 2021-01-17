@@ -10,6 +10,12 @@ import fr.utt.lo02.projet.model.player.PlaceRequest;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a random strategy. As its name indicates, it takes random decisions.
+ * It implements PlayerStrategy to follows the strategy's construction.
+ * @author Baptiste, Jacques
+ *
+ */
 public class RandomStrategy implements PlayerStrategy
 {
 	
@@ -17,6 +23,14 @@ public class RandomStrategy implements PlayerStrategy
 	
 	}
 	
+	/**
+	 * Chooses one option to play a turn (place then end turn, place then move, move then place).
+	 * 
+	 * @param board the board of the round.
+	 * @param victoryCard the victory card of the player.
+	 * @param playerHand the hand of the player.
+	 * @return the choice of the virtual player.
+	 */
 	@Override
 	public Choice makeChoice(AbstractBoard board, Card victoryCard, List<Card> playerHand)
 	{
@@ -28,6 +42,14 @@ public class RandomStrategy implements PlayerStrategy
 		}
 	}
 
+	/**
+	 * Makes a place request on the board.
+	 * 
+	 * @param board the board of the round.
+	 * @param victoryCard the victory card of the player.
+	 * @param playerHand the hand of the player.
+	 * @return return a place request.
+	 */
 	@Override
 	public PlaceRequest makePlaceRequest(AbstractBoard board, Card victoryCard, List<Card> playerHand)
 	{
@@ -52,6 +74,14 @@ public class RandomStrategy implements PlayerStrategy
 		return new PlaceRequest(randomCoord, card);
 	}
 
+	/**
+	 * Makes a move request from an placed card to an empty case on the board
+	 * 
+	 * @param board the board of the round.
+	 * @param victoryCard the victory card of the player.
+	 * @param playerHand the hand of the player.
+	 * @return return a move request.
+	 */
 	@Override
 	public MoveRequest makeMoveRequest(AbstractBoard board, Card victoryCard, List<Card> playerHand)
 	{

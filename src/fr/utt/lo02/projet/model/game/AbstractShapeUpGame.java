@@ -11,9 +11,16 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.*;
 
+/**
+ * Represent the operation of the game with all the actions to be done to play one game.
+ * @author Baptiste, Jacques
+ * It is abstract because there are different game's modes.
+ */
 public abstract class AbstractShapeUpGame
 {
-
+	/**
+	 * Number of rounds in one game.
+	 */
 	public static final int MAX_ROUND_NUMBER = 4;
 
 	/**
@@ -22,7 +29,7 @@ public abstract class AbstractShapeUpGame
 	protected int roundNumber;
 
 	/**
-	 * is the current turn the first one ever played (by one of the player)
+	 * Is the current turn the first one ever played (by one of the player)
 	 */
 	protected boolean isFirstTurn;
 
@@ -47,10 +54,19 @@ public abstract class AbstractShapeUpGame
 	 */
 	private final IBoardVisitor visitor;
 
+	/**
+	 * The state of the game. Allows you to know what action needs to be done.
+	 */
 	protected GameState state;
 
+	/**
+	 * Player which is playing now.
+	 */
 	protected Player currentPlayer;
 
+	/**
+	 * It's the observable part. Used to notify a state's change.
+	 */
 	private PropertyChangeSupport support;
 
 	public AbstractShapeUpGame(IBoardVisitor visitor, List<Player> players, AbstractBoard board)
@@ -123,23 +139,20 @@ public abstract class AbstractShapeUpGame
 		{
 			board.addCard(coord, aCard);
 			currentPlayer.getPlayerHand().remove(aCard);
-//			System.out.println("CARD SIZE" + currentPlayer.getPlayerHand().size());
-			//System.out.println("[LOG] "+ aCard + " has been placed at " + coord);
 			this.isFirstTurn = false;
 			return PlaceRequestResult.CORRECT_PLACEMENT;
 		}
 
 		if (!cardAdjacentToAnExistingCard)
 		{
-//			player.PlaceResult(PlaceRequestResult.CARD_NOT_ADJACENT);
 			return PlaceRequestResult.CARD_NOT_ADJACENT;
 		}
-//		player.PlaceResult(PlaceRequestResult.CARD_NOT_IN_THE_LAYOUT);
+		
 		return PlaceRequestResult.CARD_NOT_IN_THE_LAYOUT;
 	}
 
 	/**
-	 * * Request to move a existing card from the board to another position
+	 * * Request to move an existing card from the board to another position
 	 *
 	 * @param moveRequest player request
 	 * @return if the card has been moved or not
@@ -208,11 +221,18 @@ public abstract class AbstractShapeUpGame
 		this.state = state;
 	}
 
+	/**
+	 * Go to next player in the list.
+	 * The current player is stocked in the variable currentPlayer.
+	 */
 	public void nextPlayer()
 	{
 		currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % this.players.size());
 	}
 
+	/**
+	 * Add all cards in the deck. There is 18 cards in total.
+	 */
 	protected void initDeck()
 	{
 		if (!deck.isEmpty()) return;
@@ -250,6 +270,9 @@ public abstract class AbstractShapeUpGame
 
 	public abstract boolean isRoundFinished();
 
+	/**
+	 * Add players' scores at the end of the round and increases round index. 
+	 */
 	public void endRound()
 	{
 		for (Player player : players)
@@ -264,11 +287,21 @@ public abstract class AbstractShapeUpGame
 		return players;
 	}
 
+	/**
+     * Add an observer to the game.
+     * 
+     * @param pcl the observer. Here, they are game views.
+     */
 	public void addPropertyChangeListener(PropertyChangeListener pcl)
 	{
 		support.addPropertyChangeListener(pcl);
 	}
 
+	/**
+     * Remove an observer to the game.
+     * 
+     * @param pcl the observer. Here, they are game views.
+     */
 	public void removePropertyChangeListener(PropertyChangeListener pcl)
 	{
 		support.removePropertyChangeListener(pcl);

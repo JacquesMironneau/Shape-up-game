@@ -1,5 +1,10 @@
 package fr.utt.lo02.projet.model.game;
 
+/**
+ * Lists all possible cases after making a move request. 
+ * @author Baptiste, Jacques
+ *	There is 5 different cases.
+ */
 public enum MoveRequestResult
 {
 	NO_CARD_IN_THE_ORIGIN_COORDINATE,

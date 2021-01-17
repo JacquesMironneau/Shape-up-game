@@ -7,6 +7,11 @@ import fr.utt.lo02.projet.model.player.*;
 
 import java.util.List;
 
+/**
+ *  Represents the advanced mode of the game. It extends AbstractShapeUpGame to follow the game's construction.
+ * @author Baptiste, Jacques
+ *
+ */
 public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 {
 
@@ -15,7 +20,9 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 		super(visitor, players, board);
 	}
 
-
+	/**
+	 * Initiates a round. In the advanced mode, we don't set victory cards at the start of the game but we give 3 cards to each player.
+	 */
 	@Override
 	public void initRound()
 	{
@@ -31,7 +38,9 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 
 	}
 
-
+	/**
+	 * Makes play one turn to the current player.
+	 */
 	@Override
 	public void playTurn() throws PlayerHandEmptyException, BoardEmptyException
 	{
@@ -70,7 +79,6 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 
 					if (isRoundFinished())
 					{
-//						System.out.println("might aleeeeeeeeeeeeed");
 						setState(GameState.END_ROUND);
 						return;
 					}
@@ -115,6 +123,10 @@ public class ShapeUpGameAdvanced extends AbstractShapeUpGame
 
 	}
 
+	/**
+	 * Allows to know if the round is finished or not. A round is finished when the deck is empty and all players' hands have only 1 card.
+	 * The last card of each player is their victory card.
+	 */
 	@Override
 	public boolean isRoundFinished()
 	{

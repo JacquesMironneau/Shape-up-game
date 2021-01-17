@@ -11,9 +11,22 @@ import fr.utt.lo02.projet.model.player.PlaceRequest;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a difficult strategy. It calculates the score of all possibilities at each turn and choose the better one. 
+ * It implements PlayerStrategy to follows the strategy's construction.
+ * @author Baptiste, Jacques
+ *
+ */
 public class DifficultStrategy implements PlayerStrategy {
 	
+	/**
+	 * Visitor which allows to calculate score to have a better strategy.
+	 */
 	private final IBoardVisitor visitor;
+	
+	/**
+	 * The choice of the virtual player.
+	 */
 	Choice choice = null;
 	Card victoryCard = null;
 	
@@ -22,6 +35,14 @@ public class DifficultStrategy implements PlayerStrategy {
 	}
 
 
+	/**
+	 * Chooses one option to play a turn (place then end turn, place then move, move then place).
+	 * 
+	 * @param board the board of the round.
+	 * @param vC the victory card of the player.
+	 * @param playerHand the hand of the player.
+	 * @return the choice of the virtual player.
+	 */
 	@Override
 	public Choice makeChoice(AbstractBoard board, Card vC, List<Card> playerHand)
 	{
@@ -99,6 +120,14 @@ public class DifficultStrategy implements PlayerStrategy {
 		} 
 	}
 
+	/**
+	 * Makes a place request on the board.
+	 * 
+	 * @param board the board of the round.
+	 * @param vC the victory card of the player.
+	 * @param playerHand the hand of the player.
+	 * @return return a place request.
+	 */
 	@Override
 	public PlaceRequest makePlaceRequest(AbstractBoard board, Card vC, List<Card> playerHand) {
 		AbstractBoard testBoard = null;
@@ -125,6 +154,7 @@ public class DifficultStrategy implements PlayerStrategy {
 		int testY=Coordinates.smallestOrdinate(coordsMap)-1;
 		Coordinates testCoord = new Coordinates(testX, testY);
 		
+		// fill in goodRequests with all the right locations to place a card
 		while (testY <= Coordinates.biggestOrdinate(coordsMap) + 1) {
 			testCoord.setY(testY);
 			testX=Coordinates.smallestAbscissa(coordsMap)-1;
@@ -140,6 +170,7 @@ public class DifficultStrategy implements PlayerStrategy {
 			testY+=1;
 		}
 		
+		// test all positions to place a card and choose the better one
 		if (victoryCard==null&&playerHand.size()>1) {
 			for (int i=0; i<playerHand.size(); i++) {
 				victoryCard = playerHand.get(i);
@@ -177,7 +208,14 @@ public class DifficultStrategy implements PlayerStrategy {
 		return new PlaceRequest(bestCoord, cardToPlace);
 	}
 
-	
+	/**
+	 * Makes a move request from an placed card to an empty case on the board
+	 * 
+	 * @param board the board of the round.
+	 * @param vC the victory card of the player.
+	 * @param playerHand the hand of the player.
+	 * @return return a move request.
+	 */
 	@Override
 	public MoveRequest makeMoveRequest(AbstractBoard board, Card vC, List<Card> playerHand)
 	{
@@ -198,6 +236,8 @@ public class DifficultStrategy implements PlayerStrategy {
 		int testX=Coordinates.smallestAbscissa(coordsMap)-1;
 		int testY=Coordinates.smallestOrdinate(coordsMap)-1;
 		Coordinates testCoord = new Coordinates(testX, testY);
+		
+		// fill in goodRequests with all the right locations to place a card
 		while (testY <= Coordinates.biggestOrdinate(coordsMap) + 1) {
 			testCoord.setY(testY);
 			testX=Coordinates.smallestAbscissa(coordsMap)-1;
@@ -213,6 +253,7 @@ public class DifficultStrategy implements PlayerStrategy {
 			testY+=1;
 		}
 		
+		// test all cards to move at every right positions and choose the better one
 		if (victoryCard==null) {
 			for (int p=0; p<playerHand.size(); p++) {
 				victoryCard=playerHand.get(p);

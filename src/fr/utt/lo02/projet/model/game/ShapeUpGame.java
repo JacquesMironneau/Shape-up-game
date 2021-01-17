@@ -8,6 +8,11 @@ import fr.utt.lo02.projet.model.player.*;
 
 import java.util.List;
 
+/**
+ * Represents the normal mode of the game. It extends AbstractShapeUpGame to follow the game's construction.
+ * @author Baptiste, Jacques
+ *
+ */
 public class ShapeUpGame extends AbstractShapeUpGame
 {
 
@@ -17,7 +22,7 @@ public class ShapeUpGame extends AbstractShapeUpGame
 	}
 
 	/**
-	 * Initiate a round
+	 * Initiates a round. In the normal mode, we set victory cards at the start of the round.
 	 */
 	@Override
 	public void initRound()
@@ -31,6 +36,9 @@ public class ShapeUpGame extends AbstractShapeUpGame
 		}
 	}
 
+	/**
+	 * Makes play one turn to the current player.
+	 */
 	@Override
 	public void playTurn() throws PlayerHandEmptyException, BoardEmptyException
 	{
@@ -115,6 +123,9 @@ public class ShapeUpGame extends AbstractShapeUpGame
 	}
 
 
+	/**
+	 * Allows to know if the round is finished or not. A round is finished when the deck is empty and all players' hands are empty too.
+	 */
 	@Override
 	public boolean isRoundFinished()
 	{
