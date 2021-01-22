@@ -322,11 +322,11 @@ public class InitFrameView extends JPanel implements InitView
 
         // Add Credits text
         code = new JLabel("<html><font color = #FFFFFF>The project has been developped by Jacques Mironneau and Baptiste Guichard. The game is coded in Java.</font></html>");
-        this.setUpCreditsText(code, buttonFont);
+        this.setUpCreditsText(code, buttonFont, 350);
         graphics = new JLabel("<html><font color = #FFFFFF>All graphics have been made by Thomas Durand.</font></html>");
-        this.setUpCreditsText(graphics, buttonFont);
+        this.setUpCreditsText(graphics, buttonFont, 450);
         music = new JLabel("<html><font color = #FFFFFF>The music was created by Marceau Canu.</font></html>");
-        this.setUpCreditsText(music, buttonFont);
+        this.setUpCreditsText(music, buttonFont, 550);
 
         // ADD BUTONS
         // Start Menu
@@ -1106,9 +1106,10 @@ public class InitFrameView extends JPanel implements InitView
      * Sets up credits texts. Used because there are several different credits texts.
      * @param label the text to set up.
      * @param font text's font.
+     * @param y the text's height.
      */
-    public void setUpCreditsText(JLabel label, Font font) {
-        label.setBounds(300, 550, 900, 100);
+    public void setUpCreditsText(JLabel label, Font font, int y) {
+        label.setBounds(300, y, 900, 100);
         label.setFont(font);
         label.setVisible(false);
         this.add(label);
