@@ -1,5 +1,6 @@
 # LO02: Shape up game 
 
+Version Java: 14+
 Ce projet est une implémentation du jeu shape up game.  
 C'est un jeu de plateau jouable de 2 à 3 joueur développé en Java dans le cadre d'un enseignement de LO02 à l'UTT.
 
