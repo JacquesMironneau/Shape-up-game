@@ -21,17 +21,30 @@ public class PlaceRequest
 	 */
 	private Card card;
 
+	/**
+	 * Request's constructor. Sets up parameters.
+	 * @param coordinates the coordinates where to place the card.
+	 * @param card the card to place.
+	 */
 	public PlaceRequest(Coordinates coordinates, Card card)
 	{
 		this.coordinates = coordinates;
 		this.card = card;
 	}
 
+	/**
+	 * Used to get the coordinates where to place the card.
+	 * @return the coordinates where to place the card.
+	 */
 	public Coordinates getCoordinates()
 	{
 		return coordinates;
 	}
 
+	/**
+	 * Used to get the card to place.
+	 * @return the card to place.
+	 */
 	public Card getCard()
 	{
 		return card;

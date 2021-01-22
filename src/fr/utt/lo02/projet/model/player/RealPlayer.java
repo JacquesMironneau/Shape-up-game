@@ -13,7 +13,11 @@ import fr.utt.lo02.projet.model.game.ChoiceOrder;
 public class RealPlayer extends Player
 {
 
-
+	/**
+	 * Player's constructor. Sets up parameters.
+	 * @param name the player's name.
+	 * @param b the game's board.
+	 */
 	public RealPlayer(String name, AbstractBoard b)
 	{
 		super(name, b);

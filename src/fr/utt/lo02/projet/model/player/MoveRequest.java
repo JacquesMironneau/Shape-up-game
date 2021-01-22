@@ -20,17 +20,30 @@ public class MoveRequest
 	 */
 	private final Coordinates destination;
 
+	/**
+	 * Request's constructor. Sets up parameters.
+	 * @param origin the origin coordinates of the card to move.
+	 * @param destination the destination coordinates of the card to move.
+	 */
 	public MoveRequest(Coordinates origin, Coordinates destination)
 	{
 		this.origin = origin;
 		this.destination = destination;
 	}
 
+	/**
+	 * Used to get the origin coordinates of the card to move.
+	 * @return the origin coordinates of the card to move.
+	 */
 	public Coordinates getOrigin()
 	{
 		return origin;
 	}
 
+	/**
+	 * Used to get the destination coordinates of the card to move.
+	 * @return the destination coordinates of the card to move.
+	 */
 	public Coordinates getDestination()
 	{
 		return destination;

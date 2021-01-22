@@ -19,6 +19,12 @@ public class VirtualPlayer extends Player
 	 */
 	private PlayerStrategy strategy;
 
+	/**
+	 * * Player's constructor. Sets up parameters.
+	 * @param name the player's name.
+	 * @param b the game's board.
+	 * @param strategy the virtual player's strategy. Can be Easy or Medium.
+	 */
 	public VirtualPlayer(String name, AbstractBoard b, PlayerStrategy strategy)
 	{
 		super(name, b);

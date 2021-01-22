@@ -9,6 +9,12 @@ package fr.utt.lo02.projet.model.game;
  */
 public enum ChoiceOrder
 {
+	/**
+	 * Corresponds to the first choice which a player can do.
+	 */
 	FIRST_CHOICE,
+	/**
+	 * Corresponds to the second choice which a player can do.
+	 */
 	SECOND_CHOICE
 }

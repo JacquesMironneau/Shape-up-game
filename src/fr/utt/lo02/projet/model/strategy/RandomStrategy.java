@@ -18,7 +18,9 @@ import java.util.List;
  */
 public class RandomStrategy implements PlayerStrategy
 {
-	
+	/**
+	 * Strategy's constructor. Don't do anything particular for now.
+	 */
 	public RandomStrategy() {
 	
 	}

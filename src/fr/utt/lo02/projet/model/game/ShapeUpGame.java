@@ -16,6 +16,12 @@ import java.util.List;
 public class ShapeUpGame extends AbstractShapeUpGame
 {
 
+	/**
+	 * Game's constructor. Sets up parameters.
+	 * @param visitor the game's visitor. Used to calculate the score.
+	 * @param players the player's list. The list can contain 2 or 3 players.
+	 * @param board the game's board. It can be a rectangular, triangular or circular board.
+	 */
 	public ShapeUpGame(IBoardVisitor visitor, List<Player> players, AbstractBoard board)
 	{
 		super(visitor, players, board);

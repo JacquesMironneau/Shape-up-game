@@ -69,6 +69,12 @@ public abstract class AbstractShapeUpGame
 	 */
 	private PropertyChangeSupport support;
 
+	/**
+	 * Abstract Game's constructor. Sets the round number to 0, and sets up the observable part and parameters.
+	 * @param visitor the game's visitor. Used to calculate the score.
+	 * @param players the player's list. The list can contain 2 or 3 players.
+	 * @param board the game's board. It can be a rectangular, triangular or circular board.
+	 */
 	public AbstractShapeUpGame(IBoardVisitor visitor, List<Player> players, AbstractBoard board)
 	{
 		this.visitor = visitor;
@@ -213,6 +219,10 @@ public abstract class AbstractShapeUpGame
 		}
 	}
 
+	/**
+	 * Sets the state of the game. Used to update the view.
+	 * @param state the state of the game.
+	 */
 	public void setState(GameState state)
 	{
 
@@ -282,6 +292,10 @@ public abstract class AbstractShapeUpGame
 		roundNumber++;
 	}
 
+	/**
+	 * Used to get the player's list.
+	 * @return the player's list.
+	 */
 	public List<Player> getPlayers()
 	{
 		return players;
@@ -306,12 +320,21 @@ public abstract class AbstractShapeUpGame
 	{
 		support.removePropertyChangeListener(pcl);
 	}
-
+	
+	/**
+	 * Used to get the current player who is playing his turn.
+	 * @return the current player.
+	 */
 	public Player getCurrentPlayer()
 	{
 		return this.currentPlayer;
 	}
 
+	/**
+	 * Used to get the current round number.
+	 * It can be 1, 2, 3 or 4 and 0 before the game starts.
+	 * @return the round number.
+	 */
 	public int getRoundNumber()
 	{
 		return roundNumber;

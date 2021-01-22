@@ -41,6 +41,12 @@ public abstract class Player
 	 */
 	protected AbstractBoard board;
 
+	/**
+	 * Player's constructor. Sets up parameters and create 2 lists: 
+	 * one for player rounds' scores and one for player's hand.
+	 * @param name the player's name.
+	 * @param b the game's board.
+	 */
 	public Player(String name, AbstractBoard b)
 	{
 		this.name = name;
@@ -90,6 +96,10 @@ public abstract class Player
 		System.out.println(name + " : FINAL SCORE = " + finalScore);
 	}
 
+	/**
+	 * Sets the victory Card to the player.
+	 * @param victoryCard the player's victory card.
+	 */
 	public void setVictoryCard(Card victoryCard)
 	{
 		this.victoryCard = victoryCard;
@@ -104,6 +114,10 @@ public abstract class Player
 		this.playerHand.add(card);
 	}
 
+	/**
+	 * Used to get the card which player just draw.
+	 * @return the card he draw.
+	 */
 	public Card getDrawCard()
 	{
 		if (playerHand.isEmpty())
@@ -122,22 +136,37 @@ public abstract class Player
 		this.scoresRound.add(scoreOfCurrentRound);
 	}
 
+	/**
+	 * Used to get player's victory card.
+	 * @return player's victory card.
+	 */
 	public Card getVictoryCard()
 	{
 		return victoryCard;
 	}
 
+	/**
+	 * Used to get player's hand.
+	 * @return player's hand.
+	 */
 	public List<Card> getPlayerHand()
 	{
 		return playerHand;
 	}
 
+	/**
+	 * Used to get player's name.
+	 * @return player's name.
+	 */
 	public String getName()
 	{
 		return name;
 	}
 
-
+	/**
+	 * Used to get player rounds' scores.
+	 * @return A list of the player rounds' scores.
+	 */
 	public List<Integer> getScoresRound()
 	{
 		return scoresRound;

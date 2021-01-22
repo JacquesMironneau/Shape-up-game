@@ -25,7 +25,7 @@ public class InitFrameView extends JPanel implements InitView
 {
 
 	/**
-	 * Initialization view's name.
+	 * Initialization view's thread's name.
 	 */
     public static final String THREAD_FROM_INIT_VIEW_NAME = "swing";
     
@@ -45,73 +45,209 @@ public class InitFrameView extends JPanel implements InitView
     private static Font font = null;
     
     /**
-     * The two strategy difficulties.
+     * Easy strategy for the virtual Player.
      */
     public static final String EASY = "easy";
+    
+    /**
+     * Medium strategy for the virtual Player.
+     */
     public static final String MEDIUM = "medium";
 
     /**
-     * All labels used on the initialization menu.
+     * Label used on the initialization menu.
      */
     private static JLabel instr;
+	/**
+	 * Label used on the initialization menu.
+	 */
     private static JLabel titlePage;
+    /**
+     * Label used on the initialization menu.
+     */
     private static JLabel code;
+    /**
+     * Label used on the initialization menu.
+     */
     private static JLabel graphics;
+    /**
+     * Label used on the initialization menu.
+     */
     private static JLabel music;
+    /**
+     * Label used on the initialization menu.
+     */
     private static JLabel rulesImg;
+    /**
+     * Label used on the initialization menu.
+     */
     private static JLabel real;
+    /**
+     * Label used on the initialization menu.
+     */
     private static JLabel virtual;
+    /**
+     * Label used on the initialization menu.
+     */
     private static JLabel nbReal;
+    /**
+     * Label used on the initialization menu.
+     */
     private static JLabel nbVirtual;
+    /**
+     * Label used on the initialization menu.
+     */
     private static JLabel enterNames;
+    /**
+     * Label used on the initialization menu.
+     */
     private static JLabel enterDifficulties;
+    /**
+     * Label used on the initialization menu.
+     */
     private static JLabel p1;
+    /**
+     * Label used on the initialization menu.
+     */
     private static JLabel p2;
+    /**
+     * Label used on the initialization menu.
+     */
     private static JLabel p3;
+    /**
+     * Label used on the initialization menu.
+     */
     private static JLabel comp1;
+    /**
+     * Label used on the initialization menu.
+     */
     private static JLabel comp2;
+    /**
+     * Label used on the initialization menu.
+     */
     private static JLabel comp3;
 
     /**
-     * All text fields used on the initialization menu.
+     * Text field used on the initialization menu for Real Player's name.
      */
     private static JTextField name1;
+    /**
+     * Text field used on the initialization menu for Real Player's name.
+     */
     private static JTextField name2;
+    /**
+     * Text field used on the initialization menu for Real Player's name.
+     */
     private static JTextField name3;
 
     /**
-     * All check boxes used on the initialization menu.
+     * Check box used on the initialization menu to set the Virtual Player.
      */
     JCheckBox comp1Easy;
+    /**
+     * Check box used on the initialization menu to set the Virtual Player.
+     */
     JCheckBox comp1Difficult;
+    /**
+     * Check box used on the initialization menu to set the Virtual Player.
+     */
     JCheckBox comp2Easy;
+    /**
+     * Check box used on the initialization menu to set the Virtual Player.
+     */
     JCheckBox comp2Difficult;
+    /**
+     * Check box used on the initialization menu to set the Virtual Player.
+     */
     JCheckBox comp3Easy;
+    /**
+     * Check box used on the initialization menu to set the Virtual Player.
+     */
     JCheckBox comp3Difficult;
 
     /**
-     * All buttons used on the initialization menu.
+     * Button used on the initialization menu.
      */
     private static MyButton play;
+    /**
+     * Button used on the initialization menu.
+     */
     private static MyButton rules;
+    /**
+     * Button used on the initialization menu.
+     */
     private static MyButton credits;
+    /**
+     * Button used on the initialization menu.
+     */
     private static MyButton quit;
+    /**
+     * Button used on the initialization menu.
+     */
     private static MyButton normal;
+    /**
+     * Button used on the initialization menu.
+     */
     private static MyButton advanced;
+    /**
+     * Button used on the initialization menu.
+     */
     private static MyButton noAdjacency;
+    /**
+     * Button used on the initialization menu.
+     */
     private static MyButton backStartMenu;
+    /**
+     * Button used on the initialization menu.
+     */
     private static MyButton normalCalculator;
+    /**
+     * Button used on the initialization menu.
+     */
     private static MyButton bonusCalculator;
+    /**
+     * Button used on the initialization menu.
+     */
     private static MyButton backGMChoice;
+    /**
+     * Button used on the initialization menu.
+     */
     private static MyButton rectangle;
+    /**
+     * Button used on the initialization menu.
+     */
     private static MyButton triangle;
+    /**
+     * Button used on the initialization menu.
+     */
     private static MyButton circle;
+    /**
+     * Button used on the initialization menu.
+     */
     private static MyButton backSCChoice;
+    /**
+     * Button used on the initialization menu.
+     */
     private static MyButton add;
+    /**
+     * Button used on the initialization menu.
+     */
     private static MyButton minus;
+    /**
+     * Button used on the initialization menu.
+     */
     private static MyButton add2;
+    /**
+     * Button used on the initialization menu.
+     */
     private static MyButton minus2;
+    /**
+     * Button used on the initialization menu.
+     */
     private static MyButton backSBChoice;
+    /**
+     * Button used on the initialization menu.
+     */
     private static MyButton start;
 
     /**
@@ -123,10 +259,14 @@ public class InitFrameView extends JPanel implements InitView
      */
     private int j = 0;
 
+    /**
+     * Constructor of the view. Sets the background's image, frame's dimension, the music.
+     * It instantiate all components and set it not visible.
+     * @throws IOException
+     */
     public InitFrameView() throws IOException
     {
 
-//		backgroundImage = ImageIO.read(new File("res/background.png"));
         backgroundImage = ImageIO.read(getClass().getClassLoader().getResource("background.png"));
 
         Dimension preferredSize = new Dimension(1408, 864);
@@ -400,6 +540,10 @@ public class InitFrameView extends JPanel implements InitView
         g.drawImage(backgroundImage, 0, 0, this.getWidth(), this.getHeight(), this);
     }
 
+    /**
+     * Sets view's controller.
+     * @param controller
+     */
     public void setController(InitController controller)
     {
         this.controller = controller;
@@ -614,6 +758,10 @@ public class InitFrameView extends JPanel implements InitView
          });
     }
     
+    /**
+     * Creates and initializes all shape board choice page's components. 
+     * @param font the font used for this components.
+     */
     public void initShapeBoardChoicePage(Font font) {
     	rectangle = new MyButton("", "buttons/shape-square.png", "buttons/shape-square-hover.png", "buttons/shape-square-hover.png");
         this.setUpShapeButton(rectangle, 360);
@@ -1064,7 +1212,7 @@ public class InitFrameView extends JPanel implements InitView
     }
     
     /**
-     * Resets player1's text field and sets it not visible.
+     * Resets real player1's text field and sets it not visible.
      */
     public void name1VisibleFalse() {
     	p1.setVisible(false);
@@ -1073,7 +1221,7 @@ public class InitFrameView extends JPanel implements InitView
     }
     
     /**
-     * Sets visible player1's text field.
+     * Sets visible real player1's text field.
      */
     public void name1VisibleTrue() {
     	p1.setVisible(true);
@@ -1081,7 +1229,7 @@ public class InitFrameView extends JPanel implements InitView
     }
     
     /**
-     * Resets player2's text field and sets it not visible.
+     * Resets real player2's text field and sets it not visible.
      */
     public void name2VisibleFalse() {
     	p2.setVisible(false);
@@ -1090,7 +1238,7 @@ public class InitFrameView extends JPanel implements InitView
     }
     
 	/**
-	 * Sets visible player2's text field.
+	 * Sets visible real player2's text field.
 	 */
     public void name2VisibleTrue() {
     	p2.setVisible(true);
@@ -1098,7 +1246,7 @@ public class InitFrameView extends JPanel implements InitView
     }
     
     /**
-     * Resets player3's text field and sets it not visible.
+     * Resets real player3's text field and sets it not visible.
      */
     public void name3VisibleFalse() {
     	p3.setVisible(false);
@@ -1107,13 +1255,16 @@ public class InitFrameView extends JPanel implements InitView
     }
     
     /**
-     * Sets visible player3's text field.
+     * Sets visible real player3's text field.
      */
     public void name3VisibleTrue() {
     	p3.setVisible(true);
         name3.setVisible(true);
     }
     
+    /**
+     * Sets virtual player1's components (Text field and Check boxes) not visible.
+     */
     public void comp1VisibleFalse() {
     	comp1.setVisible(false);
         comp1Easy.setVisible(false);
@@ -1122,12 +1273,18 @@ public class InitFrameView extends JPanel implements InitView
         comp1Difficult.setSelected(false);
     }
 
+    /**
+     * Sets virtual player1's components (Text field and Check boxes) visible.
+     */
     public void comp1VisibleTrue() {
     	comp1.setVisible(true);
         comp1Easy.setVisible(true);
         comp1Difficult.setVisible(true);
     }
     
+    /**
+     * Sets virtual player2's components (Text field and Check boxes) not visible.
+     */
     public void comp2VisibleFalse() {
     	comp2.setVisible(false);
         comp2Easy.setVisible(false);
@@ -1136,12 +1293,18 @@ public class InitFrameView extends JPanel implements InitView
         comp2Difficult.setSelected(false);
     }
     
+    /**
+     * Sets virtual player2's components (Text field and Check boxes) visible.
+     */
     public void comp2VisibleTrue() {
     	comp2.setVisible(true);
         comp2Easy.setVisible(true);
         comp2Difficult.setVisible(true);
     }
     
+    /**
+     * Sets virtual player3's components (Text field and Check boxes) not visible.
+     */
     public void comp3VisibleFalse() {
     	comp3.setVisible(false);
         comp3Easy.setVisible(false);
@@ -1150,6 +1313,9 @@ public class InitFrameView extends JPanel implements InitView
         comp3Difficult.setSelected(false);
     }
     
+    /**
+     * Sets virtual player3's components (Text field and Check boxes) visible.
+     */
     public void comp3VisibleTrue() {
     	comp3.setVisible(true);
         comp3Easy.setVisible(true);

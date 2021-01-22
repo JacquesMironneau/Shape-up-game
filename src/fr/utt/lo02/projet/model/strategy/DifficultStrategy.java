@@ -28,8 +28,15 @@ public class DifficultStrategy implements PlayerStrategy {
 	 * The choice of the virtual player.
 	 */
 	Choice choice = null;
+	/**
+	 * Virtual player's victory card.
+	 */
 	Card victoryCard = null;
 	
+	/**
+	 * 
+	 * @param v the game's visitor. Used to calculate the score.
+	 */
 	public DifficultStrategy(IBoardVisitor v) {
 		visitor = v; 
 	}
