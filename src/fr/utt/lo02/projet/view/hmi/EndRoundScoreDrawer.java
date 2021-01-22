@@ -10,7 +10,10 @@ import java.util.List;
 import static fr.utt.lo02.projet.view.hmi.SwingHmiView.PLAYER_HAND_Y;
 
 /**
- * Draw the end round score using Graphics2D
+ * Draws the end round score using Graphics2D
+ * Scores, players names and round number are here strings that are drawn with the loaded font, with different colors
+ *
+ * @see AddFont
  */
 public class EndRoundScoreDrawer extends ScoreDrawer
 {
@@ -21,11 +24,11 @@ public class EndRoundScoreDrawer extends ScoreDrawer
     }
 
     /**
-     * draw the end round scores, with the players' scores for this round
+     * draws the end round scores, with the players' scores for this round
      * and the winner announcement
      *
      * @param g2d the Graphics2D of the JPanel
-     * */
+     */
     public void drawEndRoundScores(Graphics2D g2d)
     {
 
@@ -95,7 +98,7 @@ public class EndRoundScoreDrawer extends ScoreDrawer
         g2d.setColor(curr);
         g2d.drawString(winner.getName().toUpperCase(), 350, PLAYER_HAND_Y + 30);
         g2d.setColor(Color.white);
-        g2d.drawString("WON THIS ROUND", 350 + winner.getName().length() * 50 - 60, PLAYER_HAND_Y + 30);
+        g2d.drawString("WON THIS ROUND", 425 + winner.getName().length() * 50 - 60, PLAYER_HAND_Y + 30);
 
     }
 }

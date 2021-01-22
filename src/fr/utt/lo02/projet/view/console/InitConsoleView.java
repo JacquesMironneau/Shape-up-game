@@ -1,46 +1,83 @@
 package fr.utt.lo02.projet.view.console;
 
 import fr.utt.lo02.projet.controller.InitController;
-import fr.utt.lo02.projet.model.InitModel;
 import fr.utt.lo02.projet.model.InitState;
 import fr.utt.lo02.projet.view.InitView;
 
-import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
-import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
-
+/**
+ * Console implementation of InitView
+ * <p>
+ * Player interactions are hence console displayed text and integer reading from the terminal
+ */
 public class InitConsoleView implements InitView
 {
 
+    /**
+     * Choice for the easy level of difficulty for the virtual player
+     */
     public static final String EASY = "easy";
+
+    /**
+     * Choice for the medium level of difficulty for the virtual player
+     */
     public static final String MEDIUM = "medium";
+
+    /**
+     * Controller of the init view (MVC pattern)
+     */
     private InitController controller;
 
+    /**
+     * Console processing thread
+     * <p>
+     * This is the thread that can be interrupted by the controller in order to cancel
+     * input reading from the console
+     */
     private Thread thread;
+
+    /**
+     * Scanner, used to read players data
+     */
     private final Scanner scan;
 
+    /**
+     * Set up the scanner
+     */
     public InitConsoleView()
     {
         scan = new Scanner(System.in);
     }
 
+    /**
+     * Observer pattern, called by a state change in the model
+     *
+     * @param evt the fired change
+     * @see fr.utt.lo02.projet.model.InitModel
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt)
     {
 
         InitState is = (InitState) evt.getNewValue();
-//        System.out.println(SwingUtilities.isEventDispatchThread());
         thread = new Thread(() -> stateCheck(is));
         thread.start();
 
     }
 
-    private void stateCheck(InitState is)
+    /**
+     * Displays and asks user to set up a game according to the init state
+     *
+     * @param initState current init state of the model
+     */
+    private void stateCheck(InitState initState)
     {
-        switch (is)
+        switch (initState)
         {
 
             case START_MENU -> {
@@ -59,7 +96,7 @@ public class InitConsoleView implements InitView
                 System.out.println("3. Credits");
                 System.out.println("4. Quit");
 
-                choice = getNumberAdvanced("Please enter your choice: ", 1, 4);
+                choice = getNumber("Please enter your choice: ", 1, 4);
 
                 if (choice != Integer.MIN_VALUE)
                 {
@@ -72,7 +109,7 @@ public class InitConsoleView implements InitView
                 int back;
                 System.out.println("Rules are too complicated to be explained.\n");
 
-                back = getNumberAdvanced("Enter 0 to go back to the main menu.", 0, 0);
+                back = getNumber("Enter 0 to go back to the main menu.", 0, 0);
                 if (back != Integer.MIN_VALUE)
                 {
                     this.controller.startMenu(back);
@@ -92,7 +129,7 @@ public class InitConsoleView implements InitView
                 System.out.println("Graphics: Thomas Durand.");
                 System.out.println("Music: Marceau Canu. \n");
 
-                back = getNumberAdvanced("Enter 0 to go back to the main menu.", 0, 0);
+                back = getNumber("Enter 0 to go back to the main menu.", 0, 0);
 
                 if (back != Integer.MIN_VALUE)
                 {
@@ -109,7 +146,7 @@ public class InitConsoleView implements InitView
                 System.out.println("2. Advanced");
                 System.out.println("3. NoAdjacency \n");
                 System.out.println("Enter 0 to go back to the main menu. ");
-                choice = getNumberAdvanced("Please enter your game mode choice: ", 0, 3);
+                choice = getNumber("Please enter your game mode choice: ", 0, 3);
 
                 if (choice != Integer.MIN_VALUE)
                 {
@@ -124,7 +161,7 @@ public class InitConsoleView implements InitView
                 System.out.println("1. Normal calculator");
                 System.out.println("2. Bonus calculator \n");
                 System.out.println("Enter 0 to go back to the game mode choice. ");
-                choice = getNumberAdvanced("Please enter your score choice: ", 0, 2);
+                choice = getNumber("Please enter your score choice: ", 0, 2);
 
                 if (choice != Integer.MIN_VALUE)
                 {
@@ -141,7 +178,7 @@ public class InitConsoleView implements InitView
                 System.out.println("3. Circle board \n");
                 System.out.println("Enter 0 to go back to the score calculator choice. ");
 
-                choice = getNumberAdvanced("Please enter your board choice: ", 0, 3);
+                choice = getNumber("Please enter your board choice: ", 0, 3);
 
 
                 if (choice != Integer.MIN_VALUE)
@@ -156,7 +193,7 @@ public class InitConsoleView implements InitView
                 System.out.println("2 Players");
                 System.out.println("3 Players \n");
                 System.out.println("Enter 0 to go back to the shape board choice. ");
-                choice = getNumberAdvanced("Please enter your choice: ", 0, 3);
+                choice = getNumber("Please enter your choice: ", 0, 3);
                 this.controller.setNbPlayers(choice);
                 Map<Integer, String> realPlayers = new HashMap<>();
                 Map<Integer, String> virtualPlayers = new HashMap<>();
@@ -165,34 +202,29 @@ public class InitConsoleView implements InitView
                     System.out.println("Is Player " + i + " a real or a virtual player ? ");
                     System.out.println("1. Real");
                     System.out.println("2. Virtual");
-                    int choiceRealOrVirtual = getNumberAdvanced("Please enter the type of player: ", 1, 2);
-                    switch (choiceRealOrVirtual)
+                    int choiceRealOrVirtual = getNumber("Please enter the type of player: ", 1, 2);
+                    if (choiceRealOrVirtual == 1)
                     {
-                        case 1:
-                            System.out.println("What is your name ? ");
-                            String name = "User";
-                            name = scan.next();
-                            realPlayers.put(i, name);
-                            break;
-                        case 2:
-                            String strategy = "";
-                            System.out.println("Which difficulty do you want for player " + i + " ?");
-                            System.out.println("1. Easy");
-                            System.out.println("2. Medium");
-                            int choiceEasyOrMedium = getNumberAdvanced("Please enter the difficulty: ", 1, 2);
-                            switch (choiceEasyOrMedium)
-                            {
-                                case 1:
-                                    strategy = EASY;
-                                    break;
-                                case 2:
-                                    strategy = MEDIUM;
-                                    break;
-                            }
-                            virtualPlayers.put(i, strategy);
-                            break;
-                        default:
-                            System.exit(0);
+                        System.out.println("What is your name ? ");
+                        String name;
+                        name = scan.next();
+                        realPlayers.put(i, name);
+                    } else if (choiceRealOrVirtual == 2)
+                    {
+                        String strategy = "";
+                        System.out.println("Which difficulty do you want for player " + i + " ?");
+                        System.out.println("1. Easy");
+                        System.out.println("2. Medium");
+                        int choiceEasyOrMedium = getNumber("Please enter the difficulty: ", 1, 2);
+                        switch (choiceEasyOrMedium)
+                        {
+                            case 1 -> strategy = EASY;
+                            case 2 -> strategy = MEDIUM;
+                        }
+                        virtualPlayers.put(i, strategy);
+                    } else
+                    {
+                        System.exit(0);
                     }
                 }
                 this.controller.setPlayer(realPlayers, virtualPlayers);
@@ -201,42 +233,30 @@ public class InitConsoleView implements InitView
         }
     }
 
+    /**
+     * Sets a controller to the view
+     *
+     * @param controller the controller
+     * @see fr.utt.lo02.projet.controller.InitController
+     */
     public void setController(InitController controller)
     {
         this.controller = controller;
     }
 
+
+    /**
+     * Returns the user choice as an integer
+     * <p>
+     * The value is Integer.MIN_VALUE if the read task is interrupted
+     *
+     * @param msg the message to prompt
+     * @param min the minimum value for the integer choice
+     * @param max the maximum value for the integer choice
+     * @return a number between min and max
+     * @see ConsoleInputReadTask
+     */
     private int getNumber(String msg, int min, int max)
-    {
-        int choice = -1;
-        boolean isChoice = true;
-        while (isChoice)
-        {
-            System.out.println(msg);
-
-            try
-            {
-                choice = scan.nextInt();
-                if (choice >= min && choice <= max)
-                {
-                    isChoice = false;
-                } else
-                {
-                    System.err.println("Please enter a number between " + min + " and " + max);
-
-                }
-            } catch (Exception exception)
-            {
-                System.err.println("Please enter a correct number...");
-            }
-            scan.nextLine();
-        }
-
-        return choice;
-
-    }
-
-    private int getNumberAdvanced(String msg, int min, int max)
     {
 
         ConsoleInputReadTask readTask = new ConsoleInputReadTask();
@@ -255,56 +275,15 @@ public class InitConsoleView implements InitView
         return input;
     }
 
-    private int getNumberAdvanced(String msg)
-    {
 
-        ConsoleInputReadTask readTask = new ConsoleInputReadTask();
-        Integer input = null;
-        try
-        {
-            input = readTask.getInt(msg);
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        if (input == null)
-        {
-            input = Integer.MIN_VALUE;
-        }
-        return input;
-    }
-
+    /**
+     * Returns the thread of the reading task
+     *
+     * @return the thread of input task
+     * @see ConsoleInputReadTask
+     */
     public Thread getThread()
     {
         return thread;
     }
-
-    public static void main(String[] args)
-    {
-        InitModel model = new InitModel();
-        InitConsoleView v = new InitConsoleView();
-//		InitFrameView view = new InitFrameView();
-        JFrame frame = new JFrame("Shape Up");
-
-        Set<InitView> icv = new HashSet<>();
-//		icv.add(view);
-        icv.add(v);
-
-//		frame.add(view);
-        frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        frame.setResizable(false);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-
-        InitController ic = new InitController(model, icv, frame);
-//		view.setController(ic);
-        v.setController(ic);
-//		model.addPropertyChangeListener(view);
-        model.addPropertyChangeListener(v);
-
-        model.setState(InitState.START_MENU);
-//		frame.setVisible(true);
-    }
-
-
 }

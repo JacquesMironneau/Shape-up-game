@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Draw the end game score using Graphics2D
+ * Draws the end game score using Graphics2D
+ * Scores are here strings that are drawn with the loaded font, with different colors
+ *
+ * @see AddFont
  */
 public class EndGameScoreDrawer extends ScoreDrawer
 {
@@ -19,7 +22,7 @@ public class EndGameScoreDrawer extends ScoreDrawer
     }
 
     /**
-     * draw the end game scores, with the players' scores for each rounds
+     * draws the end game scores, with the players' scores for each rounds
      *
      * @param g2d the Graphics2D of the JPanel
      */

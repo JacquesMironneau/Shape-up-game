@@ -129,7 +129,7 @@ public class ShapeUpGameController implements GameController
         {
             for (GameView view : view)
             {
-                view.displayPlaceFailed(mrr);
+                view.displayMoveFailed(mrr);
 
             }
             gameModel.setState(GameState.ACTION_FAILED);
@@ -189,7 +189,7 @@ public class ShapeUpGameController implements GameController
         {
             for (GameView view : view)
             {
-                view.displayMoveFailed(prr);
+                view.displayPlaceFailed(prr);
 
             }
             gameModel.setState(GameState.ACTION_FAILED);

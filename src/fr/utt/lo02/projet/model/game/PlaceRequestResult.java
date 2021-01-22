@@ -8,23 +8,21 @@ package fr.utt.lo02.projet.model.game;
 public enum PlaceRequestResult
 {
 	/**
-	 * Player doesn't own card.
-	 * A placement can not be possible.
+	 * The player asked to place a card that he doesn't have in his hand
 	 */
 	PLAYER_DOESNT_OWN_CARD,
 	/**
-	 * Coordinates indicated by the current player are adjacent with an other card.
-	 * A placement can not be possible.
+	 
+	 * The player asked to place a card that is not adjacent to an already existing card
 	 */
 	CARD_NOT_ADJACENT,
 	/**
-	 * Coordinates indicated by the current player are not in the layout.
-	 * A placement can not be possible.
+	 * The player asked to place a card that is not the layout or to an already occupied location
 	 */
 	CARD_NOT_IN_THE_LAYOUT,
 	/**
 	 * The place request is valid, all conditions are good.
-	 */
+	*/
 	CORRECT_PLACEMENT
 
 }

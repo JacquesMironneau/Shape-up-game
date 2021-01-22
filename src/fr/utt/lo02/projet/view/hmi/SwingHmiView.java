@@ -38,69 +38,264 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 public class SwingHmiView extends JPanel implements GameView, MouseListener, MouseMotionListener
 {
 
+    /**
+     * Name of the thread used to call controller method
+     * A thread is always used to perform every controller operation
+     * This ensures that the thread that call the repaint is a event dispatch one
+     * that avoids strange display errors.
+     */
     public static final String THREAD_FROM_GAME_VIEW_NAME = "swing_thread_view";
+
+    /**
+     * Card width for the stone image
+     */
     public static final int CARD_WIDTH = 64;
+
+    /**
+     * Card height for the stone image
+     */
     public static final int CARD_HEIGHT = 64;
 
+    /**
+     * Offset between two cards in the abscissa axis
+     */
     public static final int OFFSET_X = 40;
+
+    /**
+     * Offset between two cards in the ordinate axis
+     */
     public static final int OFFSET_Y = 70;
 
+    /**
+     * Width of the hologram in pixel
+     */
     public static final int HOLOGRAM_WIDTH = 96;
+
+    /**
+     * Height of the hologram in pixel
+     */
     public static final int HOLOGRAM_HEIGHT = 128;
 
+    /**
+     * Offset for the board beside the left part of the screen
+     */
     public static final int LEFT_BOARD_OFFSET = 450;
-    public static final int TOP_BOARD_OFFSET = 150;
-    public static final int PLAYER_HAND_Y = 700;
-    public static final int ANIMATION_REFRESH_RATE = 100;
-    public static final String BACKGROUND_PATH = "background.png";
-    public static final int IA_SLEEP_TIME = 5;
 
+    /**
+     * Offset for the board beside the top of the screen
+     */
+    public static final int TOP_BOARD_OFFSET = 150;
+
+    /**
+     * Offset for the player hand representation
+     */
+    public static final int PLAYER_HAND_Y = 700;
+
+    /**
+     * Refresh rate of the holograms animations
+     * So, the number of milliseconds between two repaint during the animations
+     */
+    public static final int ANIMATION_REFRESH_RATE = 100;
+
+    /**
+     * Path to the background image file
+     */
+    public static final String BACKGROUND_PATH = "background.png";
+
+    /**
+     * Number of milliseconds between two actions of the virtual players
+     */
+    public static final int IA_SLEEP_TIME = 200;
+
+    /**
+     * List of the card (stones)
+     */
     private final List<Image> sprite;
+
+    /**
+     * Images of the hologram animations for each cards
+     */
     private final Image[][] spriteGlitchAnimations;
 
-    private int xadj;
-    private int yadj;
+
+    /**
+     * Abscissa offset for drag and drop in order to have the card
+     * centered on the user mouse
+     */
+    private int xAdj;
+
+    /**
+     * Ordinate offset for drag and drop in order to have the card
+     * centered on the user mouse
+     */
+    private int yAdj;
+
+    /**
+     * Initial abscissa of the dragged card
+     */
     private int prevX;
+
+    /**
+     * Initial ordinate of the dragged card
+     */
     private int prevY;
+
+    /**
+     * Current abscissa of the dragged card
+     */
     private int currX;
+
+    /**
+     * Current ordinate of the dragged card
+     */
     private int currY;
+
+    /**
+     * The index of the card among the player hand
+     * Mainly used for the advanced game
+     */
     private int cardIndex;
+
+    /**
+     * True if the game should display user indications
+     */
     private boolean shouldDrawText;
+
+    /**
+     * The font used to draw the texts
+     */
     private static Font font = null;
 
+
+    /**
+     * Controller of the game (MVC pattern)
+     */
     private GameController controller;
 
+
+    /**
+     * Reference to the to be played game
+     */
     private final AbstractShapeUpGame model;
 
+
+    /**
+     * The board of the game
+     */
     private final AbstractBoard boardModel;
 
+
+    /**
+     * View of the current board
+     * We use a copy of the board in order to manage the drag and drop and the failed action
+     */
     private final CopyOnWriteArrayList<CardWithScreenCoordinates> boardView;
+
+    /**
+     * View of the hand of the current player
+     */
     private final List<CardWithScreenCoordinates> handView;
 
+    /**
+     * The dragged card, this card is the one that follows the user cursor
+     */
     private CardWithScreenCoordinates cardImage;
+
+    /**
+     * True if the player can place false if the action is a move
+     */
     private boolean placementTime;
-    private GameState gs;
-    private List<Coordinates> goodRequestsScreen = new CopyOnWriteArrayList<>();
+
+    /**
+     * Current state of the game model
+     */
+    private GameState gameState;
+
+    /**
+     * List of the correct location for the current player action
+     * (Move or place)
+     */
+    private List<Coordinates> goodRequestsScreen;
+
+
+    /**
+     * Should the scores be displayed (used in the draws method)
+     */
     private boolean displayScores;
 
+    /**
+     * List of every holograms
+     */
     private final List<Image> spriteHologram;
+
+    /**
+     * Current index of the animation frame (between 0 and 7 since our animations uses 8 images)
+     */
     private int numberOfFrame;
+
+    /**
+     * Boolean used to say if the animation should proceed or not
+     */
     private boolean animate;
 
 
+    /**
+     * The button that ends the turn
+     * It is displayed during the second choice (after the player places a card if he decided to)
+     */
     private MyButton endTurnButton;
+
+    /**
+     * The button to set the move request to the controller
+     * This is a button that is placed during the first choice (when the player turns just began)
+     */
     private MyButton moveButton;
+
+    /**
+     * The button to set the place request to the controller
+     * This is a button that is placed during the first choice (when the player turns just began)
+     */
     private MyButton placeButton;
+
+    /**
+     * The button to end the round and launch a new one
+     * It is displayed during the scores display.
+     */
     private MyButton endRoundButton;
+
+    /**
+     * The button to set the move request to the controller
+     * This is a button that is placed during the second choice (when the player have placed first)
+     */
     private MyButton secondMoveButton;
+
+    /**
+     * The background image (wood table for now)
+     */
     private BufferedImage backgroundImage;
 
+    /**
+     * Convertor to match game and screen coordinates
+     */
     private final CoordinatesConvertor coordinatesConvertor;
 
+    /**
+     *  Drawer for the end round display
+     */
     private final EndRoundScoreDrawer endRoundScoreDrawer;
+
+    /**
+     * Drawer for the end game display
+     */
     private final EndGameScoreDrawer endGameScoreDrawer;
 
 
+    /**
+     * Creates a SwingHmiView setting the size of the JPanel
+     * it splits the different sprites and instantiate every buttons
+     * @param modelBoard board of the game
+     * @param game reference to the game
+     */
     public SwingHmiView(AbstractBoard modelBoard, AbstractShapeUpGame game)
     {
         this.model = game;
@@ -123,10 +318,12 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
         UIManager.put("Slider.onlyLeftMouseButtonDrag", Boolean.TRUE);
 
         boardView = new CopyOnWriteArrayList<>();
-        handView = Collections.synchronizedList(new ArrayList<>());
+        handView = new CopyOnWriteArrayList<>();
 
         endGameScoreDrawer = new EndGameScoreDrawer(model);
         endRoundScoreDrawer = new EndRoundScoreDrawer(model);
+        goodRequestsScreen = new CopyOnWriteArrayList<>();
+
         try
         {
             backgroundImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource(BACKGROUND_PATH)));
@@ -137,7 +334,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
         coordinatesConvertor = new CoordinatesConvertor(boardModel);
         placementTime = false;
         shouldDrawText = false;
-        gs = null;
+        gameState = null;
         displayScores = false;
         animate = false;
     }
@@ -147,14 +344,15 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
      * Observable method from the game model
      * @param evt the event observed in the model
      * @see GameState
+     * @see AbstractShapeUpGame
      */
     @Override
     public void propertyChange(PropertyChangeEvent evt)
     {
-        GameState prevGs = gs;
-        gs = (GameState) evt.getNewValue();
+        GameState prevGs = gameState;
+        gameState = (GameState) evt.getNewValue();
 
-        switch (gs)
+        switch (gameState)
         {
             case MOVE -> {
                 endRoundButton.setVisible(false);
@@ -504,15 +702,15 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
 
         prevX = cardImage.getX();
         prevY = cardImage.getY();
-        xadj = prevX - mouseEvent.getX();
-        yadj = prevY - mouseEvent.getY();
+        xAdj = prevX - mouseEvent.getX();
+        yAdj = prevY - mouseEvent.getY();
         setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
 
 
     }
 
     /**
-     * Update the coordinates of cardImage
+     * Updates the coordinates of cardImage
      *
      * @param mouseEvent mouse event of the dragged card
      */
@@ -525,8 +723,8 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
 
         currX = mouseEvent.getX();
         currY = mouseEvent.getY();
-        cardImage.setX(currX + xadj);
-        cardImage.setY(currY+yadj);
+        cardImage.setX(currX + xAdj);
+        cardImage.setY(currY+ yAdj);
 
         repaint();
     }
@@ -577,14 +775,14 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
 
         }
         // Put image in an empty location if it exists under cursor
-        for (Coordinates cimage : goodRequestsScreen)
+        for (Coordinates goodRequestCoordinates : goodRequestsScreen)
         {
 
-            if (mouseEvent.getX() >= cimage.getX() && mouseEvent.getX() <= cimage.getX() + CARD_WIDTH)
+            if (mouseEvent.getX() >= goodRequestCoordinates.getX() && mouseEvent.getX() <= goodRequestCoordinates.getX() + CARD_WIDTH)
             {
-                if (mouseEvent.getY() >= cimage.getY() && mouseEvent.getY() <= cimage.getY() + CARD_HEIGHT)
+                if (mouseEvent.getY() >= goodRequestCoordinates.getY() && mouseEvent.getY() <= goodRequestCoordinates.getY() + CARD_HEIGHT)
                 {
-                    boardView.add(new CardWithScreenCoordinates(cimage.getX(), cimage.getY(), cardImage.getCard()));
+                    boardView.add(new CardWithScreenCoordinates(goodRequestCoordinates.getX(), goodRequestCoordinates.getY(), cardImage.getCard()));
                     hasBeenPlaced = true;
                     break;
                 }
@@ -671,19 +869,31 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
 
     }
 
-
+    /**
+     * Displays a failed move
+     *
+     * @param moveRequestResult fail reason
+     */
     @Override
-    public void displayMoveFailed(PlaceRequestResult prr)
+    public void displayMoveFailed(MoveRequestResult moveRequestResult)
     {
 
     }
 
+    /**
+     * Displays a failed place
+     *
+     * @param placeRequestResult fail reason
+     */
     @Override
-    public void displayPlaceFailed(MoveRequestResult mrr)
+    public void displayPlaceFailed(PlaceRequestResult placeRequestResult)
     {
 
     }
 
+    /**
+     * Displays the scores of the just ended round
+     */
     @Override
     public void displayScoresEndRound()
     {
@@ -709,9 +919,9 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
     }
 
     @Override
-    public void setController(GameController sugc)
+    public void setController(GameController controller)
     {
-        this.controller = sugc;
+        this.controller = controller;
     }
 
 
@@ -777,7 +987,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
 
 
     /**
-     * Draw the board and the animation if needed
+     * Draws the board and the animation if needed
      *
      * @param g2d graphics2D of the panel
      */
@@ -793,7 +1003,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
             {
                 Image[] images = cardImageMatcher(card);
                 g2d.drawImage(images[0], x, y, null);
-                if ((gs == GameState.MOVE_DONE || gs == GameState.PLACE_DONE) && animate)
+                if ((gameState == GameState.MOVE_DONE || gameState == GameState.PLACE_DONE) && animate)
                 {
 
                     if (numberOfFrame > 7)
@@ -819,7 +1029,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
     }
 
     /**
-     * Draw the moving/dragged card
+     * Draws the moving/dragged card
      *
      * @param g2d graphics2D of the panel
      */
@@ -832,13 +1042,13 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
     }
 
     /**
-     * Draw the free emplacement position for placement or movement
+     * Draws the free emplacement position for placement or movement
      *
      * @param g2d graphics2D of the panel
      */
     private void drawFreeLocation(Graphics2D g2d)
     {
-        if (gs == GameState.MOVE || gs == GameState.PLACE || gs == GameState.FIRST_TURN)
+        if (gameState == GameState.MOVE || gameState == GameState.PLACE || gameState == GameState.FIRST_TURN)
         {
             if (placementTime)
             {
@@ -859,7 +1069,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
     }
 
     /**
-     * Draw text instruction to help player to make his choice
+     * Draws text instruction to help player to make his choice
      *
      * @param g2d graphics2D of the panel
      */
@@ -881,11 +1091,11 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
             g2d.setFont(f);
 
             String str = "";
-            if (gs == GameState.MOVE)
+            if (gameState == GameState.MOVE)
             {
                 str = "Time to move";
 
-            } else if (gs == GameState.PLACE)
+            } else if (gameState == GameState.PLACE)
             {
                 str = "Time to place";
 
@@ -896,7 +1106,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
     }
 
     /**
-     * Draw the background image
+     * Draws the background image
      *
      * @param g2d graphics2D of the panel
      */
@@ -906,7 +1116,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
     }
 
     /**
-     * Draw the current player hand on the bottom left of the screen
+     * Draws the current player hand on the bottom left of the screen
      *
      * @param g2d graphics2D of the panel
      */
@@ -920,7 +1130,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
     }
 
     /**
-     * Draw the victory card of the current player on the top left of the screen
+     * Draws the victory card of the current player on the top left of the screen
      *
      * @param g2d graphics2D of the panel
      */
@@ -946,6 +1156,11 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
     }
 
 
+    /**
+     * Method called by the dispatching thread after a called of the repaint() method
+     *
+     * @param g graphics object provided by the AWT thread
+     */
     @Override
     protected void paintComponent(Graphics g)
     {
@@ -953,7 +1168,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
         Graphics2D g2d = (Graphics2D) g;
         drawBackground(g2d);
 
-        if (gs != GameState.END_GAME)
+        if (gameState != GameState.END_GAME)
         {
             drawFreeLocation(g2d);
             drawTextInstruction(g2d);
@@ -972,6 +1187,12 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
         }
     }
 
+    /**
+     * Match a card and its [stone,hologram] representation
+     *
+     * @param card the card
+     * @return an Image[2] array containing the Stone and Hologram images of the card
+     */
     private Image[] cardImageMatcher(Card card)
     {
         int index;
@@ -1049,14 +1270,18 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
 
         } else
         {
-//            System.out.println(card);
-//            System.out.println("ERROR, card unavailable");
             index = 0;
         }
         return new Image[]{sprite.get(index), spriteHologram.get(index)};
 
     }
 
+    /**
+     * Match a card and its hologram animation
+     *
+     * @param card the card
+     * @return an Image array containing every frame of the hologram glitch animation
+     */
     private Image[] glitchAnimationMatcher(Card card)
     {
         int rowIndex;
@@ -1134,8 +1359,6 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
 
         } else
         {
-//            System.out.println(card);
-//            System.out.println("ERROR, animation unavailable");
             rowIndex = 0;
         }
 
@@ -1146,6 +1369,11 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
     }
 
 
+    /**
+     * Generate the empty location for a movement or a place
+     * Those are put in the goodRequestScreen attributes
+     * They are represented in the game with yellow and white square
+     */
     private void generateFreeLocation()
     {
         if (!boardModel.getPlacedCards().isEmpty())
@@ -1159,7 +1387,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
                 e.printStackTrace();
             }
             List<Coordinates> goodRequests = new ArrayList<>();
-            List<Coordinates> coordsMap = new ArrayList<>(board.getPlacedCards().keySet());
+            List<Coordinates> cordsMap = new ArrayList<>(board.getPlacedCards().keySet());
 
             if (!placementTime)
             {
@@ -1180,20 +1408,20 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
                 int x = cardImage.getX();
                 int y = cardImage.getY();
                 Coordinates coordinates = coordinatesConvertor.screenToGameCoordinates(x, y, minAbscissa, maxOrdinate);
-                coordsMap.remove(coordinates);
+                cordsMap.remove(coordinates);
                 board.getPlacedCards().remove(coordinates);
             }
 
 
-            int testX = Coordinates.smallestAbscissa(coordsMap) - 1;
-            int testY = Coordinates.smallestOrdinate(coordsMap) - 1;
+            int testX = Coordinates.smallestAbscissa(cordsMap) - 1;
+            int testY = Coordinates.smallestOrdinate(cordsMap) - 1;
             Coordinates testCoord = new Coordinates(testX, testY);
 
-            while (testY <= Coordinates.biggestOrdinate(coordsMap) + 1)
+            while (testY <= Coordinates.biggestOrdinate(cordsMap) + 1)
             {
                 testCoord.setY(testY);
-                testX = Coordinates.smallestAbscissa(coordsMap) - 1;
-                while (testX <= Coordinates.biggestAbscissa(coordsMap) + 1)
+                testX = Coordinates.smallestAbscissa(cordsMap) - 1;
+                while (testX <= Coordinates.biggestAbscissa(cordsMap) + 1)
                 {
                     testCoord.setX(testX);
                     if (!board.getPlacedCards().containsKey(testCoord))
@@ -1212,7 +1440,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
 
             for (Coordinates coord : goodRequests)
             {
-                goodRequestsScreen.add(coordinatesConvertor.gameToScreenCoordinates(coord.getX(), coord.getY(), Coordinates.smallestAbscissa(coordsMap), Coordinates.biggestOrdinate(coordsMap)));
+                goodRequestsScreen.add(coordinatesConvertor.gameToScreenCoordinates(coord.getX(), coord.getY(), Coordinates.smallestAbscissa(cordsMap), Coordinates.biggestOrdinate(cordsMap)));
 
 
             }
@@ -1221,7 +1449,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
     }
 
     /**
-     * Create the needed buttons with their location and their associated action listener
+     * Creates the needed buttons with their location and their associated action listener
      */
     private void instantiateButtons()
     {
@@ -1329,7 +1557,9 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
 
 
     /**
-     * Entry point for the game only (without the main menu)
+     * Entry point for the game only (without the initialization menu)
+     * The game will be played for 2 real players in a circle board
+     * with a basic score calculator and with 2 views (console and swing)
      */
     public static void main(String[] args)
     {
@@ -1339,13 +1569,8 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
         AbstractBoard rb = new CircleBoard();
         ps.add(new RealPlayer("Jacques", rb));
         ps.add(new RealPlayer("Baptiste", rb));
-//		ps.add(new RealPlayer("Th1", rb));
-//		ps.add(new RealPlayer("Aaa", rb));
         ScoreCalculatorVisitor visitor = new ScoreCalculatorVisitor();
 
-//        ps.add(new VirtualPlayer("ord1", rb, new RandomStrategy()));
-//        ps.add(new VirtualPlayer("ord2", rb, new RandomStrategy()));
-//        ps.add(new VirtualPlayer("ord3", rb, new RandomStrategy()));
 
         AbstractShapeUpGame model = new ShapeUpGame(visitor, ps, rb);
         Set<GameView> gameViewSet = new HashSet<>();
@@ -1363,10 +1588,10 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
         frame.pack();
         frame.setLocationRelativeTo(null);
 
-        GameController sugc = new ShapeUpGameController(model, gameViewSet);
+        GameController controller = new ShapeUpGameController(model, gameViewSet);
 
-        view.setController(sugc);
-        v.setController(sugc);
+        view.setController(controller);
+        v.setController(controller);
         model.addPropertyChangeListener(view);
         model.addPropertyChangeListener(v);
 

@@ -27,7 +27,6 @@ public enum GameState
      * Current player has put a card on a place which is not valid.
      */
     ACTION_FAILED,
-
     /**
      * It's the first turn of the round.
      */

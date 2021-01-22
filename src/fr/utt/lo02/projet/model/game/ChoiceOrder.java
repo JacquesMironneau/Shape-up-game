@@ -15,6 +15,7 @@ public enum ChoiceOrder
 	FIRST_CHOICE,
 	/**
 	 * Corresponds to the second choice which a player can do.
+	 * The player can only move or end his turn.
 	 */
 	SECOND_CHOICE
 }
