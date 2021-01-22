@@ -105,7 +105,7 @@ public class SwingHmiView extends JPanel implements GameView, MouseListener, Mou
     /**
      * Number of milliseconds between two actions of the virtual players
      */
-    public static final int IA_SLEEP_TIME = 5;
+    public static final int IA_SLEEP_TIME = 200;
 
     /**
      * List of the card (stones)

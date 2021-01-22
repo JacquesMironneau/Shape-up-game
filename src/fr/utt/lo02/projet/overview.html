@@ -1,0 +1,35 @@
+<html>
+<body>
+<h1>Shape Up Game</h1>
+<p>This project is a MVC GUI application representing the board game Shape Up.
+    The project is designed in 3 different main packages:</p>
+<br>
+
+<ul>
+    <li>model: game API that are called by the controller, notifies his state change to the view</li>
+<li>view: handle user input and call controller method
+</li>
+    <li>controller: transform view call (user) in game one (on the model)
+    </li>
+</ul>
+<br>
+
+<p>
+The application can be consequently seen as a graph or a state machine.
+A user make an action, the view call the controller method, which translate it into correct
+model method call. The controller also changes the state of the model. The latter notifies the view,
+and so on.
+</p>
+
+<p>
+The view is divided into a package for the console and another one for the hmi view.
+The model is divided into 4 different package, one for the board, another for the game,
+and two more for the player and his strategy.
+There is also a junit package used to test the core of the game.
+<br>
+The game is playable with 2 views (a console and hmi one) at the same time and therefore supports
+multithreading.
+
+</p>
+</body>
+</html>

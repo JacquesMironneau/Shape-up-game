@@ -9,6 +9,12 @@ package fr.utt.lo02.projet.model.game;
  */
 public enum ChoiceOrder
 {
+	/**
+	 * The player can only place or move
+	 */
 	FIRST_CHOICE,
+	/**
+	 * The player can only move or end his turn
+	 */
 	SECOND_CHOICE
 }

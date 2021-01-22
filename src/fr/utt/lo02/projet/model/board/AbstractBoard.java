@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represent the game board in which card can be added to a given position
+ * Represents the game board in which card can be added to a given position
  *
  * @author Baptiste, Jacques
  * @see Coordinates
@@ -15,12 +15,12 @@ import java.util.Map;
 public abstract class AbstractBoard implements Cloneable
 {
     /**
-     * Represent the placed card of the board
+     * Represents the placed card of the board
      */
     protected Map<Coordinates, Card> placedCards;
 
     /**
-     * Initialize the placed card to an empty hashmap.
+     * Initializes the placed card to an empty hashmap.
      */
     public AbstractBoard()
     {
@@ -28,7 +28,7 @@ public abstract class AbstractBoard implements Cloneable
     }
 
     /**
-     * Visitor accept implementation in order to proceed score calculation for a round and a player.
+     * Visitor accepts implementation in order to proceed score calculation for a round and a player.
      *
      * @param board       the visitor
      * @param victoryCard The victory card associated with the score
@@ -45,7 +45,7 @@ public abstract class AbstractBoard implements Cloneable
 
     /**
      * Check if the given coordinates are in the board layout
-     * Return false if a card exists at the given position
+     * Returns false if a card exists at the given position
      *
      * @param coordinates the coordinates of the new card
      * @return if coordinates are in the board layout and the given position is not occupied by a card.
@@ -64,7 +64,7 @@ public abstract class AbstractBoard implements Cloneable
     }
 
     /**
-     * Remove a given coordinate and card from the board
+     * Removes a given coordinate and card from the board
      *
      * @param oldCoordinates the position of the card to remove
      * @param oldCard        the card to remove
@@ -76,12 +76,12 @@ public abstract class AbstractBoard implements Cloneable
 
 
     /**
-     * Display every card of board in a text based format
+     * Displays every card of board in a text based format
      */
     public abstract void display();
 
     /**
-     * Return a map containing every card that have been placed on the board
+     * Returns a map containing every card that have been placed on the board
      *
      * @return placed card
      */

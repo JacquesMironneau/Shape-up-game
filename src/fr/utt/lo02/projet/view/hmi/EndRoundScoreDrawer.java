@@ -98,7 +98,7 @@ public class EndRoundScoreDrawer extends ScoreDrawer
         g2d.setColor(curr);
         g2d.drawString(winner.getName().toUpperCase(), 350, PLAYER_HAND_Y + 30);
         g2d.setColor(Color.white);
-        g2d.drawString("WON THIS ROUND", 350 + winner.getName().length() * 50 - 60, PLAYER_HAND_Y + 30);
+        g2d.drawString("WON THIS ROUND", 425 + winner.getName().length() * 50 - 60, PLAYER_HAND_Y + 30);
 
     }
 }
