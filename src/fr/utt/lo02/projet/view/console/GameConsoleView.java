@@ -1,55 +1,85 @@
 package fr.utt.lo02.projet.view.console;
 
 import fr.utt.lo02.projet.controller.GameController;
-import fr.utt.lo02.projet.controller.ShapeUpGameController;
 import fr.utt.lo02.projet.model.board.AbstractBoard;
 import fr.utt.lo02.projet.model.board.Card;
-import fr.utt.lo02.projet.model.board.RectangleBoard;
-import fr.utt.lo02.projet.model.board.visitor.ScoreCalculatorVisitor;
-import fr.utt.lo02.projet.model.game.*;
+import fr.utt.lo02.projet.model.game.AbstractShapeUpGame;
+import fr.utt.lo02.projet.model.game.GameState;
+import fr.utt.lo02.projet.model.game.MoveRequestResult;
+import fr.utt.lo02.projet.model.game.PlaceRequestResult;
 import fr.utt.lo02.projet.model.player.Player;
-import fr.utt.lo02.projet.model.player.RealPlayer;
-import fr.utt.lo02.projet.model.player.VirtualPlayer;
-import fr.utt.lo02.projet.model.strategy.*;
 import fr.utt.lo02.projet.view.GameView;
 
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
-import java.util.*;
 
+/**
+ * Console implementation of GameView
+ * <p>
+ * Player interactions are hence console displayed text and integer reading from the terminal
+ *
+ * @see GameView
+ */
 public class GameConsoleView implements GameView
 {
+    /**
+     * Controller of the view (MVC pattern)
+     */
     private GameController controller;
 
+    /**
+     * Game model (MVC pattern)
+     */
     private final AbstractShapeUpGame model;
 
+    /**
+     * Board model of the game (MVC pattern)
+     */
     private final AbstractBoard boardModel;
 
-    public Scanner scan;
-
+    /**
+     * Console processing thread
+     * <p>
+     * This is the thread that can be interrupted by the controller in order to cancel
+     * input reading from the console
+     */
     private Thread thread;
 
+    /**
+     * Creates a GameConsoleView by setting the models
+     *
+     * @param model      game model
+     * @param boardModel board game model
+     */
     public GameConsoleView(AbstractShapeUpGame model, AbstractBoard boardModel)
     {
         this.model = model;
         this.boardModel = boardModel;
-        scan = new Scanner(System.in);
     }
 
+    /**
+     * Observer pattern, called by a state change in the model
+     *
+     * @param evt the fired change
+     * @see AbstractShapeUpGame
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt)
     {
-//        System.out.println("notified" + evt.getNewValue() + " " + evt.getPropertyName());
-//        System.out.println("NEW STATE IN THE console " + evt.getNewValue());
 
-        GameState gs = (GameState) evt.getNewValue();
-        thread = new Thread(() -> stateProcess(gs));
+        GameState gameState = (GameState) evt.getNewValue();
+        thread = new Thread(() -> stateProcess(gameState));
         thread.start();
     }
 
-    private void stateProcess(GameState gs)
+    /**
+     * Displays and ask user to play according to the gameState
+     *
+     * @param gameState current game state of the model
+     */
+    private void stateProcess(GameState gameState)
     {
-        switch (gs)
+        switch (gameState)
         {
 
             case MOVE -> {
@@ -58,22 +88,22 @@ public class GameConsoleView implements GameView
                 int x, y, x2, y2;
                 System.out.println("You have to enter origin coordinates and destination coordinates.");
 
-                x = getNumberAdvanced("Please enter X origin : ");
+                x = getNumber("Please enter X origin : ");
                 if (x == Integer.MIN_VALUE)
                 {
                     return;
                 }
-                y = getNumberAdvanced("Please enter Y origin : ");
+                y = getNumber("Please enter Y origin : ");
                 if (y == Integer.MIN_VALUE)
                 {
                     return;
                 }
-                x2 = getNumberAdvanced("Please enter X dest : ");
+                x2 = getNumber("Please enter X dest : ");
                 if (x2 == Integer.MIN_VALUE)
                 {
                     return;
                 }
-                y2 = getNumberAdvanced("Please enter Y dest: ");
+                y2 = getNumber("Please enter Y dest: ");
                 if (y2 == Integer.MIN_VALUE)
                 {
                     return;
@@ -90,19 +120,19 @@ public class GameConsoleView implements GameView
                 cardIndex = 0;
                 System.out.println("You have to enter coordinates for where you want to place the card you draw. ");
 
-                x = getNumberAdvanced("Please enter X pos : ");
+                x = getNumber("Please enter X pos : ");
                 if (x == Integer.MIN_VALUE)
                 {
                     return;
                 }
-                y = getNumberAdvanced("Please enter Y pos : ");
+                y = getNumber("Please enter Y pos : ");
                 if (y == Integer.MIN_VALUE)
                 {
                     return;
                 }
                 if (this.model.getCurrentPlayer().getPlayerHand().size() > 1)
                 {
-                    cardIndex = getNumberAdvanced("Please enter your card index: ");
+                    cardIndex = getNumber("Please enter your card index: ");
                     if (cardIndex == Integer.MIN_VALUE)
                     {
                         return;
@@ -127,7 +157,7 @@ public class GameConsoleView implements GameView
 
                 displayBoard();
                 displayHand();
-                int choice = getNumberAdvanced("Please choose one action : \n 1. Move a card \n 2. Place a Card", 1, 2);
+                int choice = getNumber("Please choose one action : \n 1. Move a card \n 2. Place a Card", 1, 2);
 
                 if (choice != Integer.MIN_VALUE)
                 {
@@ -136,7 +166,7 @@ public class GameConsoleView implements GameView
 
             }
             case SECOND_CHOICE -> {
-                int choice = getNumberAdvanced("Do you want to move a card ?\n 1. Yes (move a card)\n 2. No (end the turn)", 1, 2);
+                int choice = getNumber("Do you want to move a card ?\n 1. Yes (move a card)\n 2. No (end the turn)", 1, 2);
                 displayBoard();
                 displayHand();
 
@@ -177,11 +207,19 @@ public class GameConsoleView implements GameView
     }
 
 
+    /**
+     * Returns the console input reading thread
+     *
+     * @return the console thread
+     */
     public Thread getThread()
     {
         return thread;
     }
 
+    /**
+     * Displays every victory cards of every players
+     */
     private void displayAllVictoryCard()
     {
         if (model.getCurrentPlayer().getVictoryCard() == null)
@@ -198,7 +236,9 @@ public class GameConsoleView implements GameView
         }
     }
 
-    // TODO: move the display in the view
+    /**
+     * Displays the hand (one or several cards) of the current player
+     */
     public void displayHand()
     {
         System.out.println(model.getCurrentPlayer().getPlayerHand().size() + " card(s) in hand\t");
@@ -206,6 +246,10 @@ public class GameConsoleView implements GameView
         model.getCurrentPlayer().getPlayerHand().forEach(Card::printSingleCard);
     }
 
+    /**
+     * Displays the scores for a player
+     */
+    @Override
     public void displayScoresEndRound()
     {
         for (Player p : model.getPlayers())
@@ -219,19 +263,20 @@ public class GameConsoleView implements GameView
         {
             e.printStackTrace();
         }
-//        if (model.getRoundNumber() != 3)
-//        {
-//            this.controller.play();
-
-//        }
     }
 
-    // TODO: move the display in the View
+    /**
+     * Displays the board in ascii art
+     */
+    @Override
     public void displayBoard()
     {
         boardModel.display();
     }
 
+    /**
+     * Displays the current victory card
+     */
     public void displayVictoryCard()
     {
         System.out.println("Victory card\t");
@@ -245,19 +290,15 @@ public class GameConsoleView implements GameView
         }
     }
 
-    public void displayMoveFailed(PlaceRequestResult prr)
+    /**
+     * Displays a text based reason of the previous failed move
+     *
+     * @param moveRequestResult reason of the failed move
+     */
+    @Override
+    public void displayMoveFailed(MoveRequestResult moveRequestResult)
     {
-        switch (prr)
-        {
-            case PLAYER_DOESNT_OWN_CARD -> System.err.println("You don't own this card");
-            case CARD_NOT_ADJACENT -> System.err.println("This location is not adjacent to an already existing card");
-            case CARD_NOT_IN_THE_LAYOUT -> System.err.println("The card is too far from the layout");
-        }
-    }
-
-    public void displayPlaceFailed(MoveRequestResult mrr)
-    {
-        switch (mrr)
+        switch (moveRequestResult)
         {
             case NO_CARD_IN_THE_ORIGIN_COORDINATE -> System.err.println("You can't move an nonexistent card");
             case CARD_NOT_ADJACENT -> System.err.println("This card will not be adjacent to any card");
@@ -266,66 +307,47 @@ public class GameConsoleView implements GameView
         }
     }
 
+    /**
+     * Displays a text based reason of the previous failed place
+     *
+     * @param placeRequestResult reason of the failed place
+     */
+    @Override
+    public void displayPlaceFailed(PlaceRequestResult placeRequestResult)
+    {
+
+        switch (placeRequestResult)
+        {
+            case PLAYER_DOESNT_OWN_CARD -> System.err.println("You don't own this card");
+            case CARD_NOT_ADJACENT -> System.err.println("This location is not adjacent to an already existing card");
+            case CARD_NOT_IN_THE_LAYOUT -> System.err.println("The card is too far from the layout");
+        }
+    }
+
+    /**
+     * Sets a controller to the view
+     *
+     * @param controller the controller
+     * @see fr.utt.lo02.projet.controller.GameController
+     */
+    @Override
     public void setController(GameController controller)
     {
         this.controller = controller;
     }
 
-
+    /**
+     * Returns the user choice as an integer
+     * <p>
+     * The value is Integer.MIN_VALUE if the read task is interrupted
+     *
+     * @param msg the message to prompt
+     * @param min the minimum value for the integer choice
+     * @param max the maximum value for the integer choice
+     * @return a number between min and max
+     * @see ConsoleInputReadTask
+     */
     private int getNumber(String msg, int min, int max)
-    {
-        int choice = -1;
-        boolean isChoice = true;
-        while (isChoice)
-        {
-            System.out.println(msg);
-
-            try
-            {
-                choice = scan.nextInt();
-                if (choice >= min && choice <= max)
-                {
-                    isChoice = false;
-                } else
-                {
-                    System.err.println("Please enter a number between " + min + " and " + max);
-
-                }
-            } catch (Exception exception)
-            {
-                System.err.println("Please enter a correct number...");
-            }
-            scan.nextLine();
-        }
-
-        return choice;
-
-    }
-
-    private int getNumber(String msg)
-    {
-        int choice = -1;
-        boolean isChoice = true;
-        while (isChoice)
-        {
-            System.out.println(msg);
-
-            try
-            {
-                choice = scan.nextInt();
-                isChoice = false;
-            } catch (Exception exception)
-            {
-                System.err.println("Please enter a correct number...");
-            }
-            scan.nextLine();
-        }
-
-        return choice;
-
-    }
-
-    private int getNumberAdvanced(String msg, int min, int max)
     {
 
         ConsoleInputReadTask readTask = new ConsoleInputReadTask();
@@ -344,7 +366,16 @@ public class GameConsoleView implements GameView
         return input;
     }
 
-    private int getNumberAdvanced(String msg)
+    /**
+     * Returns the user choice as an integer
+     * <p>
+     * The value is Integer.MIN_VALUE if the read task is interrupted
+     *
+     * @param msg the message to prompt
+     * @return a number corresponding to the choice
+     * @see ConsoleInputReadTask
+     */
+    private int getNumber(String msg)
     {
 
         ConsoleInputReadTask readTask = new ConsoleInputReadTask();
@@ -362,38 +393,4 @@ public class GameConsoleView implements GameView
         }
         return input;
     }
-
-    public static void main(String[] args)
-    {
-        List<Player> ps = new ArrayList<>();
-        AbstractBoard rb = new RectangleBoard();
-        ps.add(new RealPlayer("Jacques", rb));
-//		ps.add(new RealPlayer("Théo", rb));
-//		ps.add(new RealPlayer("Th1", rb));
-//		ps.add(new RealPlayer("Aaa", rb));
-        ScoreCalculatorVisitor visitor = new ScoreCalculatorVisitor();
-
-        ps.add(new VirtualPlayer("ord1", rb, new RandomStrategy()));
-//        ps.add(new VirtualPlayer("ord3", rb, new RandomStrategy()));
-
-
-//		ps.add(new RealPlayer("Baptiste", rb));
-
-        //ps.add(new VirtualPlayer("ord2", rb, new DifficultStrategy(visitor)));
-//		ps.add(new VirtualPlayer("ord3", rb, new RandomStrategy()));
-        AbstractShapeUpGame model = new ShapeUpGame(visitor, ps, rb);
-        GameView view = new GameConsoleView(model, rb);
-
-
-        Set<GameView> gvs = new HashSet<>();
-        gvs.add(view);
-        GameController sugc = new ShapeUpGameController(model, gvs);
-        view.setController(sugc);
-        model.addPropertyChangeListener(view);
-
-        model.setState(GameState.FIRST_TURN);
-
-    }
-
-
 }

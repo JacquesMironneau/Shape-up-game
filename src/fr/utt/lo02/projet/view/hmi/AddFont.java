@@ -4,7 +4,7 @@ import java.awt.*;
 import java.io.InputStream;
 
 /**
- * Font initializer, simply load the font
+ * Font initializer, simply load the font file in the resources folder
  */
 public class AddFont
 {
@@ -14,7 +14,7 @@ public class AddFont
 
 
     /**
-     * Read the font from file and return it
+     * Reads the font from file and return it
      * @return the game font
      */
     public static Font createFont()

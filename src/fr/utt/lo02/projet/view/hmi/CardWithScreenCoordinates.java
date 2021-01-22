@@ -6,6 +6,9 @@ import java.util.Objects;
 
 /**
  * Represent a card and its screen coordinates
+ * Coordinates are represented in the java.swing way (e.g. the top left is (0,0))
+ *
+ * @see Card
  */
 public class CardWithScreenCoordinates
 {
@@ -32,26 +35,50 @@ public class CardWithScreenCoordinates
         this.card = card;
     }
 
+    /**
+     * Returns the card screen abscissa
+     * @return the card screen abscissa
+     */
     public int getX() {
         return x;
     }
 
+    /**
+     * Sets the card screen abscissa
+     * @param x the new screen abscissa
+     */
     public void setX(int x) {
         this.x = x;
     }
 
+    /**
+     * Returns the card screen ordinate
+     * @return the card screen ordinate
+     */
     public int getY() {
         return y;
     }
 
+    /**
+     * Sets the card screen ordinate
+     * @param y the new screen ordinate
+     */
     public void setY(int y) {
         this.y = y;
     }
 
+    /**
+     * Returns the card of the object
+     * @return the current card
+     */
     public Card getCard() {
         return card;
     }
 
+    /**
+     * Sets the card of the object
+     * @param card the card
+     */
     public void setCard(Card card) {
         this.card = card;
     }

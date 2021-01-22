@@ -9,6 +9,8 @@ import static fr.utt.lo02.projet.view.hmi.SwingHmiView.*;
 /**
  * Convertor for coordinates
  * Used to convert coordinates from their screen coordinates to their board ones
+ * This use the size of the cards, the offset between cards, the shape of the board
+ * (for the circle one that needs to be shifted in a particular way)
  */
 public class CoordinatesConvertor
 {
@@ -19,7 +21,7 @@ public class CoordinatesConvertor
     public static final double CIRCLE_COEFFICIENT_OFFSET = 0.5;
 
     /**
-     * Store if the board is a circle or not
+     * Stores if the board is a circle or not
      */
     private final boolean isCircleBoard;
 
@@ -29,7 +31,7 @@ public class CoordinatesConvertor
     }
 
     /**
-     * Convert screen coordinates (x,y) to (i,j) : the associated coordinates in the board
+     * Converts screen coordinates (x,y) to (i,j) : the associated coordinates in the board
      *
      * @param x           the screen abscissa of the card
      * @param y           the screen ordinate of the card
@@ -68,7 +70,7 @@ public class CoordinatesConvertor
     }
 
     /**
-     * Convert board coordinates (i,j) to (x,y) : the associated coordinates in the screen
+     * Converts board coordinates (i,j) to (x,y) : the associated coordinates in the screen
      *
      * @param i           the board abscissa
      * @param j           the board ordinate

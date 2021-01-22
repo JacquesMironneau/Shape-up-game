@@ -23,7 +23,7 @@ public class ScoreDrawer
 
 
     /**
-     * Draw a rainbow title based on the given colors
+     * Draws a rainbow title based on the given colors
      *
      * @param g2d the Graphics2D of the JPanel
      * @param font the font to draw the title

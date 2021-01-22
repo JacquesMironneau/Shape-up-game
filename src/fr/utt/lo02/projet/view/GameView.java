@@ -6,15 +6,42 @@ import fr.utt.lo02.projet.model.game.PlaceRequestResult;
 
 import java.beans.PropertyChangeListener;
 
+/**
+ * Represents a view of the game (View of the MVC pattern)
+ * <p>
+ * The view is here a propertyChangeListener and thus use the Observer pattern.
+ */
 public interface GameView extends PropertyChangeListener
 {
-	void displayMoveFailed(PlaceRequestResult prr);
+    /**
+     * Displays a failed move
+     *
+     * @param moveRequestResult fail reason
+     */
+    void displayMoveFailed(MoveRequestResult moveRequestResult);
 
-	void displayPlaceFailed(MoveRequestResult mrr);
+    /**
+     * Displays a failed place
+     *
+     * @param placeRequestResult fail reason
+     */
+    void displayPlaceFailed(PlaceRequestResult placeRequestResult);
 
-	void displayScoresEndRound();
+    /**
+     * Displays the scores of the just ended round
+     */
+    void displayScoresEndRound();
 
-	void displayBoard();
+    /**
+     * Displays the game board
+     */
+    void displayBoard();
 
-	void setController(GameController sugc);
+    /**
+     * Sets a controller to the view
+     *
+     * @param controller the controller
+     * @see fr.utt.lo02.projet.controller.GameController
+     */
+    void setController(GameController controller);
 }

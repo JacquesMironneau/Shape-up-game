@@ -12,11 +12,12 @@ import static fr.utt.lo02.projet.view.hmi.SwingHmiView.*;
 
 /**
  * Split the needed sprites for the SwingHmiView
+ * The sprites are located in the resources folder
  */
 public class SpriteSplitter
 {
     /**
-     * Split the sprites of the cards (stones)
+     * Splits the sprites of the cards (stones)
      *
      * @return list of stones image
      */
@@ -55,8 +56,8 @@ public class SpriteSplitter
     }
 
     /**
-     *
-     * @return
+     * Splits the sprites of the holograms (cards)
+     * @return list of hologram images
      */
     public List<Image> splitSpriteHologram()
     {
@@ -76,7 +77,6 @@ public class SpriteSplitter
         {
             img = ImageIO.read(getClass().getClassLoader().getResource("holo_card_final.png"));
 
-//            img = ImageIO.read(new File(getClass().getClassLoader().getResource("holo_card_final.png").getFile()));
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -95,6 +95,10 @@ public class SpriteSplitter
         return imgArray;
     }
 
+    /**
+     * Splits the sprites of the holograms animation
+     * @return the images animation for each hologram
+     */
     public Image[][] splitSpriteGlitchAnimations()
     {
         int[][] spriteSheetCoords = {
