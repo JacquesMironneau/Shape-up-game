@@ -1,6 +1,6 @@
 # Shape Up Game
 
-<img src="readme_res/main_menu.png" width=400> 
+<img src="readme_res/main_menu.png" width=500> 
 
 ## Introduction
 
@@ -56,7 +56,8 @@ After this, you have finished setting up the game and you’re ready to play !
 ### Play a turn
 When you’re playing, you have two action’s choices: **Move** a card or **Place** a card.
 - To place a card, you have to drag a card from your hand to available positions which appear when you click on the stone. 
-- To move a card, it’s quite similar, you have to drag a card from the board to another available positions which appear when you move the stone. 
+- To move a card, it’s quite similar, you have to drag a card from the board to another available positions which appear when you move the stone.
+<br>
 <img src="readme_res/normal_turn.gif" width=400> <img src="readme_res/advanced_turn.gif" width=400>
 When you want to finish your turn, after having placed a card, and moving or not a card, you just have to click on the button “End Turn”, then it’s time for the next player to play !  
 
