@@ -58,7 +58,9 @@ When you’re playing, you have two action’s choices: **Move** a card or **Pla
 - To place a card, you have to drag a card from your hand to available positions which appear when you click on the stone. 
 - To move a card, it’s quite similar, you have to drag a card from the board to another available positions which appear when you move the stone.
 <br>
+
 <img src="readme_res/normal_turn.gif" width=400> <img src="readme_res/advanced_turn.gif" width=400>
+<br><br>
 When you want to finish your turn, after having placed a card, and moving or not a card, you just have to click on the button “End Turn”, then it’s time for the next player to play !  
 
 At the end of the round, a score page appears and you see who won the round. A game is composed of 4 rounds.  
