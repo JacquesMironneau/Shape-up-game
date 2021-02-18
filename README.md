@@ -1,6 +1,7 @@
 # Shape Up Game
-
+<p align="center">
 <img src="readme_res/main_menu.png" width=500> 
+</p>
 
 ## Introduction
 
@@ -47,7 +48,10 @@ Then you choose one shape of board, you have the choice between 3 shapes:
 - Triangle, which is an additional form we imagined.
 - Circle, which is an additional form we imagined too.
 
-<img src="readme_res/circle_board.png" width=400> <img src="readme_res/rectangle_board.png" width=400>
+<p align="center">
+<img src="readme_res/circle_board.png" width=400> <img src="readme_res/rectangle_board.png" width=400>  
+</p>
+
 
 Then you have to set up players. You can choose 2 to 3 players. A player can be Virtual or Real. If you choose one real player, you just have to give him a name. If you choose one virtual player, you have to choose his difficulty between 2: Normal and Difficult.   
 You can’t choose more than 3 players or less than 2.  
@@ -58,15 +62,17 @@ When you’re playing, you have two action’s choices: **Move** a card or **Pla
 - To place a card, you have to drag a card from your hand to available positions which appear when you click on the stone. 
 - To move a card, it’s quite similar, you have to drag a card from the board to another available positions which appear when you move the stone.
 <br>
-
+<p align="center">
 <img src="readme_res/normal_turn.gif" width=400> <img src="readme_res/advanced_turn.gif" width=400>
+ <p>
 <br><br>
 When you want to finish your turn, after having placed a card, and moving or not a card, you just have to click on the button “End Turn”, then it’s time for the next player to play !  
 
 At the end of the round, a score page appears and you see who won the round. A game is composed of 4 rounds.  
 
+<p align="center">
 <img src="readme_res/scores.png" width=400>
-
+</p>
 
 ## Technical implementation
 For this project we have used the SWING library and implemented several design patterns.  
