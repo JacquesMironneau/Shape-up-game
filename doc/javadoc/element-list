@@ -1,0 +1,11 @@
+fr.utt.lo02.projet.controller
+fr.utt.lo02.projet.junit
+fr.utt.lo02.projet.model
+fr.utt.lo02.projet.model.board
+fr.utt.lo02.projet.model.board.visitor
+fr.utt.lo02.projet.model.game
+fr.utt.lo02.projet.model.player
+fr.utt.lo02.projet.model.strategy
+fr.utt.lo02.projet.view
+fr.utt.lo02.projet.view.console
+fr.utt.lo02.projet.view.hmi
