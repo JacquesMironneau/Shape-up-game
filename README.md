@@ -1,9 +1,15 @@
 # Shape Up Game
 
+<img src="readme_res/main_menu.png" width=600> 
+
 ## Introduction
-As part of a course at UTT, we had to program a game using OOP in Java. The game is called Shape Up and it is a board game using cards. The goal is to have the best score, calculating from the different alignments of cards which have the same characteristics.  
-A card has 3 characteristics: Shape, Color and Filling. The game can be played by 2 to 3 players. 
-IMAGES CARTES
+
+As part of a course at UTT, we had to program a game using OOP in Java. The game is called Shape Up and it is a board game using cards. The game can be played by 2 to 3 players.  The goal is to have the best score, calculating from the different alignments of cards which have the same characteristics.
+A card has 3 characteristics: Shape, Color and Filling.  <br><br>
+<img src="readme_res/card_blue_circle.gif" width=75>
+<img src="readme_res/card_red_circle.gif" width=75>
+<img src="readme_res/card_green_square.gif" width=75>
+<br> <br>
 The detailed rules can be found here: http://goodlittlegames.co.uk/games/06-shape-up.html  
 As well as the subject, which is in French: https://moodle.utt.fr/pluginfile.php/22853/mod_resource/content/3/PROJET%20LO02.pdf 
 
@@ -21,11 +27,34 @@ If the game is launched via the desktop, only the HMI view will be displayed (th
 ## Repository organisation:  
 .  
 ├── **doc/**: javadoc, diagrams and project report (fr)  
-├── **res/**: project ressources (tiles, cards, holograms, music)   
+├── **res/**: project ressources (tiles, cards, holograms, music)  
+├── **readme_res/**: readme ressources (screenshot, gifs)  
 └── **src/**: java sources files  
 
 ## User informations:
-To play to this game, you 
+To play this game, you have to first set up the game. There are several menu pages in order to set up the game. First you choose the game mode, you have 3 modes:
+- Normal mode, which follows the official rules of Shape Up.
+- Advanced mode, which follows the official rules of Shape Up.
+- No Adjacency mode, which is a mode that we created, it’s just allowed to remove adjacency rules, then you can put a card on the board without checking if the card has another card adjacent.
+
+Then you have to choose one way to calculate the score, you have 2 choices:
+- Normal Calculator, which follows the official rules of ShapeUp.
+- Bonus Calculator, which is a way to calculate the score we invented, it allows more points for big alignments.
+
+Then you choose one shape of board, you have the choice between 3 shapes:
+- Square, which is actually a rectangle, which follows the official rules of Shape Up.
+- Triangle, which is an additional form we imagined.
+- Circle, which is an additional form we imagined too.
+
+<img src="readme_res/circle_board.png" width=600>
+<img src="readme_res/rectangle_board.png" width=600>
+
+Then you have to set up players. You can choose 2 to 3 players. A player can be Virtual or Real. If you choose one real player, you just have to give him a name. If you choose one virtual player, you have to choose his difficulty between 2: Normal and Difficult. 
+You can’t choose more than 3 players or less than 2.
+After this, you have finished setting up the game and you’re ready to play !
+
+
+<img src="readme_res/scores.png" width=600>
 
 
 ## Technical implementation
