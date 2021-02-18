@@ -31,7 +31,8 @@ If the game is launched via the desktop, only the HMI view will be displayed (th
 ├── **readme_res/**: readme ressources (screenshot, gifs)  
 └── **src/**: java sources files  
 
-## User informations:
+## User informations
+### Set up the game
 To play this game, you have to first set up the game. There are several menu pages in order to set up the game. First you choose the game mode, you have 3 modes:
 - Normal mode, which follows the official rules of Shape Up.
 - Advanced mode, which follows the official rules of Shape Up.
@@ -46,19 +47,27 @@ Then you choose one shape of board, you have the choice between 3 shapes:
 - Triangle, which is an additional form we imagined.
 - Circle, which is an additional form we imagined too.
 
-<img src="readme_res/circle_board.png" width=600>
-<img src="readme_res/rectangle_board.png" width=600>
+<img src="readme_res/circle_board.png" width=400> <img src="readme_res/rectangle_board.png" width=400>
 
-Then you have to set up players. You can choose 2 to 3 players. A player can be Virtual or Real. If you choose one real player, you just have to give him a name. If you choose one virtual player, you have to choose his difficulty between 2: Normal and Difficult. 
-You can’t choose more than 3 players or less than 2.
-After this, you have finished setting up the game and you’re ready to play !
+Then you have to set up players. You can choose 2 to 3 players. A player can be Virtual or Real. If you choose one real player, you just have to give him a name. If you choose one virtual player, you have to choose his difficulty between 2: Normal and Difficult.   
+You can’t choose more than 3 players or less than 2.  
+After this, you have finished setting up the game and you’re ready to play !  
+<br><br>
+### Play a turn
+When you’re playing, you have two action’s choices: **Move** a card or **Place** a card.
+- To place a card, you have to drag a card from your hand to available positions which appear when you click on the stone. 
+- To move a card, it’s quite similar, you have to drag a card from the board to another available positions which appear when you move the stone. 
+<img src="readme_res/normal_turn.gif" width=600>
+<img src="readme_res/advanced_turn.gif" width=600>
+When you want to finish your turn, after having placed a card, and moving or not a card, you just have to click on the button “End Turn”, then it’s time for the next player to play !  
 
+At the end of the round, a score page appears and you see who won the round. A game is composed of 4 rounds.  
 
 <img src="readme_res/scores.png" width=600>
 
 
 ## Technical implementation
-For this project we have used the SWING library and implemented several design patterns.
+For this project we have used the SWING library and implemented several design patterns.  
 
 - We first use MVC pattern to separate the logic from the view of the application. Every user action is given to a controller which then changes the state of the model. Next, the model notifies the views (using the Observer pattern) that its state has changed. 
 According to the specification, the game must be playable using terminal and GUI at the same time. Thus, the user can decide to start an action on its terminal and then move to the HMI. We have therefore made a custom scanner class which is interruptible (contrary to the Scanner class), our controller supports concurrency and allows the user to play with the chosen view.  
