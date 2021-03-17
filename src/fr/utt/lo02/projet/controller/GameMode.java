@@ -6,7 +6,16 @@ package fr.utt.lo02.projet.controller;
  */
 public enum GameMode
 {
+    /**
+     * Shape up game in a normal version
+     */
     NORMAL,
+    /**
+     * The advanced game mode
+     */
     ADVANCED,
+    /**
+     * A gamemode without adjacency rule
+     */
     NO_ADJACENCY
 }

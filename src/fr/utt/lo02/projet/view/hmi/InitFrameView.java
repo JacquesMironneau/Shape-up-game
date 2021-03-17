@@ -8,47 +8,46 @@ import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represents the initialization view in HMI.
  * It extends JPanel to create a frame and it implements InitView to follow the initialization view's construction.
- * @author Baptiste, Jacques
  *
+ * @author Baptiste, Jacques
  */
 public class InitFrameView extends JPanel implements InitView
 {
 
-	/**
-	 * Initialization view's thread's name.
-	 */
-    public static final String THREAD_FROM_INIT_VIEW_NAME = "swing";
-    
     /**
-     * Game & menu's background.
+     * Initialization view's thread's name.
      */
-    private Image backgroundImage;
+    public static final String THREAD_FROM_INIT_VIEW_NAME = "swing";
+
+    /**
+     * Game menu's background.
+     */
+    private final Image backgroundImage;
 
     /**
      * Controller of the MVC model.
      */
     private InitController controller;
-    
+
     /**
      * Font used for the initialization menu and the game.
      */
     private static Font font = null;
-    
+
     /**
      * Easy strategy for the virtual Player.
      */
     public static final String EASY = "easy";
-    
+
     /**
      * Medium strategy for the virtual Player.
      */
@@ -58,9 +57,9 @@ public class InitFrameView extends JPanel implements InitView
      * Label used on the initialization menu.
      */
     private static JLabel instr;
-	/**
-	 * Label used on the initialization menu.
-	 */
+    /**
+     * Label used on the initialization menu.
+     */
     private static JLabel titlePage;
     /**
      * Label used on the initialization menu.
@@ -262,12 +261,13 @@ public class InitFrameView extends JPanel implements InitView
     /**
      * Constructor of the view. Sets the background's image, frame's dimension, the music.
      * It instantiate all components and set it not visible.
-     * @throws IOException
+     *
+     * @throws IOException if font or music is not found
      */
     public InitFrameView() throws IOException
     {
 
-        backgroundImage = ImageIO.read(getClass().getClassLoader().getResource("background.png"));
+        backgroundImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("background.png")));
 
         Dimension preferredSize = new Dimension(1408, 864);
 
@@ -313,7 +313,7 @@ public class InitFrameView extends JPanel implements InitView
         this.add(titlePage);
 
         // Add Official Rules Image
-        ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("rules.PNG"));
+        ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("rules.PNG")));
         rulesImg = new JLabel();
         rulesImg.setIcon(icon);
         rulesImg.setBounds(274, 280, 860, 564);
@@ -321,14 +321,14 @@ public class InitFrameView extends JPanel implements InitView
         this.add(rulesImg);
 
         // Add Credits text
-        code = new JLabel("<html><font color = #FFFFFF>The project has been developped by Jacques Mironneau and Baptiste Guichard. The game is coded in Java.</font></html>");
+        code = new JLabel("<html><font color = #FFFFFF>The project has been developed by Jacques Mironneau and Baptiste Guichard. The game is coded in Java.</font></html>");
         this.setUpCreditsText(code, buttonFont, 350);
         graphics = new JLabel("<html><font color = #FFFFFF>All graphics have been made by Thomas Durand.</font></html>");
         this.setUpCreditsText(graphics, buttonFont, 450);
         music = new JLabel("<html><font color = #FFFFFF>The music was created by Marceau Canu.</font></html>");
         this.setUpCreditsText(music, buttonFont, 550);
 
-        // ADD BUTONS
+        // ADD BUTTONS
         // Start Menu
         this.initStartMenuPage(buttonFont);
 
@@ -339,14 +339,14 @@ public class InitFrameView extends JPanel implements InitView
         this.initScoreCalculatorChoicePage(buttonFont);
 
         // Shape Board Choice
-        this.initShapeBoardChoicePage(buttonFont);
+        this.initShapeBoardChoicePage();
 
         // Players Choice
         this.initPlayersChoicePage(buttonFont, titlePageFont);
     }
 
     /**
-     * Changes view's components visibility according to the current state. 
+     * Changes view's components visibility according to the current state.
      */
     public void propertyChange(PropertyChangeEvent evt)
     {
@@ -373,8 +373,8 @@ public class InitFrameView extends JPanel implements InitView
             case GAME_MODE_CHOICE:
 
                 // Components to Hide
-            	this.hideStartMenu();
-            	this.hideScoreCalculatorPage();
+                this.hideStartMenu();
+                this.hideScoreCalculatorPage();
 
                 // Visible Components
                 normal.setVisible(true);
@@ -403,7 +403,7 @@ public class InitFrameView extends JPanel implements InitView
             case PLAYER_CHOICE:
 
                 //Components to Hide
-            	this.hideShapeBoardPage();
+                this.hideShapeBoardPage();
 
                 // Visible Components
                 instr.setText("<html><font color = #FFFFFF>Please setup players. (2 Players Min and 3 Players Max in total)</font></html>");
@@ -440,7 +440,7 @@ public class InitFrameView extends JPanel implements InitView
             case RULES:
 
                 // Components to Hide
-            	this.hideStartMenu();
+                this.hideStartMenu();
 
                 // Visible Components
                 backStartMenu.setVisible(true);
@@ -454,7 +454,7 @@ public class InitFrameView extends JPanel implements InitView
             case SCORE_CALCULATOR_CHOICE:
 
                 // Components to Hide
-            	this.hideGameModeChoicePage();
+                this.hideGameModeChoicePage();
                 this.hideShapeBoardPage();
 
                 // Visible Components
@@ -507,7 +507,7 @@ public class InitFrameView extends JPanel implements InitView
             case START_MENU:
 
                 // Components to Hide
-            	this.hideGameModeChoicePage();
+                this.hideGameModeChoicePage();
                 instr.setVisible(false);
                 code.setVisible(false);
                 graphics.setVisible(false);
@@ -542,7 +542,8 @@ public class InitFrameView extends JPanel implements InitView
 
     /**
      * Sets view's controller.
-     * @param controller
+     *
+     * @param controller the controller
      */
     public void setController(InitController controller)
     {
@@ -550,296 +551,215 @@ public class InitFrameView extends JPanel implements InitView
     }
 
     /**
-     * Creates and initializes all start menu's components. 
+     * Creates and initializes all start menu's components.
+     *
      * @param font the font used for this components.
      */
-    public void initStartMenuPage(Font font) {
-    	play = new MyButton("PLAY", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
+    public void initStartMenuPage(Font font)
+    {
+        play = new MyButton("PLAY", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
         this.setUpMenuButton(play, 250, font);
-        play.addActionListener(new ActionListener()
+        play.addActionListener(e -> new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+            public void run()
             {
-                new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
-                {
-                    @Override
-                    public void run()
-                    {
-                        controller.startMenu(1);
+                controller.startMenu(1);
 
-                    }
-                }.start();
             }
-        });
+        }.start());
         rules = new MyButton("RULES", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
         this.setUpMenuButton(rules, 370, font);
-        rules.addActionListener(new ActionListener()
+        rules.addActionListener(e -> new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+            public void run()
             {
-                new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
-                {
-                    @Override
-                    public void run()
-                    {
-                        controller.startMenu(2);
+                controller.startMenu(2);
 
-                    }
-                }.start();
             }
-        });
+        }.start());
         credits = new MyButton("CREDITS", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
         this.setUpMenuButton(credits, 490, font);
-        credits.addActionListener(new ActionListener()
+        credits.addActionListener(e -> new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+            public void run()
             {
-                new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
-                {
-                    @Override
-                    public void run()
-                    {
-                        controller.startMenu(3);
+                controller.startMenu(3);
 
-                    }
-                }.start();
             }
-        });
+        }.start());
         quit = new MyButton("QUIT", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
         this.setUpMenuButton(quit, 610, font);
-        quit.addActionListener(new ActionListener()
+        quit.addActionListener(e -> new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+            public void run()
             {
-                new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
-                {
-                    @Override
-                    public void run()
-                    {
-                        controller.startMenu(4);
+                controller.startMenu(4);
 
-                    }
-                }.start();
             }
-        });
+        }.start());
     }
-    
+
     /**
-     * Creates and initializes all game mode choice page's components. 
+     * Creates and initializes all game mode choice page's components.
+     *
      * @param font the font used for this components.
      */
-    public void initGameModeChoicePage(Font font) {
-    	normal = new MyButton("NORMAL MODE", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
+    public void initGameModeChoicePage(Font font)
+    {
+        normal = new MyButton("NORMAL MODE", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
         this.setUpMenuButton(normal, 360, font);
-        normal.addActionListener(new ActionListener()
+        normal.addActionListener(e -> new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+            public void run()
             {
-                new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
-                {
-                    @Override
-                    public void run()
-                    {
-                        controller.setGameMode(1);
+                controller.setGameMode(1);
 
 
-                    }
-                }.start();
             }
-        });
+        }.start());
         advanced = new MyButton("ADVANCED MODE", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
         this.setUpMenuButton(advanced, 480, font);
-        advanced.addActionListener(new ActionListener()
+        advanced.addActionListener(e -> new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+            public void run()
             {
-                new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
-                {
-                    @Override
-                    public void run()
-                    {
-                        controller.setGameMode(2);
+                controller.setGameMode(2);
 
-                    }
-                }.start();
             }
-        });
+        }.start());
         noAdjacency = new MyButton("NO ADJACENCY MODE", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
         this.setUpMenuButton(noAdjacency, 600, font);
-        noAdjacency.addActionListener(new ActionListener()
+        noAdjacency.addActionListener(e -> new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+            public void run()
             {
-                new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
-                {
-                    @Override
-                    public void run()
-                    {
-                        controller.setGameMode(3);
+                controller.setGameMode(3);
 
-                    }
-                }.start();
             }
-        });
+        }.start());
         backStartMenu = new MyButton("", "buttons/backward.png", "buttons/backward-hover.png", "buttons/backward-hover.png");
         this.setUpBackButton(backStartMenu);
-        backStartMenu.addActionListener(new ActionListener()
+        backStartMenu.addActionListener(e -> new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+            public void run()
             {
-                new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
-                {
-                    @Override
-                    public void run()
-                    {
-                        controller.setGameMode(0);
+                controller.setGameMode(0);
 
-                    }
-                }.start();
             }
-        });
+        }.start());
     }
-    
+
     /**
-     * Creates and initializes all score calculator choice page's components. 
+     * Creates and initializes all score calculator choice page's components.
+     *
      * @param font the font used for this components.
      */
-    public void initScoreCalculatorChoicePage(Font font) {
-    	 normalCalculator = new MyButton("NORMAL CALCULATOR", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
-         this.setUpMenuButton(normalCalculator, 360, font);
-         normalCalculator.addActionListener(new ActionListener()
-         {
-             public void actionPerformed(ActionEvent e)
-             {
-                 new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
-                 {
-                     @Override
-                     public void run()
-                     {
-                         controller.setScoreCalculator(1);
+    public void initScoreCalculatorChoicePage(Font font)
+    {
+        normalCalculator = new MyButton("NORMAL CALCULATOR", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
+        this.setUpMenuButton(normalCalculator, 360, font);
+        normalCalculator.addActionListener(e -> new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+        {
+            @Override
+            public void run()
+            {
+                controller.setScoreCalculator(1);
 
-                     }
-                 }.start();
-             }
-         });
-         bonusCalculator = new MyButton("BONUS CALCULATOR", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
-         this.setUpMenuButton(bonusCalculator, 480, font);
-         bonusCalculator.addActionListener(new ActionListener()
-         {
-             public void actionPerformed(ActionEvent e)
-             {
-                 new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
-                 {
-                     @Override
-                     public void run()
-                     {
-                         controller.setScoreCalculator(2);
+            }
+        }.start());
+        bonusCalculator = new MyButton("BONUS CALCULATOR", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
+        this.setUpMenuButton(bonusCalculator, 480, font);
+        bonusCalculator.addActionListener(e -> new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+        {
+            @Override
+            public void run()
+            {
+                controller.setScoreCalculator(2);
 
-                     }
-                 }.start();
-             }
-         });
-         backGMChoice = new MyButton("", "buttons/backward.png", "buttons/backward-hover.png", "buttons/backward-hover.png");
-         this.setUpBackButton(backGMChoice);
-         backGMChoice.addActionListener(new ActionListener()
-         {
-             public void actionPerformed(ActionEvent e)
-             {
-                 new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
-                 {
-                     @Override
-                     public void run()
-                     {
-                         controller.setScoreCalculator(0);
+            }
+        }.start());
+        backGMChoice = new MyButton("", "buttons/backward.png", "buttons/backward-hover.png", "buttons/backward-hover.png");
+        this.setUpBackButton(backGMChoice);
+        backGMChoice.addActionListener(e -> new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+        {
+            @Override
+            public void run()
+            {
+                controller.setScoreCalculator(0);
 
-                     }
-                 }.start();
-             }
-         });
+            }
+        }.start());
     }
-    
+
     /**
-     * Creates and initializes all shape board choice page's components. 
-     * @param font the font used for this components.
+     * Creates and initializes all shape board choice page's components.
+     *
      */
-    public void initShapeBoardChoicePage(Font font) {
-    	rectangle = new MyButton("", "buttons/shape-square.png", "buttons/shape-square-hover.png", "buttons/shape-square-hover.png");
+    public void initShapeBoardChoicePage()
+    {
+        rectangle = new MyButton("", "buttons/shape-square.png", "buttons/shape-square-hover.png", "buttons/shape-square-hover.png");
         this.setUpShapeButton(rectangle, 360);
-        rectangle.addActionListener(new ActionListener()
+        rectangle.addActionListener(e -> new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+            public void run()
             {
-                new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
-                {
-                    @Override
-                    public void run()
-                    {
-                        controller.shapeBoard(1);
+                controller.shapeBoard(1);
 
-                    }
-                }.start();
             }
-        });
+        }.start());
         triangle = new MyButton("", "buttons/shape-triangle.png", "buttons/shape-triangle-hover.png", "buttons/shape-triangle-hover.png");
         this.setUpShapeButton(triangle, 490);
-        triangle.addActionListener(new ActionListener()
+        triangle.addActionListener(e -> new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+            public void run()
             {
-                new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
-                {
-                    @Override
-                    public void run()
-                    {
-                        controller.shapeBoard(2);
+                controller.shapeBoard(2);
 
-                    }
-                }.start();
             }
-        });
+        }.start());
         circle = new MyButton("", "buttons/shape-circle.png", "buttons/shape-circle-hover.png", "buttons/shape-circle-hover.png");
         this.setUpShapeButton(circle, 620);
-        circle.addActionListener(new ActionListener()
+        circle.addActionListener(e -> new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+            public void run()
             {
-                new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
-                {
-                    @Override
-                    public void run()
-                    {
-                        controller.shapeBoard(3);
+                controller.shapeBoard(3);
 
-                    }
-                }.start();
             }
-        });
+        }.start());
         backSCChoice = new MyButton("", "buttons/backward.png", "buttons/backward-hover.png", "buttons/backward-hover.png");
         this.setUpBackButton(backSCChoice);
-        backSCChoice.addActionListener(new ActionListener()
+        backSCChoice.addActionListener(e -> new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+            public void run()
             {
-                new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
-                {
-                    @Override
-                    public void run()
-                    {
-                        controller.shapeBoard(0);
+                controller.shapeBoard(0);
 
-                    }
-                }.start();
             }
-        });
+        }.start());
     }
-    
-	/**
-	 * Creates and initializes all players choice page's components. 
-     * @param font one of the 2 fonts used for this components.
-	 * @param font2 the other font used for this components.
-	 */
-    public void initPlayersChoicePage(Font font, Font font2) {
-    	real = new JLabel("<html><font color = #FFFFFF>REAL PLAYERS:</font></html>");
+
+    /**
+     * Creates and initializes all players choice page's components.
+     *
+     * @param font  one of the 2 fonts used for this components.
+     * @param font2 the other font used for this components.
+     */
+    public void initPlayersChoicePage(Font font, Font font2)
+    {
+        real = new JLabel("<html><font color = #FFFFFF>REAL PLAYERS:</font></html>");
         this.setUpPlayersPageTexts(real, 399, 360, 900, 100, font);
         virtual = new JLabel("<html><font color = #FFFFFF>VIRTUAL PLAYERS:</font></html>");
         this.setUpPlayersPageTexts(virtual, 399, 580, 900, 50, font);
@@ -886,184 +806,159 @@ public class InitFrameView extends JPanel implements InitView
         add.setBounds(900, 370, 64, 64);
         add.setVisible(false);
         this.add(add);
-        add.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
+        add.addActionListener(e -> {
+            if (i + j < 3)
             {
-                if (i + j < 3)
-                {
-                    i++;
-                }
-                nbReal.setText("<html><font color = #FFFFFF>" + i + "</font></html>");
-                InitFrameView.this.addRealPlayers();
+                i++;
             }
+            nbReal.setText("<html><font color = #FFFFFF>" + i + "</font></html>");
+            InitFrameView.this.addRealPlayers();
         });
         minus = new MyButton("", "buttons/minus.png", "buttons/minus-hover.png", "buttons/minus-hover.png");
         minus.setBounds(750, 370, 64, 64);
         minus.setVisible(false);
         this.add(minus);
-        minus.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
+        minus.addActionListener(e -> {
+            if (i > 0)
             {
-                if (i > 0)
-                {
-                    i--;
-                }
-                nbReal.setText("<html><font color = #FFFFFF>" + i + "</font></html>");
-                InitFrameView.this.addRealPlayers();
+                i--;
             }
+            nbReal.setText("<html><font color = #FFFFFF>" + i + "</font></html>");
+            InitFrameView.this.addRealPlayers();
         });
         add2 = new MyButton("", "buttons/add.png", "buttons/add-hover.png", "buttons/add-hover.png");
         add2.setBounds(900, 565, 64, 64);
         add2.setVisible(false);
         this.add(add2);
-        add2.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
+        add2.addActionListener(e -> {
+            if (j + i < 3)
             {
-                if (j + i < 3)
-                {
-                    j++;
-                }
-                nbVirtual.setText("<html><font color = #FFFFFF>" + j + "</font></html>");
-                InitFrameView.this.addVirtualPlayers();
+                j++;
             }
+            nbVirtual.setText("<html><font color = #FFFFFF>" + j + "</font></html>");
+            InitFrameView.this.addVirtualPlayers();
         });
         minus2 = new MyButton("", "buttons/minus.png", "buttons/minus-hover.png", "buttons/minus-hover.png");
         minus2.setBounds(750, 565, 64, 64);
         minus2.setVisible(false);
         this.add(minus2);
-        minus2.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
+        minus2.addActionListener(e -> {
+            if (j > 0)
             {
-                if (j > 0)
-                {
-                    j--;
-                }
-                nbVirtual.setText("<html><font color = #FFFFFF>" + j + "</font></html>");
-                InitFrameView.this.addVirtualPlayers();
+                j--;
             }
+            nbVirtual.setText("<html><font color = #FFFFFF>" + j + "</font></html>");
+            InitFrameView.this.addVirtualPlayers();
         });
         start = new MyButton("START THE GAME", "buttons/empty-button.png", "buttons/empty-button-hover.png", "buttons/empty-button-hover.png");
         this.setUpMenuButton(start, 780, font);
-        start.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
+        start.addActionListener(e -> {
+            if (i + j == 1 || i + j == 0)
             {
-                if (i + j == 1 || i + j == 0)
-                {
-                    i = 0;
-                    j = 0;
-                    enterNames.setVisible(false);
-                    InitFrameView.this.name1VisibleFalse();
-                    enterDifficulties.setVisible(false);
-                    InitFrameView.this.comp1VisibleFalse();
-                    nbReal.setText("<html><font color = #FFFFFF>" + i + "</font></html>");
-                    nbVirtual.setText("<html><font color = #FFFFFF>" + j + "</font></html>");
-                    return;
-                }
-                Map<Integer, String> realPlayers = new HashMap<>();
-                Map<Integer, String> virtualPlayers = new HashMap<>();
-                int nbPReal = 0;
-                for (int incr = 1; incr <= i; incr++)
-                {
-                    switch (incr)
-                    {
-                        case 1:
-                            realPlayers.put(incr, name1.getText());
-                            break;
-                        case 2:
-                            realPlayers.put(incr, name2.getText());
-                            break;
-                        case 3:
-                            realPlayers.put(incr, name3.getText());
-                            break;
-                        default:
-                            break;
-                    }
-                    nbPReal = incr;
-                }
-                for (int incr2 = 1; incr2 <= j; incr2++)
-                {
-                    switch (incr2)
-                    {
-                        case 1:
-                            if (comp1Easy.isSelected() && !comp1Difficult.isSelected())
-                            {
-                                virtualPlayers.put(incr2 + nbPReal, EASY);
-                            } else if (!comp1Easy.isSelected() && comp1Difficult.isSelected())
-                            {
-                                virtualPlayers.put(incr2 + nbPReal, MEDIUM);
-                            } else
-                            {
-                            	InitFrameView.this.resetPlayersPage(realPlayers, virtualPlayers);
-                                return;
-                            }
-                            break;
-                        case 2:
-                            if (comp2Easy.isSelected() && !comp2Difficult.isSelected())
-                            {
-                                virtualPlayers.put(incr2 + nbPReal, EASY);
-                            } else if (!comp2Easy.isSelected() && comp2Difficult.isSelected())
-                            {
-                                virtualPlayers.put(incr2 + nbPReal, MEDIUM);
-                            } else
-                            {
-                            	InitFrameView.this.resetPlayersPage(realPlayers, virtualPlayers);
-                                return;
-                            }
-                            break;
-                        case 3:
-                            if (comp3Easy.isSelected() && !comp3Difficult.isSelected())
-                            {
-                                virtualPlayers.put(incr2, EASY);
-                            } else if (!comp3Easy.isSelected() && comp3Difficult.isSelected())
-                            {
-                                virtualPlayers.put(incr2, MEDIUM);
-                            } else
-                            {
-                                InitFrameView.this.resetPlayersPage(realPlayers, virtualPlayers);
-                                return;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
-                {
-                    @Override
-                    public void run()
-                    {
-                        controller.setPlayer(realPlayers, virtualPlayers);
-
-                    }
-                }.start();
+                i = 0;
+                j = 0;
+                enterNames.setVisible(false);
+                InitFrameView.this.name1VisibleFalse();
+                enterDifficulties.setVisible(false);
+                InitFrameView.this.comp1VisibleFalse();
+                nbReal.setText("<html><font color = #FFFFFF>" + i + "</font></html>");
+                nbVirtual.setText("<html><font color = #FFFFFF>" + j + "</font></html>");
+                return;
             }
+            Map<Integer, String> realPlayers = new HashMap<>();
+            Map<Integer, String> virtualPlayers = new HashMap<>();
+            int nbPReal = 0;
+            for (int incr = 1; incr <= i; incr++)
+            {
+                switch (incr)
+                {
+                    case 1:
+                        realPlayers.put(incr, name1.getText());
+                        break;
+                    case 2:
+                        realPlayers.put(incr, name2.getText());
+                        break;
+                    case 3:
+                        realPlayers.put(incr, name3.getText());
+                        break;
+                    default:
+                        break;
+                }
+                nbPReal = incr;
+            }
+            for (int incr2 = 1; incr2 <= j; incr2++)
+            {
+                switch (incr2)
+                {
+                    case 1:
+                        if (comp1Easy.isSelected() && !comp1Difficult.isSelected())
+                        {
+                            virtualPlayers.put(incr2 + nbPReal, EASY);
+                        } else if (!comp1Easy.isSelected() && comp1Difficult.isSelected())
+                        {
+                            virtualPlayers.put(incr2 + nbPReal, MEDIUM);
+                        } else
+                        {
+                            InitFrameView.this.resetPlayersPage(realPlayers, virtualPlayers);
+                            return;
+                        }
+                        break;
+                    case 2:
+                        if (comp2Easy.isSelected() && !comp2Difficult.isSelected())
+                        {
+                            virtualPlayers.put(incr2 + nbPReal, EASY);
+                        } else if (!comp2Easy.isSelected() && comp2Difficult.isSelected())
+                        {
+                            virtualPlayers.put(incr2 + nbPReal, MEDIUM);
+                        } else
+                        {
+                            InitFrameView.this.resetPlayersPage(realPlayers, virtualPlayers);
+                            return;
+                        }
+                        break;
+                    case 3:
+                        if (comp3Easy.isSelected() && !comp3Difficult.isSelected())
+                        {
+                            virtualPlayers.put(incr2, EASY);
+                        } else if (!comp3Easy.isSelected() && comp3Difficult.isSelected())
+                        {
+                            virtualPlayers.put(incr2, MEDIUM);
+                        } else
+                        {
+                            InitFrameView.this.resetPlayersPage(realPlayers, virtualPlayers);
+                            return;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
+            {
+                @Override
+                public void run()
+                {
+                    controller.setPlayer(realPlayers, virtualPlayers);
+
+                }
+            }.start();
         });
         backSBChoice = new MyButton("", "buttons/backward.png", "buttons/backward-hover.png", "buttons/backward-hover.png");
         this.setUpBackButton(backSBChoice);
-        backSBChoice.addActionListener(new ActionListener()
+        backSBChoice.addActionListener(e -> new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
         {
-            public void actionPerformed(ActionEvent e)
+            @Override
+            public void run()
             {
-                new Thread(InitFrameView.THREAD_FROM_INIT_VIEW_NAME)
-                {
-                    @Override
-                    public void run()
-                    {
-                        controller.setNbPlayers(0);
+                controller.setNbPlayers(0);
 
-                    }
-                }.start();
             }
-        });
+        }.start());
     }
-    
+
     /**
      * Sets up a back button. Used because there are several different back buttons.
+     *
      * @param button the back button to set up.
      */
     public void setUpBackButton(MyButton button)
@@ -1074,12 +969,13 @@ public class InitFrameView extends JPanel implements InitView
 
     }
 
-	/**
-	 * Sets up a menu button. Used because there are several different menu buttons.
-	 * @param button the menu button to set up.
-	 * @param y menu button's ordinate position. 
-	 * @param font menu button's font.
-	 */
+    /**
+     * Sets up a menu button. Used because there are several different menu buttons.
+     *
+     * @param button the menu button to set up.
+     * @param y      menu button's ordinate position.
+     * @param font   menu button's font.
+     */
     public void setUpMenuButton(MyButton button, int y, Font font)
     {
         button.setBounds(474, y, 460, 80);
@@ -1088,11 +984,12 @@ public class InitFrameView extends JPanel implements InitView
         this.add(button);
 
     }
-    
+
     /**
      * Sets up a shape button. Used because there are several different shape buttons.
-     *  @param button the shape button to set up.
-	 * @param y shape button's ordinate position. 
+     *
+     * @param button the shape button to set up.
+     * @param y      shape button's ordinate position.
      */
     public void setUpShapeButton(MyButton button, int y)
     {
@@ -1101,14 +998,16 @@ public class InitFrameView extends JPanel implements InitView
         this.add(button);
 
     }
-    
+
     /**
      * Sets up credits texts. Used because there are several different credits texts.
+     *
      * @param label the text to set up.
-     * @param font text's font.
-     * @param y the text's height.
+     * @param font  text's font.
+     * @param y     the text's height.
      */
-    public void setUpCreditsText(JLabel label, Font font, int y) {
+    public void setUpCreditsText(JLabel label, Font font, int y)
+    {
         label.setBounds(300, y, 900, 100);
         label.setFont(font);
         label.setVisible(false);
@@ -1117,15 +1016,16 @@ public class InitFrameView extends JPanel implements InitView
 
     /**
      * Sets up a check box. Used because there are several different check boxes.
-     * @param cb the check box to set up.
-     * @param x check box's abscissa position.
-     * @param y check box's ordinate position.
+     *
+     * @param cb   the check box to set up.
+     * @param x    check box's abscissa position.
+     * @param y    check box's ordinate position.
      * @param font check box's font.
      */
     public void setUpCheckBox(JCheckBox cb, int x, int y, Font font)
     {
-        ImageIcon checkbox = new ImageIcon(getClass().getClassLoader().getResource("buttons/checkbox.png"));
-        ImageIcon box = new ImageIcon(getClass().getClassLoader().getResource("buttons/box.png"));
+        ImageIcon checkbox = new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("buttons/checkbox.png")));
+        ImageIcon box = new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("buttons/box.png")));
         cb.setBounds(x, y, 200, 50);
         cb.setFont(font);
         cb.setVisible(false);
@@ -1135,12 +1035,13 @@ public class InitFrameView extends JPanel implements InitView
         cb.setCursor(new Cursor(Cursor.HAND_CURSOR));
         this.add(cb);
     }
-    
+
     /**
      * Displays the text fields and instruction according to i, real players' index.
      */
-    public void addRealPlayers() {
-    	switch (i)
+    public void addRealPlayers()
+    {
+        switch (i)
         {
             case 0:
                 enterNames.setVisible(false);
@@ -1173,12 +1074,13 @@ public class InitFrameView extends JPanel implements InitView
                 break;
         }
     }
-    
+
     /**
      * Displays the check boxes and instruction according to j, virtual players' index.
      */
-    public void addVirtualPlayers() {
-    	switch (j)
+    public void addVirtualPlayers()
+    {
+        switch (j)
         {
             case 0:
                 enterDifficulties.setVisible(false);
@@ -1211,63 +1113,70 @@ public class InitFrameView extends JPanel implements InitView
                 break;
         }
     }
-    
+
     /**
      * Resets real player1's text field and sets it not visible.
      */
-    public void name1VisibleFalse() {
-    	p1.setVisible(false);
+    public void name1VisibleFalse()
+    {
+        p1.setVisible(false);
         name1.setVisible(false);
         name1.setText("");
     }
-    
+
     /**
      * Sets visible real player1's text field.
      */
-    public void name1VisibleTrue() {
-    	p1.setVisible(true);
+    public void name1VisibleTrue()
+    {
+        p1.setVisible(true);
         name1.setVisible(true);
     }
-    
+
     /**
      * Resets real player2's text field and sets it not visible.
      */
-    public void name2VisibleFalse() {
-    	p2.setVisible(false);
+    public void name2VisibleFalse()
+    {
+        p2.setVisible(false);
         name2.setVisible(false);
         name2.setText("");
     }
-    
-	/**
-	 * Sets visible real player2's text field.
-	 */
-    public void name2VisibleTrue() {
-    	p2.setVisible(true);
+
+    /**
+     * Sets visible real player2's text field.
+     */
+    public void name2VisibleTrue()
+    {
+        p2.setVisible(true);
         name2.setVisible(true);
     }
-    
+
     /**
      * Resets real player3's text field and sets it not visible.
      */
-    public void name3VisibleFalse() {
-    	p3.setVisible(false);
+    public void name3VisibleFalse()
+    {
+        p3.setVisible(false);
         name3.setVisible(false);
         name3.setText("");
     }
-    
+
     /**
      * Sets visible real player3's text field.
      */
-    public void name3VisibleTrue() {
-    	p3.setVisible(true);
+    public void name3VisibleTrue()
+    {
+        p3.setVisible(true);
         name3.setVisible(true);
     }
-    
+
     /**
      * Sets virtual player1's components (Text field and Check boxes) not visible.
      */
-    public void comp1VisibleFalse() {
-    	comp1.setVisible(false);
+    public void comp1VisibleFalse()
+    {
+        comp1.setVisible(false);
         comp1Easy.setVisible(false);
         comp1Easy.setSelected(false);
         comp1Difficult.setVisible(false);
@@ -1277,89 +1186,100 @@ public class InitFrameView extends JPanel implements InitView
     /**
      * Sets virtual player1's components (Text field and Check boxes) visible.
      */
-    public void comp1VisibleTrue() {
-    	comp1.setVisible(true);
+    public void comp1VisibleTrue()
+    {
+        comp1.setVisible(true);
         comp1Easy.setVisible(true);
         comp1Difficult.setVisible(true);
     }
-    
+
     /**
      * Sets virtual player2's components (Text field and Check boxes) not visible.
      */
-    public void comp2VisibleFalse() {
-    	comp2.setVisible(false);
+    public void comp2VisibleFalse()
+    {
+        comp2.setVisible(false);
         comp2Easy.setVisible(false);
         comp2Easy.setSelected(false);
         comp2Difficult.setVisible(false);
         comp2Difficult.setSelected(false);
     }
-    
+
     /**
      * Sets virtual player2's components (Text field and Check boxes) visible.
      */
-    public void comp2VisibleTrue() {
-    	comp2.setVisible(true);
+    public void comp2VisibleTrue()
+    {
+        comp2.setVisible(true);
         comp2Easy.setVisible(true);
         comp2Difficult.setVisible(true);
     }
-    
+
     /**
      * Sets virtual player3's components (Text field and Check boxes) not visible.
      */
-    public void comp3VisibleFalse() {
-    	comp3.setVisible(false);
+    public void comp3VisibleFalse()
+    {
+        comp3.setVisible(false);
         comp3Easy.setVisible(false);
         comp3Easy.setSelected(false);
         comp3Difficult.setVisible(false);
         comp3Difficult.setSelected(false);
     }
-    
+
     /**
      * Sets virtual player3's components (Text field and Check boxes) visible.
      */
-    public void comp3VisibleTrue() {
-    	comp3.setVisible(true);
+    public void comp3VisibleTrue()
+    {
+        comp3.setVisible(true);
         comp3Easy.setVisible(true);
         comp3Difficult.setVisible(true);
     }
-    
+
     /**
      * Sets up a players page's text. Used because there are several different players page's texts.
+     *
      * @param label the text to set up.
-     * @param posx text's abscissa position.
-     * @param posy text's ordinate position.
-     * @param x label's width.
-     * @param y label's height.
-     * @param font text's font.
+     * @param posx  text's abscissa position.
+     * @param posy  text's ordinate position.
+     * @param x     label's width.
+     * @param y     label's height.
+     * @param font  text's font.
      */
-    public void setUpPlayersPageTexts(JLabel label, int posx, int posy, int x, int y, Font font) {
-    	label.setBounds(posx, posy, x, y);
+    public void setUpPlayersPageTexts(JLabel label, int posx, int posy, int x, int y, Font font)
+    {
+        label.setBounds(posx, posy, x, y);
         label.setFont(font);
         label.setVisible(false);
         this.add(label);
     }
-    
+
     /**
      * Sets up a text field. Used because there are several different text fields.
+     *
      * @param textField the text field to set up.
-     * @param x text field's abscissa position.
-     * @param font text field's font.
+     * @param x         text field's abscissa position.
+     * @param font      text field's font.
      */
-    public void setUpTextFields(JTextField textField,int x, Font font) {
-    	textField.setBounds(x, 490, 200, 50);
-    	textField.setFont(font);
-    	textField.setBackground(Color.LIGHT_GRAY);
-    	textField.setVisible(false);
+    public void setUpTextFields(JTextField textField, int x, Font font)
+    {
+        textField.setBounds(x, 490, 200, 50);
+        textField.setFont(font);
+        textField.setBackground(Color.LIGHT_GRAY);
+        textField.setVisible(false);
         this.add(textField);
     }
-    
+
     /**
      * Resets players page, sets all components not visible and sets index of real and virtual players to 0.
-     * @param realPlayers Map with player's number and name from a real player.
+     *
+     * @param realPlayers    Map with player's number and name from a real player.
      * @param virtualPlayers Map with player's number and name from a virtual player.
      */
-    public void resetPlayersPage(Map<Integer, String> realPlayers, Map<Integer, String> virtualPlayers) {
-    	i = 0;
+    public void resetPlayersPage(Map<Integer, String> realPlayers, Map<Integer, String> virtualPlayers)
+    {
+        i = 0;
         j = 0;
         enterNames.setVisible(false);
         this.name1VisibleFalse();
@@ -1374,46 +1294,50 @@ public class InitFrameView extends JPanel implements InitView
         realPlayers.clear();
         virtualPlayers.clear();
     }
-    
+
     /**
-     *  Hides all start menu's components.
+     * Hides all start menu's components.
      */
-    public void hideStartMenu() {
-    	play.setVisible(false);
+    public void hideStartMenu()
+    {
+        play.setVisible(false);
         rules.setVisible(false);
         credits.setVisible(false);
         quit.setVisible(false);
     }
-    
+
     /**
-     *  Hides all game mode choice page's components.
+     * Hides all game mode choice page's components.
      */
-    public void hideGameModeChoicePage() {
-    	normal.setVisible(false);
+    public void hideGameModeChoicePage()
+    {
+        normal.setVisible(false);
         advanced.setVisible(false);
         noAdjacency.setVisible(false);
         backStartMenu.setVisible(false);
     }
-    
-	/**
-	 *  Hides all shape board choice page's components.
-	 */
-    public void hideShapeBoardPage() {
-    	rectangle.setVisible(false);
+
+    /**
+     * Hides all shape board choice page's components.
+     */
+    public void hideShapeBoardPage()
+    {
+        rectangle.setVisible(false);
         triangle.setVisible(false);
         circle.setVisible(false);
         backSCChoice.setVisible(false);
     }
-    
+
     /**
      * Hides all score calculator choice page's components.
      */
-    public void hideScoreCalculatorPage() {
-    	normalCalculator.setVisible(false);
+    public void hideScoreCalculatorPage()
+    {
+        normalCalculator.setVisible(false);
         bonusCalculator.setVisible(false);
         backGMChoice.setVisible(false);
     }
-    
+
     /**
      * Plays background music.
      */
@@ -1423,7 +1347,7 @@ public class InitFrameView extends JPanel implements InitView
         new Thread(() -> {
             try
             {
-                AudioInputStream ais = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResource("music/canu.wav"));
+                AudioInputStream ais = AudioSystem.getAudioInputStream(Objects.requireNonNull(getClass().getClassLoader().getResource("music/canu.wav")));
 
                 Clip clip = AudioSystem.getClip();
                 clip.open(ais);

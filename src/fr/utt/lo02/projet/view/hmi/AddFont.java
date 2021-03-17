@@ -10,7 +10,7 @@ public class AddFont
 {
 
     private static Font paintFont = null;
-    private static final String FONT_PATH = "font/paint2.ttf";
+    private static final String FONT_PATH = "font/shape_up_font.ttf";
 
 
     /**
@@ -19,6 +19,7 @@ public class AddFont
      */
     public static Font createFont()
     {
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         try
         {
             InputStream resource = AddFont.class.getClassLoader().getResourceAsStream(FONT_PATH);
@@ -26,6 +27,7 @@ public class AddFont
             assert resource != null;
             Font ttfBase = Font.createFont(Font.TRUETYPE_FONT, resource);
             paintFont = ttfBase.deriveFont(Font.PLAIN, 24);
+            ge.registerFont(paintFont);
         } catch (Exception ex)
         {
             ex.printStackTrace();
